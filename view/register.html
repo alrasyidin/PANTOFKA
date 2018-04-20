@@ -1,0 +1,45 @@
+<section class="centered-section">
+<div class="form">
+
+        <form action="index.php?target=user&action=register" method="post">
+
+            <input type="text" name="first_name" placeholder="First name" required> <br>
+
+            <input type="text" name="last_name" placeholder="Last name" required> <br>
+
+            <input type="email" name="email" placeholder="Email" required> <br>
+
+            <input type="password" name="password" placeholder="Password" required> <br>
+
+            <input type="password" name="password_repeat" placeholder="Repeat password" required> <br>
+
+            <p class="message">
+                Gender: <select name="gender" required>
+
+                <option value="m">Male</option>
+
+                <option value="f">Female</option>
+
+                </select> </p> <br>
+
+            <input class="button" type="submit" name="register_button" value="Register" onclick="validate( this.form.email.value , this.form.password.value)">
+
+            <p class="message">Already registered? <a href="index.php?page=login">Log in!</a> </p>
+
+        </form>
+    </div>
+</section>
+
+
+<script>
+    function validate(email , password) {
+        if (email === undefined || email.length < 5 || email.length > 45 || typeof email !== "string" ||
+            password === undefined || password.length < 5 || password.length > 45 || typeof password !== "string") {
+            document.getElementById("login-error").innerHTML = "";
+            document.getElementById("login-error").innerHTML = "Bad input!";
+
+        }else {
+            window.location = "index.php";
+        }
+    }
+</script>
