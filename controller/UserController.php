@@ -9,6 +9,8 @@ namespace controller;
 
 use model\dao\AbstractDao;
 use model\dao\UserDao;
+use model\User;
+
 class UserController extends AbstractController {
 
     private static $instance;

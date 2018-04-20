@@ -13,9 +13,6 @@ abstract class AbstractDao {
     /* @var $pdo \PDO */
     protected static $pdo;
 
-    protected function __construct(){
-
-    }
 
     public static function init(){
         try {

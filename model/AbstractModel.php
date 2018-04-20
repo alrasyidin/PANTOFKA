@@ -9,21 +9,21 @@
 namespace model;
 
 
- abstract class AbstractModel implements \JsonSerializable {
+abstract class AbstractModel implements \JsonSerializable {
 
-     public function __construct($json = null)
-     {
-         if($json != null) {
-             $json_obj = json_decode($json);
-             foreach ($json_obj as $key => $value) {
-                 $this->$key = $value;
-             }
-         }
-     }
+    public function __construct($json = null)
+    {
+        if($json != null) {
+            $json_obj = json_decode($json);
+            foreach ($json_obj as $key => $value) {
+                $this->$key = $value;
+            }
+        }
+    }
 
-     public function jsonSerialize()
-     {
+    public function jsonSerialize()
+    {
         return get_object_vars($this);
-     }
+    }
 
- }
+}

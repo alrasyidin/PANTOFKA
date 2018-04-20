@@ -16,6 +16,7 @@ class UserDao extends AbstractDao implements IUserDao {
     }
 
     public function register(User $new_user){
+
         $stmt = self::$pdo->prepare(
             "SELECT gender_id 
                        FROM final_project_pantofka.genders
@@ -54,7 +55,8 @@ class UserDao extends AbstractDao implements IUserDao {
 
     public function getUserData($email){
         $stmt = self::$pdo->prepare(
-            "SELECT user_id, email, first_name, last_name, is_admin, gender  FROM final_project_pantofka.users as u
+            "SELECT user_id, email, first_name, last_name, is_admin, gender  
+                    FROM final_project_pantofka.users as u
                     JOIN final_project_pantofka.genders as g ON u.gender_id = g.gender_id
                     WHERE email =  ?");
         $stmt->execute(array($email));
@@ -77,7 +79,8 @@ class UserDao extends AbstractDao implements IUserDao {
     }
 
     public function userIsValid($email , $password){
-        $query = AbstractDao::$pdo->prepare("SELECT count(*) as user_is_valid FROM final_project_pantofka.users  WHERE email = ? && password = ? ");
+        $query = self::$pdo->prepare("SELECT count(*) as user_is_valid FROM final_project_pantofka.users  
+                                                WHERE email = ? && password = ? ");
         $query->execute(array($email , $password));
         $count = $query->fetch(\PDO::FETCH_ASSOC);
         return $count["user_is_valid"];

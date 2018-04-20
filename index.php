@@ -1,6 +1,7 @@
 <?php
 
 
+
 use controller\AbstractController;
 use model\dao\AbstractDao;
 use model\AbstractModel;
@@ -19,7 +20,7 @@ spl_autoload_register(
                 // do nothing
 
             }else {
-                require_once   ".././" . $class_name . ".php";
+                require_once   $class_name . ".php";
             }
     } );
 

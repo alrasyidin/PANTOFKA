@@ -10,21 +10,32 @@ namespace model;
 
 
 class User extends AbstractModel {
-    private $id;
-    private $email;
-    private $password;
-    private $first_name;
-    private $last_name;
-    private $gender;
-    private $favorites; // Array with FavoriteItem objects
-    private $cart; // Array with CartItem objects
-    private $is_admin;
+    protected $id;
+    protected $email;
+    protected $password;
+    protected $active_status;
+    protected $first_name;
+    protected $last_name;
+    protected $gender;
+    protected $is_admin;
+    protected $favorites; // Array with FavoriteItem objects
+    protected $cart; // Array with CartItem objects
 
     public function jsonSerialize() {
         return get_object_vars($this);
     }
 
-    public function __construct($json = null){
+    public function addToFav(Product $p){
+        $this->favorites[] = $p;
+    }
+
+    /**
+     * User constructor.
+     * @param $email
+     * @param $password
+     */
+    public function __construct($json = null)
+    {
         parent::__construct($json);
     }
 
