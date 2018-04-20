@@ -28,28 +28,33 @@ class UserController extends AbstractController {
     }
 
 
+    public function logout(){
+        session_destroy();
+        header("location: index.php?page=main");
+    }
+
     public function login(){
         $email = htmlentities($_POST['email']);
         $password = htmlentities($_POST['password']);
 
-        if(strlen($email) < 5 || strlen($password) < 5 || is_numeric($email) || is_numeric($password)){
+        if(strlen($email) < 5 || strlen($password) < 5 || strlen($email)>45 || strlen($password)>15){
             return " Bad input found in controller!!! ";
         }
 
         try{
-            /* @var $dao UserDao*/
             $dao = new UserDao();
-        if($dao->userExists($email)){
-            if($dao->userIsValid($email , $password)){
-                $dao->login($email , $password);
-                echo "went fine!";
-                die();
+            if($dao->userExists($email)){
+                if($dao->userIsValid($email , sha1($password))){
+                    $user =$dao->getUserData($email);
+                    $user = json_encode($user);
+                    $_SESSION["user"] = new User($user);
+                    die();
+                }else{
+                    throw new \RuntimeException("!!!!!!!!! Invalid username or password. !!!!!!!!!!!! This comes from userController");
+                }
             }else{
-                throw new \RuntimeException("!!!!!!!!! Invalid username or password. !!!!!!!!!!!! This comes from userController");
+                throw new \RuntimeException("!!!!!! Invalid username or password. !!!!!!!!!!! This comes from userController");
             }
-        }else{
-            throw new \RuntimeException("!!!!!! Invalid username or password. !!!!!!!!!!! This comes from userController");
-        }
         }catch (\Exception $e){
             throw $e;
         }
@@ -75,13 +80,20 @@ class UserController extends AbstractController {
         } else {
             try {
                 $dao = new UserDao();
-                if (!($dao->userExists($email))) {
-                    $new_user = new User();
-
-
+                $user_exists = $dao->userExists($email);
+                if (!$user_exists) {
+                    $user = [];
+                    $user["email"] = $email;
+                    $user["first_name"] = $first_name;
+                    $user["last_name"]  = $last_name;
+                    $user["gender"] = $gender;
+                    $user["password"] = sha1($password);
+                    $user = json_encode($user);
+                    $new_user = new User($user);
+                    $dao->register($new_user);
 
                 } else {
-                    throw new \RuntimeException("Dao problem");
+                    throw new \RuntimeException("This email is already registered");
                 }
             } catch (\Exception $e) {
                 throw $e;
