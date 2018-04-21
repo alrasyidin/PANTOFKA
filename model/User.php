@@ -9,6 +9,8 @@
 namespace model;
 
 
+use model\dao\UserDao;
+
 class User extends AbstractModel {
     protected $id;
     protected $email;
@@ -29,31 +31,52 @@ class User extends AbstractModel {
         $this->favorites[] = $p;
     }
 
-    /**
-     * User constructor.
-     * @param $email
-     * @param $password
-     */
+
     public function __construct($json = null)
     {
         parent::__construct($json);
+        self::setId();
     }
 
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+
+    public function setId()
+    {
+        if($this->id === null){
+            try{
+                UserDao::init();
+                $this->id = UserDao::getUserId($this->email);
+            }catch (\PDOException $e){
+                $this->id = null;
+                echo $e->getMessage();
+                echo $e->getTraceAsString();
+                die();
+            }
+        }
+    }
 
     /**
      * @return mixed
      */
 
-    public function getEmail()
-    {
+    public function getEmail(){
         return $this->email;
     }
 
     /**
      * @param mixed $email
      */
-    public function setEmail($email)
-    {
+    public function setEmail($email){
+        if(strlen($this->email) < 5 || strlen($this->email) > 45 || is_numeric($this->email) ){
+            throw new \RuntimeException("Bad data for email");
+        }
         $this->email = $email;
     }
 
@@ -68,16 +91,20 @@ class User extends AbstractModel {
     /**
      * @param mixed $password
      */
-    public function setPassword($password)
-    {
+    public function setPassword($password){
+        if(strlen($this->password) < 5 || strlen($this->password) > 45 || is_numeric($this->email) ){
+            throw new \RuntimeException("Bad data for password");
+        }
         $this->password = $password;
     }
 
     /**
      * @param mixed $first_name
      */
-    public function setFirstName($first_name)
-    {
+    public function setFirstName($first_name){
+        if(strlen($first_name) < 5 || strlen($first_name) > 45 || is_numeric($first_name) ){
+            throw new \RuntimeException("Bad data for first name");
+        }
         $this->first_name = $first_name;
     }
 
@@ -86,16 +113,12 @@ class User extends AbstractModel {
      */
     public function setLastName($last_name)
     {
+        if(strlen($last_name) < 5 || strlen($last_name) > 45 || is_numeric($last_name) ){
+            throw new \RuntimeException("Bad data for last name");
+        }
         $this->last_name = $last_name;
     }
 
-    /**
-     * @param mixed $age
-     */
-    public function setAge($age)
-    {
-        $this->age = $age;
-    }
 
     /**
      * @param mixed $gender

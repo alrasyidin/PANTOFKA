@@ -9,6 +9,7 @@ namespace controller;
 
 use model\dao\AbstractDao;
 use model\dao\UserDao;
+use model\PasswordChange;
 use model\User;
 
 class UserController extends AbstractController {
@@ -28,7 +29,6 @@ class UserController extends AbstractController {
         }
         return self::$instance;
     }
-
 
     public function logout(){
         session_destroy();
@@ -50,6 +50,7 @@ class UserController extends AbstractController {
                     $user =$dao->getUserData($email);
                     $user = json_encode($user);
                     $_SESSION["user"] = new User($user);
+                    header('location: index.php?page=edit_profile');
                     die();
                 }else{
                     throw new \RuntimeException("!!!!!!!!! Invalid username or password. !!!!!!!!!!!! This comes from userController");
@@ -62,7 +63,6 @@ class UserController extends AbstractController {
         }
 
     }
-
 
     public function register()
     {
@@ -102,4 +102,67 @@ class UserController extends AbstractController {
             }
         }
     }
+
+    public function getLoggedUser(){
+        $user = $_SESSION["user"];
+        UserDao::init();
+        ///$user = UserDao::getUserData($data['email']);
+
+        /* @var $obj \JsonSerializable*/
+        $obj = $user->jsonSerialize();
+        echo json_encode($obj);
+    }
+
+    public function edit(){
+        $tab = htmlentities($_GET["tab"]);
+
+        if($tab === "info"){
+            self::editInfo();
+        }elseif ($tab === 'security'){
+          return self::editSecurity();
+        }
+    }
+
+    private static function editInfo(){
+            $user_in_session = new User(json_encode($_SESSION['user']->jsonSerialize()));
+            $request_data = file_get_contents("php://input");
+            $user = new User($request_data);
+            try {
+               if(UserDao::emailExists($user->getEmail()) && $user->getEmail() !== $user_in_session->getEmail()){
+                   echo "There is another user with that email";
+                   return;
+               }
+               UserDao::editUser($user);
+               unset($_SESSION['user']);
+               $_SESSION['user'] = $user;
+               echo "Changes were saved";
+            }
+            catch (\PDOException $e){
+               echo $e->getMessage();
+            }
+        }
+
+    private static function editSecurity(){
+        $user_in_session = new User(json_encode($_SESSION['user']->jsonSerialize()));
+        $email = $user_in_session->getEmail();
+        $id = $user_in_session->getId();
+
+        $request_data = file_get_contents("php://input");
+        //old pass and new pass
+        $data = new PasswordChange($request_data);
+        $data->setOwnerId($id);
+
+        try{
+            UserDao::init();
+            if(UserDao::userIsValid($email , sha1($data->getOldPassword()))){
+                UserDao::editUserSecurity($data);
+                echo "Success!";
+            }else{
+                echo "Wrong password! This text comes from UserController";
+            }
+        }catch (\PDOException $e){
+           echo $e->getMessage();
+        }
+    }
+
 }

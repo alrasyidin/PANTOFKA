@@ -8,15 +8,23 @@
 
 namespace model\dao;
 
+use model\dao\AbstractDao;
+use model\dao\UserDao;
+use model\User;
+use model\PasswordChange;
 
 interface IUserDao{
 
+    public static function getUserId($email);
 
-    public function getUserId($email);
+    public static function editUser(User $user);
 
-    public function getUserActiveStatus($email);
+    public static function emailExists($email);
 
     public function userExists($email);
 
-    public function userIsValid($email, $password);
+    public static function userIsValid($email, $password);
+
+    public static function editUserSecurity(PasswordChange $info);
+
 }
