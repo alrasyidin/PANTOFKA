@@ -11,7 +11,6 @@ namespace model\dao;
 
 interface IUserDao{
 
-    public function userIsAdmin();
 
     public function getUserId($email);
 

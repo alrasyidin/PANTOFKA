@@ -2,13 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="40ef2197-16f9-434e-82f2-fc66665781b9" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/controller/AbstractController.php" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/_config.yml" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controller/UserController.php" afterPath="$PROJECT_DIR$/controller/UserController.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/index.php" afterPath="$PROJECT_DIR$/index.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/model/AbstractModel.php" afterPath="$PROJECT_DIR$/model/AbstractModel.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/model/User.php" afterPath="$PROJECT_DIR$/model/User.php" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/model/dao/AbstractDao.php" afterPath="$PROJECT_DIR$/model/dao/AbstractDao.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/controller/ProductController.php" afterPath="$PROJECT_DIR$/controller/ProductController.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/model/Product.php" afterPath="$PROJECT_DIR$/model/Product.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/model/dao/IProductsDao.php" afterPath="$PROJECT_DIR$/model/dao/IProductsDao.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/model/dao/IUserDao.php" afterPath="$PROJECT_DIR$/model/dao/IUserDao.php" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/model/dao/ProductsDao.php" afterPath="$PROJECT_DIR$/model/dao/ProductsDao.php" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/model/dao/UserDao.php" afterPath="$PROJECT_DIR$/model/dao/UserDao.php" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -20,26 +20,74 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="index.php" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/index.php">
+      <file leaf-file-name="ProductController.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/controller/ProductController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="22" column="9" lean-forward="false" selection-start-line="22" selection-start-column="9" selection-end-line="22" selection-end-column="52" />
+            <state relative-caret-position="172">
+              <caret line="90" column="45" lean-forward="true" selection-start-line="90" selection-start-column="45" selection-end-line="90" selection-end-column="45" />
               <folding>
-                <element signature="e#9#43#0#PHP" expanded="true" />
-                <marker date="1524221544015" expanded="true" signature="857:962" ph="..." />
-                <marker date="1524221544015" expanded="true" signature="868:941" ph="..." />
+                <element signature="e#122#148#0#PHP" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ProductsDao.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/model/dao/ProductsDao.php">
+      <file leaf-file-name="add_product.html" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/view/add_product.html">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="0">
               <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="RatingDao.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/model/dao/RatingDao.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="238">
+              <caret line="19" column="0" lean-forward="false" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+              <folding>
+                <element signature="e#110#127#0#PHP" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ProductsDao.php" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/model/dao/ProductsDao.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="357">
+              <caret line="68" column="2" lean-forward="true" selection-start-line="68" selection-start-column="2" selection-end-line="68" selection-end-column="2" />
+              <folding>
+                <marker date="1524289725218" expanded="true" signature="375:489" ph="SELECT color... colors" />
+                <marker date="1524289725218" expanded="true" signature="652:775" ph="SELECT mater... materials" />
+                <marker date="1524289725218" expanded="true" signature="942:1066" ph="SELECT mater... categories" />
+                <marker date="1524289725218" expanded="true" signature="1234:1438" ph="INSERT INTO final_project_pantofka.products... " />
+                <marker date="1524289725218" expanded="true" signature="2237:2363" ph="SELECT mater... materials" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="IProductsDao.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/model/dao/IProductsDao.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="187">
+              <caret line="16" column="43" lean-forward="false" selection-start-line="16" selection-start-column="43" selection-end-line="16" selection-end-column="43" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SizeDao.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/model/dao/SizeDao.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="289">
+              <caret line="22" column="0" lean-forward="true" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+              <folding>
+                <element signature="e#112#136#0#PHP" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -47,77 +95,35 @@
       <file leaf-file-name="UserDao.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/model/dao/UserDao.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-848">
-              <caret line="10" column="4" lean-forward="false" selection-start-line="10" selection-start-column="4" selection-end-line="10" selection-end-column="4" />
-              <folding>
-                <marker date="1524220892294" expanded="true" signature="357:474" ph="SELECT gende... genders" />
-                <marker date="1524220892294" expanded="true" signature="640:779" ph="INSERT INTO final_project_pantofka.users... " />
-                <marker date="1524220892294" expanded="true" signature="1153:1263" ph="SELECT user_... users" />
-                <marker date="1524220892294" expanded="true" signature="1481:1731" ph="SELECT user_... users" />
-                <marker date="1524220892294" expanded="true" signature="2011:2114" ph="SELECT count... users" />
-                <marker date="1524220892294" expanded="true" signature="2355:2503" ph="SELECT count... users" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AdminController.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/controller/AdminController.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="BaseController.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/controller/BaseController.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AbstractController.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/controller/AbstractController.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="0">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="UserController.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/controller/UserController.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1666">
-              <caret line="103" column="5" lean-forward="true" selection-start-line="103" selection-start-column="5" selection-end-line="103" selection-end-column="5" />
-              <folding>
-                <element signature="e#120#146#0#PHP" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="AbstractDao.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/model/dao/AbstractDao.php">
-          <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="238">
-              <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+              <caret line="19" column="1" lean-forward="false" selection-start-line="19" selection-start-column="1" selection-end-line="24" selection-end-column="53" />
+              <folding>
+                <marker date="1524251596011" expanded="true" signature="357:474" ph="SELECT gende... genders" />
+                <marker date="1524251596011" expanded="true" signature="640:779" ph="INSERT INTO final_project_pantofka.users... " />
+                <marker date="1524251596011" expanded="true" signature="1111:1221" ph="SELECT user_... users" />
+                <marker date="1524251596011" expanded="true" signature="1439:1689" ph="SELECT user_... users" />
+                <marker date="1524251596011" expanded="true" signature="1969:2072" ph="SELECT count... users" />
+                <marker date="1524251596011" expanded="true" signature="2313:2461" ph="SELECT count... users" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Product.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/model/Product.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="461">
+              <caret line="33" column="40" lean-forward="false" selection-start-line="33" selection-start-column="40" selection-end-line="33" selection-end-column="40" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="AbstractModel.php" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/model/AbstractModel.php">
+      <file leaf-file-name="OrderController.php" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/controller/OrderController.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="391">
-              <caret line="28" column="1" lean-forward="false" selection-start-line="28" selection-start-column="1" selection-end-line="28" selection-end-column="1" />
+            <state relative-caret-position="0">
+              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -126,8 +132,8 @@
       <file leaf-file-name="User.php" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/model/User.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-2548">
-              <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <state relative-caret-position="206">
+              <caret line="32" column="24" lean-forward="true" selection-start-line="32" selection-start-column="24" selection-end-line="32" selection-end-column="24" />
               <folding />
             </state>
           </provider>
@@ -135,18 +141,23 @@
       </file>
     </leaf>
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="HTML File" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/model/Product.php" />
         <option value="$PROJECT_DIR$/model/Cart.php" />
         <option value="$PROJECT_DIR$/model/User.php" />
         <option value="$PROJECT_DIR$/controller/Controller.php" />
         <option value="$PROJECT_DIR$/controller/SearchController.php" />
-        <option value="$PROJECT_DIR$/controller/ProductController.php" />
         <option value="$PROJECT_DIR$/controller/OrderController.php" />
         <option value="$PROJECT_DIR$/controller/FilterController.php" />
         <option value="$PROJECT_DIR$/controller/FavoritesController.php" />
@@ -155,22 +166,31 @@
         <option value="$PROJECT_DIR$/controller/BaseController.php" />
         <option value="$PROJECT_DIR$/controller/CustomerController.php" />
         <option value="$PROJECT_DIR$/controller/AdminController.php" />
-        <option value="$PROJECT_DIR$/model/dao/IUserDao.php" />
         <option value="$PROJECT_DIR$/model/dao/AdminDao.php" />
         <option value="$PROJECT_DIR$/model/dao/CustomerDao.php" />
         <option value="$PROJECT_DIR$/model/dao/FavoritesDao.php" />
-        <option value="$PROJECT_DIR$/model/dao/ProductsDao.php" />
         <option value="$PROJECT_DIR$/model/Order.php" />
         <option value="$PROJECT_DIR$/controller/AbstractController.php" />
         <option value="$PROJECT_DIR$/../PANTOFKA_BETA/model/dao/UserDao.php" />
         <option value="$PROJECT_DIR$/../PANTOFKA_BETA/view/login.html" />
         <option value="$PROJECT_DIR$/view/user_navigation.html" />
         <option value="$PROJECT_DIR$/view/login.html" />
-        <option value="$PROJECT_DIR$/controller/UserController.php" />
-        <option value="$PROJECT_DIR$/model/dao/UserDao.php" />
         <option value="$PROJECT_DIR$/model/dao/AbstractDao.php" />
         <option value="$PROJECT_DIR$/model/AbstractModel.php" />
         <option value="$PROJECT_DIR$/index.php" />
+        <option value="$PROJECT_DIR$/model/dao/UserDao.php" />
+        <option value="$PROJECT_DIR$/model/dao/IUserDao.php" />
+        <option value="$PROJECT_DIR$/model/Sizes.php" />
+        <option value="$PROJECT_DIR$/model/Size.php" />
+        <option value="$PROJECT_DIR$/model/Rating.php" />
+        <option value="$PROJECT_DIR$/model/dao/SizeDao.php" />
+        <option value="$PROJECT_DIR$/model/dao/RatingDao.php" />
+        <option value="$PROJECT_DIR$/controller/UserController.php" />
+        <option value="$PROJECT_DIR$/model/dao/IProductsDao.php" />
+        <option value="$PROJECT_DIR$/model/Product.php" />
+        <option value="$PROJECT_DIR$/controller/ProductController.php" />
+        <option value="$PROJECT_DIR$/view/add_product.html" />
+        <option value="$PROJECT_DIR$/model/dao/ProductsDao.php" />
       </list>
     </option>
   </component>
@@ -182,9 +202,10 @@
   </component>
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" interpreter_name="PHP" />
   <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="-2" />
-    <option name="width" value="1386" />
-    <option name="height" value="788" />
+    <option name="x" value="-7" />
+    <option name="y" value="2" />
+    <option name="width" value="1378" />
+    <option name="height" value="733" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -231,6 +252,12 @@
               <item name="PANTOFKA" type="2a2b976b:PhpTreeStructureProvider$1" />
               <item name="view" type="2a2b976b:PhpTreeStructureProvider$1" />
             </path>
+            <path>
+              <item name="PANTOFKA" type="b2602c69:ProjectViewProjectNode" />
+              <item name="PANTOFKA" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="view" type="2a2b976b:PhpTreeStructureProvider$1" />
+              <item name="assets" type="2a2b976b:PhpTreeStructureProvider$1" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -241,8 +268,12 @@
     <property name="last_opened_file_path" value="D:/PhpStorm/Pepi_new_pantofka_19.04.18/PANTOFKA" />
     <property name="settings.editor.selected.configurable" value="preferences.sourceCode" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="DefaultHtmlFileTemplate" value="HTML File" />
   </component>
   <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\XAMPP\htdocs\final_project_pantofka\PANTOFKA\model" />
+    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\XAMPP\htdocs\final_project_pantofka\PANTOFKA\model" />
       <recent name="D:\XAMPP\htdocs\final_project_pantofka\PANTOFKA\controller" />
@@ -275,12 +306,12 @@
       <workItem from="1524164138091" duration="9156000" />
       <workItem from="1524216850555" duration="2624000" />
       <workItem from="1524220173700" duration="154000" />
-      <workItem from="1524220406812" duration="1133000" />
+      <workItem from="1524220406812" duration="11961000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="15614000" />
+    <option name="totallyTimeSpent" value="26442000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
@@ -317,114 +348,6 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/factory/Boat.php" />
-    <entry file="file://$PROJECT_DIR$/factory/demo.php" />
-    <entry file="file://$PROJECT_DIR$/../PANTOFKA_BETA/controller/OrderController.php" />
-    <entry file="file://$PROJECT_DIR$/../PANTOFKA_BETA/controller/CategoryController.php" />
-    <entry file="file://$PROJECT_DIR$/../PANTOFKA_BETA/controller/FavoritesController.php" />
-    <entry file="file://$PROJECT_DIR$/../PANTOFKA_BETA/controller/SearchController.php" />
-    <entry file="uml://PHP/C:/xampp1/htdocs/PANTOFKA190418/controller">
-      <provider selected="true" editor-type-id="UmlEditorProvider">
-        <state>
-          <ID>PHP</ID>
-          <OriginalElement>$PROJECT_DIR$/controller</OriginalElement>
-          <nodes>
-            <node x="469.24999999999994" y="178.0">\controller\FavoritesController</node>
-            <node x="606.75" y="79.0">\controller\AbstractController</node>
-            <node x="983.25" y="178.0">\controller\BaseController</node>
-            <node x="863.25" y="178.0">\controller\CartController</node>
-            <node x="337.24999999999994" y="178.0">\controller\SearchController</node>
-            <node x="613.25" y="178.0">\controller\OrderController</node>
-            <node x="1105.25" y="178.0">\controller\CategoryController</node>
-            <node x="740.25" y="178.0">\controller\FilterController</node>
-            <node x="80.24999999999994" y="178.0">\controller\UserController</node>
-            <node x="613.25" y="0.0">\JsonSerializable</node>
-            <node x="144.99999999999994" y="257.0">\controller\AdminController</node>
-            <node x="0.0" y="257.0">\controller\CustomerController</node>
-            <node x="201.24999999999994" y="178.0">\controller\ProductController</node>
-          </nodes>
-          <notes />
-          <edges>
-            <edge source="\controller\CategoryController" target="\controller\AbstractController">
-              <point x="0.0" y="-14.5" />
-              <point x="1167.25" y="128.0" />
-              <point x="720.0833333333333" y="128.0" />
-              <point x="53.33333333333337" y="14.5" />
-            </edge>
-            <edge source="\controller\SearchController" target="\controller\AbstractController">
-              <point x="0.0" y="-14.5" />
-              <point x="393.24999999999994" y="148.0" />
-              <point x="640.0833333333333" y="148.0" />
-              <point x="-26.66666666666663" y="14.5" />
-            </edge>
-            <edge source="\controller\CartController" target="\controller\AbstractController">
-              <point x="0.0" y="-14.5" />
-              <point x="913.25" y="148.0" />
-              <point x="693.4166666666667" y="148.0" />
-              <point x="26.666666666666742" y="14.5" />
-            </edge>
-            <edge source="\controller\AdminController" target="\controller\CustomerController">
-              <point x="0.0" y="0.0" />
-              <point x="0.0" y="0.0" />
-            </edge>
-            <edge source="\controller\AbstractController" target="\JsonSerializable">
-              <point x="0.0" y="-14.5" />
-              <point x="0.0" y="14.5" />
-            </edge>
-            <edge source="\controller\CustomerController" target="\controller\UserController">
-              <point x="0.0" y="-14.5" />
-              <point x="62.5" y="232.0" />
-              <point x="105.49999999999994" y="232.0" />
-              <point x="-25.25" y="14.5" />
-            </edge>
-            <edge source="\controller\FavoritesController" target="\controller\AbstractController">
-              <point x="0.0" y="-14.5" />
-              <point x="531.25" y="158.0" />
-              <point x="653.4166666666665" y="158.0" />
-              <point x="-13.333333333333371" y="14.5" />
-            </edge>
-            <edge source="\controller\FilterController" target="\controller\AbstractController">
-              <point x="0.0" y="-14.5" />
-              <point x="791.75" y="158.0" />
-              <point x="680.0833333333333" y="158.0" />
-              <point x="13.333333333333371" y="14.5" />
-            </edge>
-            <edge source="\controller\OrderController" target="\controller\AbstractController">
-              <point x="0.0" y="-14.5" />
-              <point x="0.0" y="14.5" />
-            </edge>
-            <edge source="\controller\ProductController" target="\controller\AbstractController">
-              <point x="0.0" y="-14.5" />
-              <point x="259.24999999999994" y="138.0" />
-              <point x="626.75" y="138.0" />
-              <point x="-40.0" y="14.5" />
-            </edge>
-            <edge source="\controller\UserController" target="\controller\AbstractController">
-              <point x="0.0" y="-14.5" />
-              <point x="130.74999999999994" y="128.0" />
-              <point x="613.4166666666665" y="128.0" />
-              <point x="-53.33333333333337" y="14.5" />
-            </edge>
-            <edge source="\controller\BaseController" target="\controller\AbstractController">
-              <point x="0.0" y="-14.5" />
-              <point x="1034.25" y="138.0" />
-              <point x="706.75" y="138.0" />
-              <point x="40.0" y="14.5" />
-            </edge>
-          </edges>
-          <settings layout="Hierarchic Group" zoom="0.5121765601217656" x="459.0" y="92.0" />
-          <SelectedNodes />
-          <Categories />
-          <SCOPE>All</SCOPE>
-          <VISIBILITY>private</VISIBILITY>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/../PANTOFKA_BETA/model/Product.php" />
-    <entry file="file://$PROJECT_DIR$/../PANTOFKA_BETA/controller/FilterController.php" />
-    <entry file="file://$PROJECT_DIR$/../PANTOFKA_BETA/model/User.php" />
-    <entry file="file://$PROJECT_DIR$/../PANTOFKA_BETA/model/dao/IUserDao.php" />
-    <entry file="file://$PROJECT_DIR$/../PANTOFKA_BETA/controller/BaseController.php" />
     <entry file="file://$PROJECT_DIR$/../PANTOFKA_BETA/controller/CustomerController.php" />
     <entry file="file://$PROJECT_DIR$/../PANTOFKA_BETA/model/dao/AdminDao.php" />
     <entry file="file://$PROJECT_DIR$/../PANTOFKA_BETA/model/dao/CustomerDao.php" />
@@ -444,22 +367,6 @@
     <entry file="file://$PROJECT_DIR$/../PANTOFKA_BETA/view/login.html" />
     <entry file="file://$PROJECT_DIR$/../PANTOFKA_BETA/view/main.html" />
     <entry file="file://$PROJECT_DIR$/controller/SearchController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/controller/ProductController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/controller/OrderController.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
@@ -528,14 +435,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/model/dao/ProductsDao.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/controller/AdminController.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
@@ -560,39 +459,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/controller/UserController.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1666">
-          <caret line="103" column="5" lean-forward="true" selection-start-line="103" selection-start-column="5" selection-end-line="103" selection-end-column="5" />
-          <folding>
-            <element signature="e#120#146#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/model/dao/UserDao.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-848">
-          <caret line="10" column="4" lean-forward="false" selection-start-line="10" selection-start-column="4" selection-end-line="10" selection-end-column="4" />
-          <folding>
-            <marker date="1524220892294" expanded="true" signature="357:474" ph="SELECT gende... genders" />
-            <marker date="1524220892294" expanded="true" signature="640:779" ph="INSERT INTO final_project_pantofka.users... " />
-            <marker date="1524220892294" expanded="true" signature="1153:1263" ph="SELECT user_... users" />
-            <marker date="1524220892294" expanded="true" signature="1481:1731" ph="SELECT user_... users" />
-            <marker date="1524220892294" expanded="true" signature="2011:2114" ph="SELECT count... users" />
-            <marker date="1524220892294" expanded="true" signature="2355:2503" ph="SELECT count... users" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/model/dao/AbstractDao.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/model/AbstractModel.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="391">
@@ -601,22 +467,187 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/model/User.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2548">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/index.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
+        <state relative-caret-position="-1207">
           <caret line="22" column="9" lean-forward="false" selection-start-line="22" selection-start-column="9" selection-end-line="22" selection-end-column="52" />
           <folding>
             <element signature="e#9#43#0#PHP" expanded="true" />
             <marker date="1524221544015" expanded="true" signature="857:962" ph="..." />
             <marker date="1524221544015" expanded="true" signature="868:941" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/_config.yml">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="18" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="27" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/dao/AbstractDao.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="73">
+          <caret line="14" column="0" lean-forward="false" selection-start-line="14" selection-start-column="0" selection-end-line="14" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/dao/FavoritesDao.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/Cart.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/Order.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/Size.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="34">
+          <caret line="7" column="0" lean-forward="true" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/Rating.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="10" column="24" lean-forward="false" selection-start-line="10" selection-start-column="24" selection-end-line="10" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/dao/IUserDao.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="14" column="4" lean-forward="false" selection-start-line="14" selection-start-column="4" selection-end-line="20" selection-end-column="51" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/controller/UserController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="66" column="0" lean-forward="false" selection-start-line="66" selection-start-column="0" selection-end-line="103" selection-end-column="5" />
+          <folding>
+            <element signature="e#120#146#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/User.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="206">
+          <caret line="32" column="24" lean-forward="true" selection-start-line="32" selection-start-column="24" selection-end-line="32" selection-end-column="24" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/controller/OrderController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/dao/UserDao.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="19" column="1" lean-forward="false" selection-start-line="19" selection-start-column="1" selection-end-line="24" selection-end-column="53" />
+          <folding>
+            <marker date="1524251596011" expanded="true" signature="357:474" ph="SELECT gende... genders" />
+            <marker date="1524251596011" expanded="true" signature="640:779" ph="INSERT INTO final_project_pantofka.users... " />
+            <marker date="1524251596011" expanded="true" signature="1111:1221" ph="SELECT user_... users" />
+            <marker date="1524251596011" expanded="true" signature="1439:1689" ph="SELECT user_... users" />
+            <marker date="1524251596011" expanded="true" signature="1969:2072" ph="SELECT count... users" />
+            <marker date="1524251596011" expanded="true" signature="2313:2461" ph="SELECT count... users" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/dao/IProductsDao.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="187">
+          <caret line="16" column="43" lean-forward="false" selection-start-line="16" selection-start-column="43" selection-end-line="16" selection-end-column="43" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/Product.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="461">
+          <caret line="33" column="40" lean-forward="false" selection-start-line="33" selection-start-column="40" selection-end-line="33" selection-end-column="40" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/controller/ProductController.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="172">
+          <caret line="90" column="45" lean-forward="true" selection-start-line="90" selection-start-column="45" selection-end-line="90" selection-end-column="45" />
+          <folding>
+            <element signature="e#122#148#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/view/add_product.html">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/dao/SizeDao.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="22" column="0" lean-forward="true" selection-start-line="22" selection-start-column="0" selection-end-line="22" selection-end-column="0" />
+          <folding>
+            <element signature="e#112#136#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/dao/RatingDao.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="238">
+          <caret line="19" column="0" lean-forward="false" selection-start-line="19" selection-start-column="0" selection-end-line="19" selection-end-column="0" />
+          <folding>
+            <element signature="e#110#127#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/model/dao/ProductsDao.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="68" column="2" lean-forward="true" selection-start-line="68" selection-start-column="2" selection-end-line="68" selection-end-column="2" />
+          <folding>
+            <marker date="1524289725218" expanded="true" signature="375:489" ph="SELECT color... colors" />
+            <marker date="1524289725218" expanded="true" signature="652:775" ph="SELECT mater... materials" />
+            <marker date="1524289725218" expanded="true" signature="942:1066" ph="SELECT mater... categories" />
+            <marker date="1524289725218" expanded="true" signature="1234:1438" ph="INSERT INTO final_project_pantofka.products... " />
+            <marker date="1524289725218" expanded="true" signature="2237:2363" ph="SELECT mater... materials" />
           </folding>
         </state>
       </provider>

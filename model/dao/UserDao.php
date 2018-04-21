@@ -38,10 +38,7 @@ class UserDao extends AbstractDao implements IUserDao {
 
     }
 
-    public function userIsAdmin(){
 
-
-    }
 
     public function getUserId($email){
         $stmt = self::$pdo->prepare(

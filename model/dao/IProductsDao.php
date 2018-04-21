@@ -9,7 +9,15 @@
 namespace model\dao;
 
 
+use model\Product;
+
 interface IProductsDao
 {
+
+    public function saveNewProduct(Product $product);
+
+    public function getProducts();
+
+
 
 }
