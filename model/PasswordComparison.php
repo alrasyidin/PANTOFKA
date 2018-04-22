@@ -8,10 +8,13 @@
 
 namespace model;
 
-class PasswordChange extends AbstractModel
+class PasswordComparison extends AbstractModel
 {
     protected $owner_id;
+    protected $password;
+    protected $password_repeat;
     protected $new_password;
+    protected $new_password_repeat;
     protected $old_password;
 
     public function __construct($json = null){
@@ -20,6 +23,30 @@ class PasswordChange extends AbstractModel
 
     public function jsonSerialize() {
         return get_object_vars($this);
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getPasswordRepeat()
+    {
+        return $this->password_repeat;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNewPasswordRepeat()
+    {
+        return $this->new_password_repeat;
     }
 
     /**

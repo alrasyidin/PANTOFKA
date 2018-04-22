@@ -1,16 +1,14 @@
-<section class="centered-section">
-
-    <span id="edit-data-result" class="message"></span>
+<section class="centered-section min-height-600">
     <div class="centered-section">
-        <button class="inline_block" onclick="showSection(true , false); loadSessionUserData();" >General info</button>
-        <button class="inline_block" onclick="showSection(false , true)">Security</button>
+        <button class="inline_block" onclick="showEditProfileSection(true , false); loadSessionUserDataInEditForm();" >General info</button>
+        <button class="inline_block" onclick="showEditProfileSection(false , true)">Security</button>
     </div>
 
     <div id="sections" style="visibility: hidden; display: none">
         <div class="form" id="edit-info-div" >
 
             <label for="edit-info-form">General info</label>
-            <form action="" method="post" id="edit-info-form" onsubmit="saveInfoChanges()">
+            <form action="index.php?r=ajax&target=user&action=edit&tab=info" method="post" id="edit-info-form" onsubmit="return validateEditInfoFormOnSubmit(this)">
 
                 <input type="text" id="edit-form-f-name" name="first_name" placeholder="First name" required> <br>
 
@@ -35,15 +33,15 @@
         <div class="form" id="edit-security-div" >
             <label for="edit-security-form">Security</label>
 
-            <form action="" method="post" id="edit-security-form" onsubmit="saveSecurityChanges()">
+            <form action="index.php?r=ajax&target=user&action=edit&tab=security" method="post" id="edit-security-form" onsubmit="return validateSecurityFormOnSubmit(this)">
 
-                <input type="password" id="edit-security-form-old" name="old_password" placeholder="Old assword" required> <br>
+                <input type="password" id="edit-security-form-old" name="old_password" placeholder="Old password" required> <br>
 
                 <input type="password" id="edit-security-form-new" name="new_password" placeholder="New password" required> <br>
 
                 <input type="password" id="edit-security-form-repeat" name="repeat_new_password" placeholder="Repeat new password" required> <br>
 
-                <input class="button" type="submit" name="edit_button" value="Save changes!">
+                <input type="submit" name="edit_button" value="Save changes">
 
             </form>
         </div>
@@ -51,136 +49,4 @@
 </section>
 
 
-<script>
 
-
-    function validateInfo(firstName , lastName , email , gender){
-        var labelForFirstName = document.createElement('label');
-        var firstNameInput = document.getElementById('edit-form-f-name');
-        labelForFirstName.firstNameInput = '';
-        debugger;
-
-        if(firstName.length < 20 || firstName.length > 45 || typeof firstName !== 'string'){
-            label.inputBar.innerHTML = 'Bad input';
-        }
-    }// TODO
-
-    function showSection(showInfo , showSecurity) {
-        var sections = document.getElementById("sections");
-        sections.style.visibility = "visible";
-        sections.style.display = "block";
-
-        if (showInfo !== false ){
-            var infoSection = document.getElementById('edit-info-div');
-            var securitySection = document.getElementById('edit-security-div');
-
-            infoSection.style.visibility = 'hidden';
-            securitySection.style.visibility = 'hidden';
-
-            infoSection.style.visibility = 'visible';
-            infoSection.style.display = 'block';
-
-            securitySection.style.visibility = 'hidden';
-            securitySection.style.display = 'none';
-
-        } else if (showSecurity !== false){
-            var infoSection = document.getElementById('edit-info-div');
-            var securitySection = document.getElementById('edit-security-div');
-
-            securitySection.style.visibility = 'visible';
-            securitySection.style.display = 'block';
-
-            infoSection.style.visibility = 'hidden';
-            infoSection.style.display = 'none';
-
-
-        }else {
-            var infoSection = document.getElementById('edit-info-div');
-            var securitySection = document.getElementById('edit-security-div');
-
-
-            infoSection.style.visibility = 'visible';
-            infoSection.style.display = 'block';
-
-            securitySection.style.visibility = 'hidden';
-            securitySection.style.display = 'none';
-
-        }
-    }
-
-    function loadSessionUserData(){
-        var request = new XMLHttpRequest();
-        request.open("get", "index.php?r=ajax&target=user&action=getLoggedUser");
-        request.onreadystatechange = function (ev) {
-            if(this.readyState == 4 && this.status == 200){
-                var data = JSON.parse(this.response);
-                document.getElementById("edit-form-f-name").value = data.first_name;
-                document.getElementById("edit-form-l-name").value = data.last_name;
-                document.getElementById("edit-form-email").value = data.email;
-
-                var gender = data.gender;
-                var genderSelect = document.getElementById('edit-form-gender');
-
-                for(var i, j = 0; i = genderSelect.options[j]; j++) {
-                    if(i.value == gender) {
-                        genderSelect.selectedIndex = j;
-                        break;
-                    }
-                }
-            }
-
-        };
-        request.send();
-    }
-
-    function saveInfoChanges(){
-        var firstName = document.getElementById('edit-info-form').first_name.value;
-        var lastName = document.getElementById('edit-info-form').last_name.value;
-        var email = document.getElementById('edit-info-form').email.value;
-
-        var gender = document.getElementById("edit-form-gender");
-        var genderSelected = gender.options[gender.selectedIndex].value;
-
-       var newUserData = {
-           "first_name" : firstName,
-           "last_name" : lastName,
-           "email" : email,
-           "gender" : genderSelected
-       };
-
-        var request = new XMLHttpRequest();
-        request.open("post", "index.php?r=ajax&target=user&action=edit&tab=info");
-        request.onreadystatechange = function (ev) {
-           if(this.readyState == 4 && this.status == 200){
-               alert(this.response);
-               loadUserData();
-           }
-
-        };
-        request.send(JSON.stringify(newUserData));
-    }
-
-    function saveSecurityChanges(){
-
-        var resultSpan = document.getElementById('edit-data-result');
-        resultSpan.innerHTML = '';
-
-        var oldPassword = document.getElementById('edit-security-form-old').value;
-        var newPassword = document.getElementById('edit-security-form-new').value;
-        var passwords = {
-            "old_password" : oldPassword,
-            "new_password" : newPassword
-        };
-
-        var request = new XMLHttpRequest();
-        request.open("post", "index.php?r=ajax&target=user&action=edit&tab=security");
-        request.onreadystatechange = function (ev) {
-            if(this.readyState == 4 && this.status == 200){
-              alert(this.responseText);
-            }
-
-        };
-        request.send(JSON.stringify(passwords));
-    }
-
-</script>

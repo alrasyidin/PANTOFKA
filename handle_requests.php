@@ -8,6 +8,25 @@ $controller_name = isset($_GET['target']) ? htmlentities($_GET['target']) : 'bas
 $method_name = isset($_GET['action']) ? htmlentities($_GET['action']) : 'index';
 $page_name = isset($_GET['page']) ? htmlentities($_GET['page']) : null;
 
+if($page_name === 'login' || $page_name === 'register'){
+    if(isset($_SESSION['user'])){
+       // header('HTTP/1.1 401 Unauthorized');
+        $page_name = 'error';
+        echo 'Logged user is trying to register or log in';
+        //die();
+    }
+}
+
+if($page_name !== 'login' && $page_name !== 'register' && $page_name !== 'cart' && $page_name !== 'favorites' && $page_name !== 'main' && $page_name !== null){
+    if(!isset($_SESSION['user'])){
+        //header('HTTP/1.1 401 Unauthorized');
+        //die();
+        echo 'Guest user is trying to access private data in ' . $page_name;
+        $page_name = 'error';
+
+    }
+}
+
 $controller_class_name = "controller\\" . ucfirst($controller_name) . "Controller";
 $page_path = './view/' . $page_name . ".html" ;
 
@@ -23,13 +42,7 @@ if (class_exists($controller_class_name)) {
     $class = controller\AbstractController::createController($controller_name . 'Controller');
 
     if (method_exists($controller_class_name, $method_name)) {
-        //if request is not for login or register, check for login
-        if($controller_name == "user" && $method_name == "login"){
-            if(isset($_SESSION["username"])){
-                header("HTTP/1.1 401 Unauthorized");
-                die();
-            }
-        }
+
         try{
             $class::$method_name();
         }

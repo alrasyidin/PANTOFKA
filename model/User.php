@@ -36,6 +36,7 @@ class User extends AbstractModel {
     {
         parent::__construct($json);
         self::setId();
+
     }
 
     /**
@@ -92,10 +93,10 @@ class User extends AbstractModel {
      * @param mixed $password
      */
     public function setPassword($password){
-        if(strlen($this->password) < 5 || strlen($this->password) > 45 || is_numeric($this->email) ){
-            throw new \RuntimeException("Bad data for password");
+        if(strlen($this->password) < 5 || strlen($this->password) > 45 || is_numeric($this->password) ){
+            throw new \RuntimeException("USER CLASS: Bad data for password: lenght" .strlen($this->password) . " and is numeric is " . var_dump(is_numeric($this->password)));
         }
-        $this->password = $password;
+        $this->password = sha1($password); // !!!!!!!!!!!
     }
 
     /**
