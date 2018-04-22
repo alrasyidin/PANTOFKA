@@ -9,7 +9,7 @@
 namespace model;
 
 
-use model\AbstractModel;
+use model\dao\SizeDao;
 
 class Size extends AbstractModel
 {

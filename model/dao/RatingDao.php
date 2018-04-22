@@ -20,6 +20,10 @@ class RatingDao extends AbstractDao
 
     }
 
+    public function getRatings($product_id){
+
+    }
+
 
 
 

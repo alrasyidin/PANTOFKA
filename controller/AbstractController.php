@@ -10,6 +10,7 @@ namespace controller;
 
 abstract class AbstractController implements \JsonSerializable{
 
+
     public function jsonSerialize() {
         return get_object_vars($this);
     }

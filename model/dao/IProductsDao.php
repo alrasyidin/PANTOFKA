@@ -13,10 +13,18 @@ use model\Product;
 
 interface IProductsDao
 {
-
     public function saveNewProduct(Product $product);
 
     public function getProducts();
+
+    public function getColorId($color);
+
+    public function getMaterialId($material);
+
+    public function getCategoryId($category);
+
+    public function productIdExists($product_id);
+
 
 
 

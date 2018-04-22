@@ -52,6 +52,27 @@ class ProductController extends AbstractController
             $product_price = htmlentities($_POST["product_price"]);
             $info = htmlentities($_POST["info"]);
 
+            $sizes = [];
+            $min_size = 0;
+            $max_size = 0;
+            if ($category === "girls" || $category === "boys") {
+                $min_size = 25;
+                $max_size = 34;
+            } elseif ($category === "women") {
+                $min_size = 35;
+                $max_size = 42;
+            } elseif ($category === "men") {
+                $min_size = 40;
+                $max_size = 48;
+            }
+            for ($i = $min_size; $i <= $max_size; $i++) {
+                $size = [];
+                $size["size_number"] = $i;
+                $size["size_quantity"] = htmlentities($_POST["$i"]);
+                $sizes[] = $size;
+
+            }
+
             $tmp_name = $_FILES["product_img_name"]["tmp_name"];
             $orig_name = $_FILES["product_img_name"]["name"];
 
@@ -97,7 +118,26 @@ class ProductController extends AbstractController
 
                     $product = json_encode($product);
                     $new_product = new Product($product);
-                    $dao->saveNewProduct($new_product);
+                    $product_exists = $dao->getProductId($new_product);
+                    if (!$product_exists) {
+
+                        $dao->saveNewProduct($new_product);
+                        $product_id = $dao->getProductId($new_product);
+
+                        if ($dao->productIdExists($product_id)) {
+                            $daoSize = new SizeDao();
+                            foreach ($sizes as $size) {
+                                $size = json_encode($size);
+                                $new_size = new Size($size);
+                                $daoSize->saveSize($product_id, $new_size);
+                            }
+                        }
+                    }
+                    else{
+                        $error .= "Product already exists";
+                    }
+
+
 
                 } catch (\Exception $e) {
                     throw $e;

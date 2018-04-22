@@ -32,14 +32,7 @@
 
 
 <script>
-    function validate(email , password) {
-        if (email === undefined || email.length < 5 || email.length > 45 || typeof email !== "string" ||
-            password === undefined || password.length < 5 || password.length > 45 || typeof password !== "string") {
-            document.getElementById("login-error").innerHTML = "";
-            document.getElementById("login-error").innerHTML = "Bad input!";
 
-        }else {
-            window.location = "index.php";
-        }
-    }
+
+
 </script>

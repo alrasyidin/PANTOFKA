@@ -8,6 +8,8 @@
 
 namespace model\dao;
 
+use model\Password;
+use model\PasswordChange;
 use model\User;
 class UserDao extends AbstractDao implements IUserDao {
 
@@ -38,19 +40,17 @@ class UserDao extends AbstractDao implements IUserDao {
 
     }
 
-
-
-    public function getUserId($email){
+    public static function getUserId($email){
         $stmt = self::$pdo->prepare(
             "SELECT user_id
                        FROM final_project_pantofka.users
                        WHERE email = ?");
         $stmt->execute(array($email));
-        $user_id = $stmt->fetch(\PDO::FETCH_ASSOC);
-        return $user_id;
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $result['user_id'];
     }
 
-    public function getUserData($email){
+    public  function getUserData($email){
         $stmt = self::$pdo->prepare(
             "SELECT user_id, email, first_name, last_name, is_admin, gender  
                     FROM final_project_pantofka.users as u
@@ -61,9 +61,45 @@ class UserDao extends AbstractDao implements IUserDao {
         return $user_data;
     }
 
+    public static function editUser(User $info){
+        $stmt = self::$pdo->prepare(
+            "SELECT gender_id 
+                       FROM final_project_pantofka.genders
+                       WHERE  gender = ? ");
+        $stmt->execute(array($info->getGender()));
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
 
-    public function getUserActiveStatus($email){
+        $stmt = self::$pdo->prepare("UPDATE final_project_pantofka.users 
+                                            SET email = ? , first_name = ? , last_name = ? , gender_id = ?
+                                            WHERE user_id = ?");
+        $stmt->execute(array(
+            $info->getEmail(),
+            $info->getFirstName(),
+            $info->getLastName(),
+            $result["gender_id"],
+            $info->getId()
+        ));
+    }
 
+    public static function editUserSecurity(PasswordChange $info){
+        $stmt = self::$pdo->prepare("UPDATE final_project_pantofka.users 
+                                            SET password = ?
+                                            WHERE (user_id = ? AND password = ?)");
+        $stmt->execute(array(
+            sha1($info->getNewPassword()),
+            $info->getOwnerId(),
+            sha1($info->getOldPassword())
+        ));
+
+    }
+
+    public static function emailExists($email){
+        $query = self::$pdo->prepare(
+            "SELECT count(*) as email_exists FROM final_project_pantofka.users 
+                      WHERE email = ? ");
+        $query->execute(array($email));
+        $count = $query->fetch(\PDO::FETCH_ASSOC);
+        return boolval($count["email_exists"]);
     }
 
     public function userExists($email){
@@ -75,11 +111,12 @@ class UserDao extends AbstractDao implements IUserDao {
         return boolval($count["user_exists"]);
     }
 
-    public function userIsValid($email , $password){
+    public static function userIsValid($email , $password){
         $query = self::$pdo->prepare("SELECT count(*) as user_is_valid FROM final_project_pantofka.users  
                                                 WHERE email = ? && password = ? ");
         $query->execute(array($email , $password));
         $count = $query->fetch(\PDO::FETCH_ASSOC);
         return $count["user_is_valid"];
     }
+
 }
