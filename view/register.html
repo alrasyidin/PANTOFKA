@@ -1,20 +1,21 @@
-<section class="centered-section">
+<section class="centered-section min-height-600">
 <div class="form">
 
-        <form action="index.php?target=user&action=register" method="post">
+        <div class="message" id="register-form-message-div"></div>
+        <form id="register-form" method="post">
 
-            <input type="text" name="first_name" placeholder="First name" required> <br>
+            <input type="text" id="first_name" name="first_name" placeholder="First name" required> <br>
 
-            <input type="text" name="last_name" placeholder="Last name" required> <br>
+            <input type="text" id="last_name" name="last_name" placeholder="Last name" required> <br>
 
-            <input type="email" name="email" placeholder="Email" required> <br>
+            <input type="email" id="email" name="email" placeholder="Email" required> <br>
 
-            <input type="password" name="password" placeholder="Password" required> <br>
+            <input type="password" id="password" name="password" placeholder="Password" required> <br>
 
-            <input type="password" name="password_repeat" placeholder="Repeat password" required> <br>
+            <input type="password"  name="password_repeat" placeholder="Repeat password" required> <br>
 
             <p class="message">
-                Gender: <select name="gender" required>
+                Gender: <select name="gender" id="genderSelect" required>
 
                 <option value="m">Male</option>
 
@@ -22,7 +23,7 @@
 
                 </select> </p> <br>
 
-            <input class="button" type="submit" name="register_button" value="Register" onclick="validate( this.form.email.value , this.form.password.value)">
+            <input type="submit" onclick="return validateRegisterFormOnSubmit(this.form)" name="register_button" value="Register">
 
             <p class="message">Already registered? <a href="index.php?page=login">Log in!</a> </p>
 
@@ -30,9 +31,3 @@
     </div>
 </section>
 
-
-<script>
-
-
-
-</script>

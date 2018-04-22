@@ -8,8 +8,7 @@
 
 namespace model\dao;
 
-use model\Password;
-use model\PasswordChange;
+use model\PasswordComparison;
 use model\User;
 class UserDao extends AbstractDao implements IUserDao {
 
@@ -81,7 +80,7 @@ class UserDao extends AbstractDao implements IUserDao {
         ));
     }
 
-    public static function editUserSecurity(PasswordChange $info){
+    public static function editUserSecurity(PasswordComparison $info){
         $stmt = self::$pdo->prepare("UPDATE final_project_pantofka.users 
                                             SET password = ?
                                             WHERE (user_id = ? AND password = ?)");

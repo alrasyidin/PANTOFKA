@@ -95,11 +95,22 @@ if(isset($_GET['r'])){
             require_once "./handle_requests.php";
 
             // =========================================================================================================
+             ?>
 
+    <?php
             require_once "./view/footer.html";
             ?>
 </div>
 
 <!-- End Document–––––––––––––––––––––––––––––––––––––-->
 </body>
+
+<!-- JS functions ––––––––––––––––––––––––––––––––––––-->
+
+<script src= "./view/assets/js/register.js" type="text/javascript"></script>
+<script src= "./view/assets/js/login.js" type="text/javascript"></script>
+<script src="./view/assets/js/editProfile.js" type="text/javascript"></script>
+<script src= "./view/assets/js/validation.js" type="text/javascript"></script>
+
+
 </html>

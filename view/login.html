@@ -1,26 +1,16 @@
-<section class="centered-section">
+<section class="centered-section min-height-600">
     <div class="form" id="login-form" >
-        <form action="index.php?target=user&action=login" method="post">
+
+        <form method="post" >
             <div id="login-error" class="error"></div>
+
             <input type="email" name="email" placeholder="Email" required> <br>
 
             <input type="password" name="password" placeholder="Password" required> <br>
 
-            <input  type="submit" value="login" name="login_button" onclick="validate( this.form.email.value , this.form.password.value)">
+            <input  type="submit" onclick="return validateLoginFormOnSubmit(this.form)" value="login" name="login_button">
 
             <p class="message">Not registered? <a href="index.php?page=register">Create an account</a></p>
         </form>
     </div>
 </section>
-
-<script>
-    function validate(email , password) {
-        if (email === undefined || email.length < 5 || email.length > 45  ||
-            password === undefined || password.length < 5 || password.length > 45 ) {
-            document.getElementById("login-error").innerHTML = "";
-            document.getElementById("login-error").innerHTML = "Bad input!";
-        }else {
-            window.location = "index.php";
-        }
-    }
-</script>

@@ -11,7 +11,7 @@ namespace model\dao;
 use model\dao\AbstractDao;
 use model\dao\UserDao;
 use model\User;
-use model\PasswordChange;
+use model\PasswordComparison;
 
 interface IUserDao{
 
@@ -30,6 +30,6 @@ interface IUserDao{
 
     public static function userIsValid($email, $password);
 
-    public static function editUserSecurity(PasswordChange $info);
+    public static function editUserSecurity(PasswordComparison $info);
 
 }
