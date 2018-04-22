@@ -5,7 +5,7 @@ function updateUser(user_id, new_height) {
     request.onreadystatechange = function (ev) {
         if(this.readyState == 4 && this.status == 200){
             if(this.responseText == "error"){
-                alert("Ops, error in server. Call krasi.");
+                alert("Ops, error in server. Call the girls.");
             }
             else
             if(this.responseText == "success"){
