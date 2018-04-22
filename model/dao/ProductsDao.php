@@ -133,12 +133,18 @@ class ProductsDao extends AbstractDao implements IProductsDao
                        ");
         $products = [];
         While ($query_result = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-
             $products[] = $query_result;
-
         }
         return $products;
 
+    }
+    public function productIdExists($product_id){
+        $query = self::$pdo->prepare(
+            "SELECT count(*) as product_id_exists FROM final_project_pantofka.products 
+                      WHERE product_id = ? ");
+        $query->execute(array($product_id));
+        $count = $query->fetch(\PDO::FETCH_ASSOC);
+        return boolval($count["product_id_exists"]);
     }
 
 

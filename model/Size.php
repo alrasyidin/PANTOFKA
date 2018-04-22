@@ -13,13 +13,17 @@ use model\dao\SizeDao;
 
 class Size extends AbstractModel
 {
-    private $id;
-    private $size_number;
-    private $size_quantity;
+    private  $id;
+    private  $size_number;
+    private  $size_quantity;
 
     public function __construct($json = null)
     {
         parent::__construct($json);
+    }
+
+    public function jsonSerialize() {
+        return get_object_vars($this);
     }
 
     /**

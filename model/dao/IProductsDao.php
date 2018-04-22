@@ -26,6 +26,4 @@ interface IProductsDao
     public function productIdExists($product_id);
 
 
-
-
 }

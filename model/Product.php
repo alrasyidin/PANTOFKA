@@ -20,8 +20,8 @@ class Product extends AbstractModel
     private $product_img_url;
     private $promo_percantage;
     private $color;
-    private  $material;
-     private  $category;
+    private $material;
+     private $category;
      private $category_parent;
 
     private $sizes = [];
@@ -29,6 +29,22 @@ class Product extends AbstractModel
 
     public function addToSizes(Size $s){
         $this->sizes[] = $s;
+    }
+
+    /**
+     * @param array $sizes
+     */
+    public function setSizes($sizes)
+    {
+        $this->sizes = $sizes;
+    }
+
+    /**
+     * @param array $ratings
+     */
+    public function setRatings($ratings)
+    {
+        $this->ratings = $ratings;
     }
 
     public function addToRatings(Rating $r){

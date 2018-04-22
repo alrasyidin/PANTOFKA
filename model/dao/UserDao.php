@@ -18,15 +18,8 @@ class UserDao extends AbstractDao implements IUserDao {
     }
 
     public function register(User $new_user){
-
-        $stmt = self::$pdo->prepare(
-            "SELECT gender_id 
-                       FROM final_project_pantofka.genders
-                       WHERE  gender = ? ");
-        $stmt->execute(array($new_user->getGender()));
-        $gender_id = $stmt->fetch(\PDO::FETCH_ASSOC);
-
-
+        $gender = $new_user->getGender();
+        $gender_id = $this->getGenderId($gender);
         $stmt = self::$pdo->prepare(
             "INSERT INTO final_project_pantofka.users (email, first_name, last_name, password, gender_id) 
                        VALUES (?, ?, ?, ?, ?)");
@@ -35,7 +28,7 @@ class UserDao extends AbstractDao implements IUserDao {
             $new_user->getFirstName(),
             $new_user->getLastName(),
             $new_user->getPassword(),
-            $gender_id["gender_id"],
+            $gender_id,
         ));
 
     }
@@ -68,6 +61,7 @@ class UserDao extends AbstractDao implements IUserDao {
                        WHERE  gender = ? ");
         $stmt->execute(array($info->getGender()));
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+
 
         $stmt = self::$pdo->prepare("UPDATE final_project_pantofka.users 
                                             SET email = ? , first_name = ? , last_name = ? , gender_id = ?
@@ -117,6 +111,15 @@ class UserDao extends AbstractDao implements IUserDao {
         $query->execute(array($email , $password));
         $count = $query->fetch(\PDO::FETCH_ASSOC);
         return $count["user_is_valid"];
+    }
+    public function getGenderId($gender){
+        $stmt = self::$pdo->prepare(
+            "SELECT gender_id 
+                       FROM final_project_pantofka.genders
+                       WHERE  gender = ? ");
+        $stmt->execute(array($gender));
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $result["gender_id"];
     }
 
 }

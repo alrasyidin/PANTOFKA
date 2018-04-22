@@ -36,6 +36,27 @@ class ProductController extends AbstractController
         return self::$instance;
     }
 
+    public function getProducts()
+    {
+        $dao = new ProductsDao();
+
+        $products = $dao->getProducts();
+        $daoSize = new SizeDao();
+        /* $var $product */
+        $allProducts=[];
+        foreach ($products as $product){
+            $product_id = $product["product_id"];
+            $sizes = $daoSize->getSizesAndQuantities($product_id);
+            $product=json_encode($product);
+            $product = new Product($product);
+            $product->setSizes($sizes);
+            $allProducts[]=$product;
+        }
+        echo json_encode($allProducts);
+
+    }
+
+
     public function saveNewProduct()
     {
         if (isset($_POST["add_product"])) {
@@ -136,7 +157,12 @@ class ProductController extends AbstractController
                     else{
                         $error .= "Product already exists";
                     }
-
+                    if ($error !== "") {
+                        return $error;
+                    }
+                    else{
+                        $result = "Product added successfully";
+                    }
 
 
                 } catch (\Exception $e) {
