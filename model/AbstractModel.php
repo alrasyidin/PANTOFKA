@@ -16,7 +16,9 @@ abstract class AbstractModel implements \JsonSerializable {
         if($json != null) {
             $json_obj = json_decode($json);
             foreach ($json_obj as $key => $value) {
-                $this->$key = $value;
+                if(!is_array($value) && !is_object($value)) {
+                    $this->$key = $value;
+                }
             }
         }
     }

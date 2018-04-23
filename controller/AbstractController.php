@@ -8,12 +8,9 @@
 
 namespace controller;
 
-abstract class AbstractController implements \JsonSerializable{
+abstract class AbstractController{
 
 
-    public function jsonSerialize() {
-        return get_object_vars($this);
-    }
 
     public static function createController($controller_name){
         $controller_name = ucfirst($controller_name);

@@ -20,7 +20,6 @@ class ProductsDao extends AbstractDao implements IProductsDao
 
     public function getProductId(Product $product)
     {
-
         $color_id = $this->getColorId($product->getColor());
         $material_id = $this->getMaterialId($product->getMaterial());
         $category_id = $this->getCategoryId($product->getColor());
@@ -49,7 +48,7 @@ class ProductsDao extends AbstractDao implements IProductsDao
 
         $material_id = $this->getMaterialId($product->getMaterial());
 
-        $category_id = $this->getCategoryId($product->getColor());
+        $category_id = $this->getCategoryId($product->getCategory());
 
 
 //try{

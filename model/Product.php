@@ -10,6 +10,8 @@ namespace model;
 
 
 
+use model\dao\ProductsDao;
+
 class Product extends AbstractModel
 {
 
@@ -54,6 +56,7 @@ class Product extends AbstractModel
     public function __construct($json = null)
     {
         parent::__construct($json);
+        //$this->setSizes(ProductsDao::getSizes($this->id));
     }
 
     /**

@@ -29,7 +29,7 @@ class BaseController extends AbstractController {
 
     public static function index(){
         if(isset($_GET['page'])){
-
+            //???
         }else{
             echo "Here should be an default page. This comes from BaseController's index method";
         }
