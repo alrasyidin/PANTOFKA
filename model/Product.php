@@ -31,6 +31,7 @@ class Product extends AbstractModel
         $this->sizes[] = $s;
     }
 
+
     /**
      * @param array $sizes
      */

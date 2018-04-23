@@ -1,11 +1,17 @@
 function showEditProfileSection(showInfo , showSecurity) {
+
+    var infoSection = document.getElementById('edit-info-div');
+    var securitySection = document.getElementById('edit-security-div');
+
     var sections = document.getElementById("sections");
     sections.style.visibility = "visible";
     sections.style.display = "block";
+    infoSection.style.visibility = 'hidden';
+    infoSection.style.display = 'none';
+    infoSection.style.visibility = 'hidden';
+    infoSection.style.display = 'none';
 
     if (showInfo !== false ){
-        var infoSection = document.getElementById('edit-info-div');
-        var securitySection = document.getElementById('edit-security-div');
 
         infoSection.style.visibility = 'hidden';
         securitySection.style.visibility = 'hidden';
@@ -17,9 +23,6 @@ function showEditProfileSection(showInfo , showSecurity) {
         securitySection.style.display = 'none';
 
     } else if (showSecurity !== false){
-        var infoSection = document.getElementById('edit-info-div');
-        var securitySection = document.getElementById('edit-security-div');
-
         securitySection.style.visibility = 'visible';
         securitySection.style.display = 'block';
 
@@ -28,9 +31,6 @@ function showEditProfileSection(showInfo , showSecurity) {
 
 
     }else {
-        var infoSection = document.getElementById('edit-info-div');
-        var securitySection = document.getElementById('edit-security-div');
-
 
         infoSection.style.visibility = 'visible';
         infoSection.style.display = 'block';
@@ -45,23 +45,27 @@ function loadSessionUserDataInEditForm(){
     var request = new XMLHttpRequest();
     request.open("get", "index.php?r=ajax&target=user&action=getLoggedUser");
     request.onreadystatechange = function (ev) {
-        if(this.readyState == 4 && this.status == 200){
-            var data = JSON.parse(this.response);
-            document.getElementById("edit-form-f-name").value = data.first_name;
-            document.getElementById("edit-form-l-name").value = data.last_name;
-            document.getElementById("edit-form-email").value = data.email;
+        if(this.readyState == 4){
+            if(this.status == 200){
 
-            var gender = data.gender;
-            var genderSelect = document.getElementById('edit-form-gender');
+                var data = JSON.parse(this.responseText);
+                document.getElementById("edit-form-f-name").value = data.first_name;
+                document.getElementById("edit-form-l-name").value = data.last_name;
+                document.getElementById("edit-form-email").value = data.email;
 
-            for(var i, j = 0; i = genderSelect.options[j]; j++) {
-                if(i.value == gender) {
-                    genderSelect.selectedIndex = j;
-                    break;
+                var gender = data.gender;
+                var genderSelect = document.getElementById('edit-form-gender');
+
+                for(var i, j = 0; i = genderSelect.options[j]; j++) {
+                    if(i.value == gender) {
+                        genderSelect.selectedIndex = j;
+                        break;
+                    }
                 }
+            }else{
+                alert(this.status + "\n" + this.statusText);
             }
         }
-
     };
     request.send();
 }
@@ -84,22 +88,24 @@ function saveInfoChanges(){
     var request = new XMLHttpRequest();
     request.open("post", "index.php?r=ajax&target=user&action=edit&tab=info");
     request.onreadystatechange = function (ev) {
-        if(this.readyState == 4 && this.status == 200){
-            loadUserData();
-            return this.responseText;
-        }
+        if(this.readyState == 4 ){
+            if(this.status == 200){
+                alert(this.responseText);
 
+            }else{
+                alert(this.status + " :\n" + this.statusText);
+
+            }
+        }
     };
     request.send(JSON.stringify(newUserData));
 }
 
 function saveSecurityChanges(){
 
-    var resultSpan = document.getElementById('edit-data-result');
-    resultSpan.innerHTML = '';
-
     var oldPassword = document.getElementById('edit-security-form-old').value;
     var newPassword = document.getElementById('edit-security-form-new').value;
+
     var passwords = {
         "old_password" : oldPassword,
         "new_password" : newPassword
@@ -108,10 +114,15 @@ function saveSecurityChanges(){
     var request = new XMLHttpRequest();
     request.open("post", "index.php?r=ajax&target=user&action=edit&tab=security");
     request.onreadystatechange = function (ev) {
-        if(this.readyState == 4 && this.status == 200){
-            alert(this.responseText);
-        }
+        if(this.readyState == 4 ){
+            if(this.status == 200){
+                alert(this.responseText);
 
+            }else{
+                alert(this.status + " :\n" + this.statusText);
+
+            }
+        }
     };
     request.send(JSON.stringify(passwords));
 }

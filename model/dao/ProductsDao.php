@@ -113,32 +113,51 @@ class ProductsDao extends AbstractDao implements IProductsDao
                        FROM final_project_pantofka.categories
                        WHERE  category = ? ");
         $stmt->execute(array($category));
-        $material_id = $stmt->fetch(\PDO::FETCH_ASSOC);
-        return $material_id["material_id"];
+        $category_id = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $category_id["category_id"];
 
 
     }
 
-    public
-    function getProducts()
+    public function getProducts($pages, $entries, $category)
     {
-
-        $stmt = self::$pdo->query(
-            "SELECT p.product_id, p.product_name, p.price, p.info, p.product_image_url, p.promo_percentage,
-                      c.color,  m.material,  cat.name as category,  cat.parent_id
+        try {
+            $offset = intval(($pages - 1) * $entries);
+            $limit = intval($entries);
+            $products = [];
+            $params = [];
+            $sql = "SELECT p.product_id, p.product_name, p.price, p.info, p.product_image_url, p.promo_percentage,
+                      c.color,  m.material, 
                       FROM final_project_pantofka.products as p
                       JOIN colors as c ON p.color_id = c.color_id
                       JOIN materials as m ON p.material_id = m.material_id
-                      JOIN categories as cat ON p.category_id = cat.category_id
-                       ");
-        $products = [];
-        While ($query_result = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $products[] = $query_result;
-        }
-        return $products;
+                      JOIN categories as cat ON p.category_id = cat.category_id";
 
+            if ($category != "all") {
+                $params[] = $category;
+                $sql .= " WHERE cat.name = ?";
+            }
+
+            $sql .= " LIMIT $limit OFFSET $offset";
+
+            $stmt = self::$pdo->prepare($sql);
+
+            $stmt->execute($params);
+            While ($query_result = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+                $product = json_encode($query_result);
+                $products[] = new Product($product);
+            }
+
+            return $products;
+
+        }catch (\PDOException $e){
+            throw $e;
+        }
     }
-    public function productIdExists($product_id){
+
+
+    public function productIdExists($product_id)
+    {
         $query = self::$pdo->prepare(
             "SELECT count(*) as product_id_exists FROM final_project_pantofka.products 
                       WHERE product_id = ? ");
@@ -147,5 +166,54 @@ class ProductsDao extends AbstractDao implements IProductsDao
         return boolval($count["product_id_exists"]);
     }
 
+    public function getCategories(){
+        $stmt = self::$pdo->prepare("SELECT DISTINCT cat.name as category 
+                                  FROM final_project_pantofka.categories as cat
+                                  WHERE parent_id IS NULL  ");
+        $stmt->execute();
+        $categories = array();
+        while($row = $stmt->fetch(\PDO::FETCH_ASSOC)){
+            $category[] = $row["category"];
+        }
+        return $categories;
+    }
 
+
+    public function getProductsCount($category)
+    {
+
+        $params = array();
+        $sql = "SELECT count(*) as number_of_products FROM final_project_pantofka.products as p
+                JOIN final_project_pantofka.categories as cat 
+                ON p.category_id = cat.category_id";
+        if($category != "all"){
+            $params[] = $category;
+            $sql .= " WHERE cat.name = ?";
+        }
+
+        $stmt = self::$pdo->prepare($sql);
+        $stmt->execute($params);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $row["number_of_products"];
+
+    }
+
+
+    public  function getProductById ($product_id){
+        $stmt = self::$pdo->prepare(
+            "SELECT p.product_id, p.product_name, p.price, p.info, p.product_image_url, p.promo_percentage,
+                      c.color,  m.material, 
+                      FROM final_project_pantofka.products as p
+                      JOIN colors as c ON p.color_id = c.color_id
+                      JOIN materials as m ON p.material_id = m.material_id
+                      JOIN categories as cat ON p.category_id = cat.category_id 
+                      WHERE p.product_id = ?");
+
+        $stmt->execute(array($product_id));
+        $product= $stmt->fetch(\PDO::FETCH_ASSOC);
+        $product = new Product(json_encode($product));
+
+        return $product;
+
+    }
 }

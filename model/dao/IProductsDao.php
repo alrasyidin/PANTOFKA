@@ -15,7 +15,7 @@ interface IProductsDao
 {
     public function saveNewProduct(Product $product);
 
-    public function getProducts();
+    public function getProducts($page, $entries, $category);
 
     public function getColorId($color);
 
@@ -24,6 +24,12 @@ interface IProductsDao
     public function getCategoryId($category);
 
     public function productIdExists($product_id);
+
+    public function getCategories();
+
+    public function getProductsCount($category);
+
+    public function getProductById($product_id);
 
 
 }

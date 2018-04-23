@@ -1,4 +1,37 @@
-<main>
-MAIN
-</main>
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+<div >
+    <span id="prod_name"></span><br>
+    <span id="prod_price"></span><br>
+    <img width="100px" height="100px" id="prod_img" alt="">
+</div>
+
+<script>
+
+    var productRequest = new XMLHttpRequest();
+    productRequest.open("get", "index.php?target=product&action=getProductById&id=2");
+    productRequest.onreadystatechange = function (ev) {
+        if(this.readyState == 4 && this.status == 200){
+            var response = this.responseText;
+            var product = JSON.parse(response);
+
+            var name_span = document.getElementById("prod_name");
+            var price_span = document.getElementById("prod_price");
+            var img = document.getElementById("prod_img");
+            name_span.innerHTML = product.product_name;
+            price_span.innerHTML = product.price;
+            img.src = product.product_img_url;
+        }
+    }
+    productRequest.send();
+
+</script>
+</body>
+</html>

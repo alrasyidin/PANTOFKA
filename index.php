@@ -69,6 +69,10 @@ if(isset($_GET['r'])){
    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
     <script src="./view/assets/js/userApp.js" type="text/javascript"></script>
 
+    <script src="./view/assets/js/showProducts.js" type="text/javascript"></script>
+
+
+
 
     <!-- Favicon <link rel="icon" type="image/png" href="view/images/favicon.png">
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -111,6 +115,8 @@ if(isset($_GET['r'])){
 <script src= "./view/assets/js/login.js" type="text/javascript"></script>
 <script src="./view/assets/js/editProfile.js" type="text/javascript"></script>
 <script src= "./view/assets/js/validation.js" type="text/javascript"></script>
+
+
 
 
 </html>
