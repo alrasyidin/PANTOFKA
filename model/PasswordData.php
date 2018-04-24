@@ -8,7 +8,7 @@
 
 namespace model;
 
-class PasswordComparison extends AbstractModel
+class ChangePasswordData extends AbstractModel
 {
     protected $owner_id;
     protected $password;
