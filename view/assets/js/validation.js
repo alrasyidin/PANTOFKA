@@ -4,9 +4,7 @@ function validateRegisterFormOnSubmit(theForm) {
     reason += validateName(theForm.first_name);
     reason += validateName(theForm.last_name);
     reason += validateEmail(theForm.email);
-    reason += validatePassword(theForm.password);
-    reason += validatePassword(theForm.password_repeat);
-    reason += comparePasswords(theForm.password , theForm.password_repeat);
+    reason += validatePasswords(theForm.password , theForm.password_repeat);
 
 
     if (reason != "") {
@@ -15,7 +13,8 @@ function validateRegisterFormOnSubmit(theForm) {
         return false;
     }
 
-    sendRegisterRequest(theForm);
+    return true;
+
 }
 
 function validateLoginFormOnSubmit(theForm) {
@@ -28,8 +27,7 @@ function validateLoginFormOnSubmit(theForm) {
         alert("Some fields need correction:\n" + reason);
         return false;
     }
-
-    sendLoginRequest(theForm);
+    return true;
 }
 
 function validateEditInfoFormOnSubmit(theForm) {
@@ -119,24 +117,27 @@ function validatePassword(fld) {
     } else {
         fld.style.background = 'White';
     }
+
+
     return error;
 }
 
-function comparePasswords(password , repeatedPassword){
-
-    password.style.background = 'White';
-    repeatedPassword.style.background = 'White';
-
+function validatePasswords(password , repeatedPassword){
     var error = "";
 
-    if (password.value != repeatedPassword.value) {
+    error += validatePassword(password);
+    error += validatePassword(repeatedPassword);
+
+    if(error != ""){
+        password.style.background  = '#ffa798';
+        repeatedPassword.style.background  = '#ffa798';
+    }else if (password.value != repeatedPassword.value) {
         error = "Passwords do not match!\n";
         password.style.background  = '#ffa798';
         repeatedPassword.style.background  = '#ffa798';
     } else {
         password.style.background = 'White';
         repeatedPassword.style.background = 'White';
-
     }
     return error;
 

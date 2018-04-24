@@ -28,7 +28,7 @@ class ProductController extends AbstractController
 
     }
 
-    public function getProductById()
+    public static function getProductById()
     {
         if ($_SERVER["REQUEST_METHOD"] == "GET") {
             try {
@@ -50,7 +50,7 @@ class ProductController extends AbstractController
     }
 
 
-    public function getProducts()
+    public static function getProducts()
     {
 
 
@@ -82,7 +82,7 @@ class ProductController extends AbstractController
 
     }
 
-    public function getCategories()
+    public static function getCategories()
     {
         if ($_SERVER["REQUEST_METHOD"] == "GET") {
             try {
@@ -100,7 +100,7 @@ class ProductController extends AbstractController
     }
 
 
-    public function saveNewProduct()
+    public static function saveNewProduct()
     {
         if (isset($_POST["add_product"])) {
             $error = "";
@@ -214,7 +214,7 @@ class ProductController extends AbstractController
         }
     }
 
-    public function numberOfProducts()
+    public static function numberOfProducts()
     {
         if ($_SERVER["REQUEST_METHOD"] == "GET") {
             $dao = new ProductsDao();

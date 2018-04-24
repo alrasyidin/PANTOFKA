@@ -8,7 +8,7 @@
 
 namespace model\dao;
 
-use model\PasswordComparison;
+use model\PasswordData;
 use model\User;
 class UserDao extends AbstractDao implements IUserDao {
 
@@ -29,7 +29,20 @@ class UserDao extends AbstractDao implements IUserDao {
             $new_user->getPassword(),
             $gender_id,
         ));
+        $new_user->setId(self::$pdo->lastInsertId());
+        return $new_user;
+    }
 
+    public static function login(User $user){
+        $stmt = self::$pdo->prepare(
+            "SELECT count(*) as user_is_valid FROM users WHERE email = ? && password = ?");
+        $stmt->execute(array($user->getEmail() , $user->getPassword()));
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if($result['user_is_valid'] !== 0){
+           $user = self::getUserData($user->getEmail() , \PDO::FETCH_OBJ);
+           /* @var $user User*/
+           return $user;
+        }
     }
 
     public static function getUserId($email){
@@ -42,14 +55,14 @@ class UserDao extends AbstractDao implements IUserDao {
         return $result['user_id'];
     }
 
-    public  function getUserData($email){
+    public static function getUserData($email , $fetch_style = \PDO::FETCH_ASSOC){
         $stmt = self::$pdo->prepare(
             "SELECT user_id, email, first_name, last_name, is_admin, gender  
                     FROM final_project_pantofka.users as u
                     JOIN final_project_pantofka.genders as g ON u.gender_id = g.gender_id
                     WHERE email =  ?");
         $stmt->execute(array($email));
-        $user_data = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $user_data = $stmt->fetch($fetch_style);
         return $user_data;
     }
 
@@ -74,7 +87,7 @@ class UserDao extends AbstractDao implements IUserDao {
         ));
     }
 
-    public static function editUserSecurity(PasswordComparison $info){
+    public static function editUserSecurity(PasswordData $info){
         $stmt = self::$pdo->prepare("UPDATE final_project_pantofka.users 
                                             SET password = ?
                                             WHERE (user_id = ? AND password = ?)");

@@ -11,14 +11,14 @@ namespace model\dao;
 use model\dao\AbstractDao;
 use model\dao\UserDao;
 use model\User;
-use model\PasswordComparison;
+use model\PasswordData;
 
 interface IUserDao{
 
 
     public static function getUserId($email);
 
-    public function getUserData($email);
+    public static function getUserData($email);
 
     public function register(User $new_user);
 
@@ -30,6 +30,6 @@ interface IUserDao{
 
     public static function userIsValid($email, $password);
 
-    public static function editUserSecurity(PasswordComparison $info);
+    public static function editUserSecurity(PasswordData $info);
 
 }

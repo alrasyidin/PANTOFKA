@@ -2,7 +2,7 @@
 <div class="form">
 
         <div class="message" id="register-form-message-div"></div>
-        <form id="register-form" method="post">
+        <form action="./index.php?target=user&action=register" method="post" id="register-form">
 
             <input type="text" id="first_name" name="first_name" placeholder="First name" required> <br>
 
@@ -26,7 +26,7 @@
             <!--<input class="button" type="submit" name="register_button" value="Register"-->
                    <!--onclick="validate( this.form.email.value , this.form.password.value)">-->
 
-            <input type="submit" onclick="return validateRegisterFormOnSubmit(this.form)" name="register_button" value="Register">
+            <input type="submit" onclick=" return validateRegisterFormOnSubmit(this.form);" name="register_button" value="Register">
 
 
             <p class="message">Already registered? <a href="index.php?page=login">Log in!</a> </p>
@@ -34,4 +34,10 @@
         </form>
     </div>
 </section>
+
+<script>
+
+
+
+</script>
 

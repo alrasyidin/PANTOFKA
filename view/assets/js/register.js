@@ -29,8 +29,11 @@ function sendRegisterRequest(theForm) {
     request.open("post", "index.php?r=ajax&target=user&action=register");
     request.onreadystatechange = function (ev) {
         if (this.readyState == 4){
-
             if(this.status == 200){
+
+
+
+
                 var response = JSON.parse(this.responseText);
                 alert("'" + response + "'");
                 window.location = "index.php?page=login";

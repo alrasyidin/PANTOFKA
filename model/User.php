@@ -20,25 +20,27 @@ class User extends AbstractModel {
     protected $last_name;
     protected $gender;
     protected $is_admin;
-    protected $favorites; // Array with FavoriteItem objects
-    protected $cart; // Array with CartItem objects
+    protected $favorites;
+    protected $cart;
 
     public function jsonSerialize() {
         return get_object_vars($this);
+    }
+
+    public function __construct($json = null)
+    {
+        parent::__construct($json);
+        // Make it sha1 !
+        $this->setPassword($this->password);
     }
 
     public function addToFav(Product $p){
         $this->favorites[] = $p;
     }
 
-
-    public function __construct($json = null)
-    {
-        parent::__construct($json);
-        self::setId();
-
+    public function addToCart(Product $p){
+        $this->cart[] = $p;
     }
-
     /**
      * @return mixed
      */
@@ -48,19 +50,12 @@ class User extends AbstractModel {
     }
 
 
-    public function setId()
+    public function setId($id)
     {
-        if($this->id === null){
-            try{
-                UserDao::init();
-                $this->id = UserDao::getUserId($this->email);
-            }catch (\PDOException $e){
-                $this->id = null;
-                echo $e->getMessage();
-                echo $e->getTraceAsString();
-                die();
-            }
+        if ($id < 1){
+            throw new \RuntimeException("Bad data for id");
         }
+        $this->id = $id;
     }
 
     /**
@@ -99,6 +94,19 @@ class User extends AbstractModel {
         $this->password = sha1($password); // !!!!!!!!!!!
     }
 
+    public function __unset($password){
+        if($password !== null){
+            if($password === $this->password){
+                // ?? Is this okay?
+                unset($this->password);
+            }else{
+                throw new \RuntimeException('Bad data is passed when un-setting password.
+                                             Passed value do not match real object property value');
+            }
+        }
+
+    }
+
     /**
      * @param mixed $first_name
      */
@@ -127,30 +135,6 @@ class User extends AbstractModel {
     public function setGender($gender)
     {
         $this->gender = $gender;
-    }
-
-    /**
-     * @param mixed $is_admin
-     */
-    public function setIsAdmin($is_admin)
-    {
-        $this->is_admin = $is_admin;
-    }
-
-    /**
-     * @param array $favorites
-     */
-    public function setFavorites($favorites)
-    {
-        $this->favorites = $favorites;
-    }
-
-    /**
-     * @param mixed $cart
-     */
-    public function setCart($cart)
-    {
-        $this->cart = $cart;
     }
 
     /**

@@ -8,7 +8,7 @@
 
 namespace model;
 
-class ChangePasswordData extends AbstractModel
+class PasswordData extends AbstractModel
 {
     protected $owner_id;
     protected $password;
@@ -17,7 +17,13 @@ class ChangePasswordData extends AbstractModel
     protected $new_password_repeat;
     protected $old_password;
 
+    /* @throws \RuntimeException */
     public function __construct($json = null){
+        try{
+            self::setPasswords($json);
+        }catch (\RuntimeException $e){
+            throw $e;
+        }
         parent::__construct($json);
     }
 
@@ -79,6 +85,20 @@ class ChangePasswordData extends AbstractModel
     public function getOldPassword()
     {
         return $this->old_password;
+    }
+
+    private static function setPasswords($json)
+    {
+        if($json != null) {
+            $passwords = json_decode($json);
+            foreach ($passwords as $password_type => &$password_value) {
+                if(strlen($password_value) < 5 || strlen($password_value) > 45){
+                    throw new \RuntimeException("Value of $password_type is wrong length!");
+                }
+                $password_value = sha1($password_value);
+            }
+            return json_encode($passwords);
+        }
     }
 
 }
