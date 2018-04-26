@@ -22,7 +22,7 @@ interface IUserDao{
 
     public function register(User $new_user);
 
-    public static function editUser(User $user);
+    public static function editUser(User $user , $id);
 
     public static function emailExists($email);
 

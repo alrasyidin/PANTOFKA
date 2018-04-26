@@ -43,11 +43,10 @@ function showEditProfileSection(showInfo , showSecurity) {
 
 function loadSessionUserDataInEditForm(){
     var request = new XMLHttpRequest();
-    request.open("get", "index.php?r=ajax&target=user&action=getLoggedUser");
+    request.open("get", "handle_requests.php?target=user&action=getLoggedUserAsJson");
     request.onreadystatechange = function (ev) {
         if(this.readyState == 4){
             if(this.status == 200){
-
                 var data = JSON.parse(this.responseText);
                 document.getElementById("edit-form-f-name").value = data.first_name;
                 document.getElementById("edit-form-l-name").value = data.last_name;
@@ -78,7 +77,7 @@ function saveInfoChanges(){
     var gender = document.getElementById("edit-form-gender");
     var genderSelected = gender.options[gender.selectedIndex].value;
 
-    var newUserData = {
+    var changedData = {
         "first_name" : firstName,
         "last_name" : lastName,
         "email" : email,
@@ -86,43 +85,41 @@ function saveInfoChanges(){
     };
 
     var request = new XMLHttpRequest();
-    request.open("post", "index.php?r=ajax&target=user&action=edit&tab=info");
+    request.open("post", "handle_requests.php?target=user&action=edit&tab=info");
     request.onreadystatechange = function (ev) {
         if(this.readyState == 4 ){
             if(this.status == 200){
                 alert(this.responseText);
-
             }else{
-                alert(this.status + " :\n" + this.statusText);
-
+                alert( "'" + this.status + " :\n" + this.statusText +  "'");
             }
         }
     };
-    request.send(JSON.stringify(newUserData));
+    request.send(JSON.stringify(changedData));
 }
 
 function saveSecurityChanges(){
 
     var oldPassword = document.getElementById('edit-security-form-old').value;
     var newPassword = document.getElementById('edit-security-form-new').value;
+    var newPasswordRepeat = document.getElementById('edit-security-form-repeat').value;
 
-    var passwords = {
+    var changedPasswords = {
         "old_password" : oldPassword,
-        "new_password" : newPassword
+        "new_password" : newPassword,
+        "new_password_repeat" : newPasswordRepeat
     };
 
     var request = new XMLHttpRequest();
-    request.open("post", "index.php?r=ajax&target=user&action=edit&tab=security");
+    request.open("post", "handle_requests.php?target=user&action=edit&tab=security");
     request.onreadystatechange = function (ev) {
         if(this.readyState == 4 ){
             if(this.status == 200){
                 alert(this.responseText);
-
             }else{
                 alert(this.status + " :\n" + this.statusText);
-
             }
         }
     };
-    request.send(JSON.stringify(passwords));
+    request.send(JSON.stringify(changedPasswords));
 }

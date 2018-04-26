@@ -1,4 +1,6 @@
 <?php
+
+
 spl_autoload_register(
     function ($class) {
         $class_name = str_replace("\\", "/", $class);
@@ -17,7 +19,9 @@ spl_autoload_register(
         }
     } );
 
-
+if (!isset($_SESSION)){
+    session_start();
+}
 // Command pattern
 model\dao\AbstractDao::init();
 $file_not_found = false;

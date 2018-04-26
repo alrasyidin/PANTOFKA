@@ -1,14 +1,14 @@
 <section class="centered-section min-height-600">
     <div class="form" id="login-form" >
 
-        <form action="./index.php?target=user&action=login" method="post" >
+        <form  onsubmit="return validateLoginFormOnSubmit(this.form)"  action="./index.php?target=user&action=login" method="post" >
             <div id="login-error" class="error"></div>
 
             <input type="email" name="email" placeholder="Email" required> <br>
 
             <input type="password" name="password" placeholder="Password" required> <br>
 
-            <input  type="submit" onclick="return validateLoginFormOnSubmit(this.form)" value="login" name="login_button">
+            <input  type="submit" value="login" name="login_button">
 
             <p class="message">Not registered? <a href="index.php?page=register">Create an account</a></p>
         </form>

@@ -29,19 +29,20 @@ class UserDao extends AbstractDao implements IUserDao {
             $new_user->getPassword(),
             $gender_id,
         ));
-        $new_user->setId(self::$pdo->lastInsertId());
+        $new_user->setUserId(self::$pdo->lastInsertId());
         return $new_user;
     }
 
     public static function login(User $user){
         $stmt = self::$pdo->prepare(
-            "SELECT count(*) as user_is_valid FROM users WHERE email = ? && password = ?");
+            "SELECT count(*) as user_is_valid FROM users WHERE (email = ? AND password = ?)");
         $stmt->execute(array($user->getEmail() , $user->getPassword()));
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-        if($result['user_is_valid'] !== 0){
-           $user = self::getUserData($user->getEmail() , \PDO::FETCH_OBJ);
-           /* @var $user User*/
-           return $user;
+        if($result['user_is_valid'] != 0){
+            $user_data = self::getUserData($user->getEmail() , \PDO::FETCH_ASSOC);
+            return new User(json_encode($user_data));
+        }else{
+            return false;
         }
     }
 
@@ -56,8 +57,9 @@ class UserDao extends AbstractDao implements IUserDao {
     }
 
     public static function getUserData($email , $fetch_style = \PDO::FETCH_ASSOC){
+
         $stmt = self::$pdo->prepare(
-            "SELECT user_id, email, first_name, last_name, is_admin, gender  
+            "SELECT user_id, email, first_name, last_name, is_admin, gender ,password 
                     FROM final_project_pantofka.users as u
                     JOIN final_project_pantofka.genders as g ON u.gender_id = g.gender_id
                     WHERE email =  ?");
@@ -66,15 +68,13 @@ class UserDao extends AbstractDao implements IUserDao {
         return $user_data;
     }
 
-    public static function editUser(User $info){
+    public static function editUser(User $info , $id){
         $stmt = self::$pdo->prepare(
             "SELECT gender_id 
                        FROM final_project_pantofka.genders
                        WHERE  gender = ? ");
         $stmt->execute(array($info->getGender()));
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-
-
         $stmt = self::$pdo->prepare("UPDATE final_project_pantofka.users 
                                             SET email = ? , first_name = ? , last_name = ? , gender_id = ?
                                             WHERE user_id = ?");
@@ -83,8 +83,10 @@ class UserDao extends AbstractDao implements IUserDao {
             $info->getFirstName(),
             $info->getLastName(),
             $result["gender_id"],
-            $info->getId()
+            $id
         ));
+        $info->setUserId($id);
+        return $info;
     }
 
     public static function editUserSecurity(PasswordData $info){

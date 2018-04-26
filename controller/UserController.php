@@ -36,8 +36,7 @@ class UserController extends AbstractController {
 
     }
 
-    public static function login()
-    {
+    public static function login(){
         if (isset($_SESSION["user"])) {
             // header('HTTP/1.1 401 Unauthorized');
             echo 'Logged user is trying to log in';
@@ -46,98 +45,83 @@ class UserController extends AbstractController {
         $logging_user_data = array();
         $logging_user_data['email'] = htmlentities($_POST['email']);
         $logging_user_data['password'] = htmlentities($_POST['password']);
-
         try {
             $user = new User(json_encode($logging_user_data));
         } catch (\RuntimeException $e) {
             echo "'error' => $e->getMessage() , 'code' => $e->getCode()))";
         }
 
-        try {
+        try{
             $user_dao = new UserDao();
-            if ($user_dao->login($user) !== null) {
-                // This removes password from user object. It has validation inside.
-                // Throws an RuntimeException if the passed password is not the users one
-                $user->__unset($user->getPassword());
-                $_SESSION["user"] = $user;
-                //  header('HTTP/1.1 200 OK');
-                echo 'success';
-            } else {
+            if($user_dao->login($user) instanceof User){
+                $logged_user = $user_dao->login($user);
+                $logged_user->__unset($user->getPassword());
+                $_SESSION["user"] = $logged_user;
+                echo "went fine!";
+            }else {
                 //header('HTTP/1.1 401 Unauthorized');
                 echo 'UserController , login method : Wrong username/password';
             }
         } catch (\PDOException $e) {
-           // header('HTTP/1.1 500 Something went terribly wrong . . .');
+            // header('HTTP/1.1 500 Something went terribly wrong . . .');
             echo "Problem in DB with login: " . $e->getMessage() ."\n". $e->getCode() ."\n".$e->getTraceAsString();
         } catch (\RuntimeException $e){
             echo "Problem with validation in User class: " . $e->getMessage() ."\n".$e->getTraceAsString();
         }
     }
 
-    public static function register(){
-
-        if(isset($_SESSION["user"])){
-            header('HTTP/1.1 401 Unauthorized');
-            echo 'Logged user is trying to register';
-            die();
-        }
-
-        $user_personal_data = array();
-        $user_personal_data['first_name'] = htmlentities($_POST['first_name']);
-        $user_personal_data['last_name'] = htmlentities($_POST['last_name']);
-        $user_personal_data['email'] = htmlentities($_POST['email']);
-        $user_personal_data['gender'] = htmlentities($_POST['gender']);
-        $user_personal_data['password'] = htmlentities($_POST['password']);
-
-        $user_security_data = array();
-        $user_security_data['password'] = htmlentities($_POST['password']);
-        $user_security_data['password_repeat'] = htmlentities($_POST['password_repeat']);
-
+    public static function register()
+    {
+        $first_name = htmlentities($_POST["first_name"]);
+        $last_name = htmlentities($_POST["last_name"]);
+        $gender = htmlentities($_POST["gender"]);
+        $email = htmlentities($_POST["email"]);
+        $password = htmlentities($_POST["password"]);
+        $password_repeat = htmlentities($_POST["password_repeat"]);
         try{
-            // Create object with password data. Constructor throws exception if data is bad!
-            $users_passwords = new PasswordData(json_encode($user_security_data));
-            if($users_passwords->getPassword() !== $users_passwords->getPasswordRepeat()){
+            if($password !== $password_repeat){
                 echo "Passwords mismatched!";
                 die();
             }
             // Data is validated in user's set-ers. They throw Runtime exceptions when data is bad.
-            $new_user = new User(json_encode($user_personal_data));
+            $new_user = new User();
+            $new_user->setFirstName($first_name);
+            $new_user->setLastName($last_name);
+            $new_user->setGender($gender);
+            $new_user->setEmail($email);
+            $new_user->setPassword($password);
         }catch (\RuntimeException $e){
             // Did not pass the validation 400 (Bad Request)
             // header('HTTP/1.1 400 Bad Request');
-            echo "'error' => $e->getMessage() , 'code' => $e->getCode()))";
+            echo $e->getMessage() . '-> ' .  $e->getCode();
             die();
         }
-
         try {
-            $dao = new UserDao();
-            $user_exists = $dao->userExists($new_user->getEmail());
-                if (!$user_exists) {
-                    $dao->register($new_user);
-                    // Everything went okay
-                    echo 'Success!User is registered in DB!';
-                    //header('Location: index.php?page=login');
-                } else {
-                    //email is taken
-                    // header('HTTP/1.1 401 Unauthorized');
-                    echo 'Email is already taken';
+            $user_dao = new UserDao();
+            if (!($user_dao->userExists($email))) {
+
+                if ($user_dao->register($new_user) instanceof User){
+                    echo 'success';
+                }else{
+                    echo "Problem in Dao:\n";
                 }
-            } catch (\PDOException $e) {
-                // problem in DB
-                //header('HTTP/1.1 500 Internal Server Booboo');
-                echo $e->getMessage() ."\n". $e->getCode() ."\n".$e->getTraceAsString();
+            } else {
+                echo "email is taken";
             }
+        } catch (\Exception $e) {
+            echo $e->getMessage();
         }
+    }
 
 
-    public function getLoggedUser(){
+
+    public static function getLoggedUserAsJson(){
         $user = $_SESSION["user"];
         echo json_encode($user);
     }
 
     public function edit(){
         $tab = htmlentities($_GET["tab"]);
-
         if($tab === "info"){
             self::editInfo();
         }elseif ($tab === 'security'){
@@ -146,29 +130,39 @@ class UserController extends AbstractController {
     }
 
     private static function editInfo(){
-            try {
-                $user_in_session = new User(json_encode($_SESSION['user']));
-                $request_data = file_get_contents("php://input");
-                $user = new User($request_data);
-                if(UserDao::emailExists($user->getEmail()) && $user->getEmail() !== $user_in_session->getEmail()){
-                   echo "There is another user with that email";
-                }
-                UserDao::editUser($user);
-                unset($_SESSION['user']);
-                $_SESSION['user'] = $user ;
-                header('HTTP/1.1 200 OK');
-                echo "Changes were saved";
-            }
-            catch (Exception $e){
-                echo $e->getMessage() . "\n Found in:\n" . $e->getTraceAsString();
-            }
+        try {
+            // Get the resource with new data send from ajax request
+            $new_data = file_get_contents("php://input");
+            // create user object with it
+            $user = new User(json_decode(json_encode($new_data)));
+            // Take user from session
+            $user_in_session = $_SESSION['user'];
+            // and take its Id
+            $user_id = $user_in_session->getUserId();
+
+            // Edit user by given User object and id from session
+            UserDao::editUser($user ,$user_id);
+            // Unset object saved in session
+            unset($_SESSION['user']);
+            // Remove password data from new User
+            $user->__unset($user->getPassword());
+            // Set id
+            $user->setUserId($user_id);
+            // Save changed user in session
+            $_SESSION['user'] = $user ;
+            header('HTTP/1.1 200 OK');
+            echo "Changes were saved";
+        }catch (\Exception $e){
+            header('HTTP/1.1 500');
+            echo $e->getMessage() . "\n Found in:\n" . $e->getTraceAsString();
         }
+    }
 
     private static function editSecurity(){
-        $user_in_session = new User(json_encode($_SESSION['user']));
 
+        $user_in_session = $_SESSION['user'];
         $email = $user_in_session->getEmail();
-        $id = $user_in_session->getId();
+        $id = $user_in_session->getUserId();
 
         $request_data = file_get_contents("php://input");
         //old pass and new pass
@@ -176,20 +170,17 @@ class UserController extends AbstractController {
         try{
             $data = new PasswordData($request_data);
             $data->setOwnerId($id);
-            UserDao::init();
             if(UserDao::userIsValid($email , sha1($data->getOldPassword()))){
                 UserDao::editUserSecurity($data);
+                header('HTTP/1.1 200');
                 echo "Success!\n";
-                var_dump($data);
-                die();
             }else{
+                header('HTTP/1.1 401');
                 echo "Wrong password! This text comes from UserController's editSecurity method\n";
-                var_dump($data);
-
-                die();
             }
         }catch (\Exception $e){
-           echo $e->getMessage() . "\nFROM:\n" . $e->getTraceAsString();
+            header('HTTP/1.1 500');
+            echo $e->getMessage() . "\n FROM:\n" . $e->getTraceAsString();
         }
     }
 

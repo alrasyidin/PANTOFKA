@@ -1,20 +1,16 @@
 function validateRegisterFormOnSubmit(theForm) {
     var reason = "";
 
+    reason += comparePasswords(theForm.password , theForm.password_repeat);
     reason += validateName(theForm.first_name);
     reason += validateName(theForm.last_name);
     reason += validateEmail(theForm.email);
-    reason += validatePasswords(theForm.password , theForm.password_repeat);
-
 
     if (reason != "") {
-
         alert("Some fields need correction:\n" + reason);
         return false;
     }
-
     return true;
-
 }
 
 function validateLoginFormOnSubmit(theForm) {
@@ -47,17 +43,15 @@ function validateEditInfoFormOnSubmit(theForm) {
 
 function validateSecurityFormOnSubmit(theForm) {
     var reason = "";
-
-    reason = validatePassword(theForm.old_password);
-    reason = validatePassword(theForm.new_password);
-    reason = validatePassword(theForm.repeat_new_password);
     reason += comparePasswords(theForm.new_password , theForm.repeat_new_password);
+    reason += validatePassword(theForm.old_password);
+    reason += validatePassword(theForm.new_password);
+    reason += validatePassword(theForm.repeat_new_password);
 
     if (reason != "") {
         alert("Some fields need correction:\n" + reason);
         return false;
     }
-
     return saveSecurityChanges();
 }
 
@@ -122,7 +116,7 @@ function validatePassword(fld) {
     return error;
 }
 
-function validatePasswords(password , repeatedPassword){
+function comparePasswords(password , repeatedPassword){
     var error = "";
 
     error += validatePassword(password);

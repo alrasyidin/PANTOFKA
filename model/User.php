@@ -12,10 +12,9 @@ namespace model;
 use model\dao\UserDao;
 
 class User extends AbstractModel {
-    protected $id;
+    protected $user_id;
     protected $email;
     protected $password;
-    protected $active_status;
     protected $first_name;
     protected $last_name;
     protected $gender;
@@ -30,8 +29,10 @@ class User extends AbstractModel {
     public function __construct($json = null)
     {
         parent::__construct($json);
-        // Make it sha1 !
-        $this->setPassword($this->password);
+        if (isset($this->password)){
+            $this->setPassword($this->password);
+        }
+
     }
 
     public function addToFav(Product $p){
@@ -41,21 +42,23 @@ class User extends AbstractModel {
     public function addToCart(Product $p){
         $this->cart[] = $p;
     }
+
+
     /**
      * @return mixed
      */
-    public function getId()
+    public function getUserId()
     {
-        return $this->id;
+        return $this->user_id;
     }
 
 
-    public function setId($id)
+    public function setUserId($user_id)
     {
-        if ($id < 1){
+        if ($user_id < 1){
             throw new \RuntimeException("Bad data for id");
         }
-        $this->id = $id;
+        $this->user_id = $user_id;
     }
 
     /**
@@ -70,8 +73,8 @@ class User extends AbstractModel {
      * @param mixed $email
      */
     public function setEmail($email){
-        if(strlen($this->email) < 5 || strlen($this->email) > 45 || is_numeric($this->email) ){
-            throw new \RuntimeException("Bad data for email");
+        if(strlen(strlen($email) < 5 || strlen($email) > 45 || is_numeric($email) )){
+            throw new \RuntimeException("Bad data for email :" .$this->email. ";");
         }
         $this->email = $email;
     }
@@ -88,20 +91,20 @@ class User extends AbstractModel {
      * @param mixed $password
      */
     public function setPassword($password){
-        if(strlen($this->password) < 5 || strlen($this->password) > 45 || is_numeric($this->password) ){
-            throw new \RuntimeException("USER CLASS: Bad data for password: lenght" .strlen($this->password) . " and is numeric is " . var_dump(is_numeric($this->password)));
+        if(strlen($password) < 5 || is_numeric($password) ){
+            throw new \RuntimeException("USER CLASS: Bad data for password: lenght" .strlen($password) . " and is numeric is " . var_dump(is_numeric($password)));
         }
         $this->password = sha1($password); // !!!!!!!!!!!
     }
 
     public function __unset($password){
         if($password !== null){
-            if($password === $this->password){
-                // ?? Is this okay?
+            // Double sha1 :D.....
+            if(sha1($password) === $this->password){
                 unset($this->password);
             }else{
                 throw new \RuntimeException('Bad data is passed when un-setting password.
-                                             Passed value do not match real object property value');
+                                             Passed value of '.$password.' do not match real object property value of ' . $this->password);
             }
         }
 
@@ -134,6 +137,9 @@ class User extends AbstractModel {
      */
     public function setGender($gender)
     {
+        if($gender !== 'm' && $gender !== 'f' && $gender !== 'M' && $gender !== 'F'){
+        throw new \RuntimeException("Bad data for gender : " . $gender);
+    }
         $this->gender = $gender;
     }
 

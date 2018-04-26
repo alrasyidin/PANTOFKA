@@ -8,7 +8,7 @@
         <div class="form" id="edit-info-div" >
 
             <label for="edit-info-form">General info</label>
-            <form action="index.php?r=ajax&target=user&action=edit&tab=info" method="post" id="edit-info-form" onsubmit="return validateEditInfoFormOnSubmit(this)">
+            <form method="post" id="edit-info-form" onsubmit="return validateEditInfoFormOnSubmit(this); saveInfoChanges(); return false;">
 
                 <input type="text" id="edit-form-f-name" name="first_name" placeholder="First name" required> <br>
 
@@ -33,7 +33,7 @@
         <div class="form" id="edit-security-div" >
             <label for="edit-security-form">Security</label>
 
-            <form action="" method="post" id="edit-security-form" onsubmit="return validateSecurityFormOnSubmit(this)">
+            <form method="post" id="edit-security-form" onsubmit="return validateSecurityFormOnSubmit(this);">
 
                 <input type="password" id="edit-security-form-old" name="old_password" placeholder="Old password" required> <br>
 
