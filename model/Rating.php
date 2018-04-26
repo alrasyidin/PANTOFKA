@@ -12,8 +12,8 @@ use model\AbstractModel;
 class Rating extends AbstractModel
 {
 
-    private $id;
-    private $rating_value;
+    protected $id;
+    protected $rating_value;
 
     public function __construct($json = null)
     {

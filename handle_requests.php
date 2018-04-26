@@ -1,6 +1,9 @@
 <?php
 
-
+if (!isset($_SESSION)){
+    session_start();
+}
+// Command pattern
 spl_autoload_register(
     function ($class) {
         $class_name = str_replace("\\", "/", $class);
@@ -19,10 +22,6 @@ spl_autoload_register(
         }
     } );
 
-if (!isset($_SESSION)){
-    session_start();
-}
-// Command pattern
 model\dao\AbstractDao::init();
 $file_not_found = false;
 
@@ -50,7 +49,6 @@ if($page_name !== 'login' && $page_name !== 'register' && $page_name !== 'cart' 
 
 $controller_class_name = "controller\\" . ucfirst($controller_name) . "Controller";
 $page_path = './view/' . $page_name . ".html" ;
-
 if (class_exists($controller_class_name)) {
     if(!empty($page_name)){
         if(file_exists($page_path)){
@@ -65,7 +63,7 @@ if (class_exists($controller_class_name)) {
     if (method_exists($controller_class_name, $method_name)) {
 
         try{
-            $class::$method_name();
+            $class->$method_name();
         }
         catch(\PDOException $e){
           //  header("HTTP/1.1 500");

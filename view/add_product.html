@@ -1,0 +1,48 @@
+<section class="centered-section">
+    <div id="add_product">
+
+        <br>
+        Select product category:
+        <select onchange="filterCategories()" id="categories">
+
+        </select>
+        <br>
+
+        Select product style:
+        <select id="select-style" >
+
+        </select>
+        <br>
+
+        Product name:
+        <input type="text" name="product_name" placeholder="product name" required> <br>
+
+        Select product color:
+        <select id="select-color" name="product_color" required>
+            <br>
+
+        </select>
+        <br>
+        Select product material:
+        <select id="select-material" name="material">
+
+        </select>
+
+
+        <br>
+        Sale percentage:
+        <input type="text">
+        <br>
+
+
+        Product price: <input type="number" name="product_price" placeholder="price" step="0.01" required> <br>
+        Product image<input type="file" name="product_img_name" accept="image/*"><br>
+
+    </div>
+</section>
+
+<script>
+   loadCategories();
+
+
+</script>

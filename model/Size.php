@@ -13,9 +13,9 @@ use model\dao\SizeDao;
 
 class Size extends AbstractModel
 {
-    private  $id;
-    private  $size_number;
-    private  $size_quantity;
+   protected  $id;
+    protected  $size_number;
+    protected  $size_quantity;
 
     public function __construct($json = null)
     {

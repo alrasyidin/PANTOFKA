@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+
+<script>
+
+    var productRequest = new XMLHttpRequest();
+    productRequest.open("get", "handle_requests.php?target=product&action=getProductById&id=2");
+    productRequest.onreadystatechange = function (ev) {
+        if (this.readyState == 4 && this.status == 200) {
+            var response = this.responseText;
+            var product = JSON.parse(response);
+
+            var productInfo = document.createElement("div");
+            productInfo.className = "product_info";
+            var imgDiv = document.createElement("div");
+            imgDiv.className="img";
+            productInfo.appendChild(imgDiv);
+            var img = document.createElement("img");
+            img.src = product.product_iamge_url;
+            imgDiv.appendChild(img);
+
+
+
+        }
+
+    }
+    productRequest.send();
+</script>
+
+</body>
+</html>

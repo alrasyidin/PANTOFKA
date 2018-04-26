@@ -41,9 +41,14 @@ var_dump($_SESSION);
         <meta name="description" content="">
         <meta name="author" content="">
 
+    <!-- JS
+   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+    <script src="./view/assets/js/app.js" type="text/javascript"></script>
+
         <!-- Mobile Specific Metas
         –––––––––––––––––––––––––––––––––––––––––––––––––– -->
         <meta name="viewport" content="width=device-width, initial-scale=1">
+
 
         <!-- FONT
         –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -57,7 +62,6 @@ var_dump($_SESSION);
 
         <!-- JS
        –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-        <script src="./view/assets/js/userApp.js" type="text/javascript"></script>
         <script src="./view/assets/js/showProducts.js" type="text/javascript"></script>
         <script src= "./view/assets/js/register.js" type="text/javascript"></script>
         <script src= "./view/assets/js/login.js" type="text/javascript"></script>
