@@ -8,7 +8,7 @@ function sendLoginRequest(theForm){
     };
 
     var request = new XMLHttpRequest();
-    request.open("post", "index.php?r=ajax&target=user&action=login");
+    request.open("post", "./handle_request?target=user&action=login");
     request.onreadystatechange = function (ev) {
         if (this.readyState == 4){
 

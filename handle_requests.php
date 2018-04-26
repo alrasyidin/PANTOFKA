@@ -1,12 +1,31 @@
 <?php
+spl_autoload_register(
+    function ($class) {
+        $class_name = str_replace("\\", "/", $class);
 
-// Command pattern
+        if( strstr( $class_name , "model/dao/" ) !== false ){
+            require_once   "./" . $class_name . ".php";
+
+        }elseif (strstr( $class_name , "controller/" ) !== false ){
+            require_once   "./" . $class_name . ".php";
+
+        }elseif ( strstr( $class_name , "Controller" ) !== false ) {
+            // do nothing
+
+        }else {
+            require_once   $class_name . ".php";
+        }
+    } );
+
+
 
 spl_autoload_register(
     function ($class) {
         $class_name = str_replace("\\", "/", $class);
         require_once   $class_name . ".php";
     });
+
+model\dao\AbstractDao::init();
 $file_not_found = false;
 
 $controller_name = isset($_GET['target']) ? htmlentities($_GET['target']) : 'base';
@@ -22,13 +41,12 @@ if($page_name === 'login' || $page_name === 'register'){
     }
 }
 
-if($page_name !== 'login' && $page_name !== 'register' && $page_name !== 'cart' && $page_name !== 'favorites' && $page_name !== 'main' && $page_name !== null){
+if($page_name !== 'login' && $page_name !== 'register' && $page_name !== 'cart' && $page_name !== 'favorites' && $page_name !== 'main' && $page_name !== 'show_products' && $page_name !== null){
     if(!isset($_SESSION['user'])){
         //header('HTTP/1.1 401 Unauthorized');
         //die();
         echo 'Guest user is trying to access private data in ' . $page_name;
         $page_name = 'error';
-
     }
 }
 
@@ -51,7 +69,7 @@ if (class_exists($controller_class_name)) {
             $class->$method_name();
         }
         catch(\PDOException $e){
-            header("HTTP/1.1 500");
+          //  header("HTTP/1.1 500");
             echo $e->getMessage();
             die();
         }
