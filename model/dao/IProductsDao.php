@@ -31,5 +31,8 @@ interface IProductsDao
 
     public function getProductById($product_id);
 
+    public function getAllProducts();
+
+
 
 }

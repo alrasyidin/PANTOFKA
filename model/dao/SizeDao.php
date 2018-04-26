@@ -55,8 +55,6 @@ class SizeDao extends AbstractDao implements ISizeDao
         While ($query_result = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $size = new Size(json_encode($query_result));
             $sizes[]=$size;
-
-
         }
         return $sizes;
     }

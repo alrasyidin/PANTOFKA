@@ -28,6 +28,6 @@ class CategoryController extends AbstractController{
 
 
     public function show(){
-       echo "Here must be the ". $_GET['subcategory'] ." section. This message comes from from CategoryController's show method";
+        header("location: http://localhost:63342/PANTOFKA/index.php?page=visualisation_of_products");
     }
 }

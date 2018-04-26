@@ -67,7 +67,7 @@ if(isset($_GET['r'])){
 
     <!-- JS
    –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <script src="./view/assets/js/userApp.js" type="text/javascript"></script>
+    <script src="./view/assets/js/app.js" type="text/javascript"></script>
 
     <script src="./view/assets/js/showProducts.js" type="text/javascript"></script>
 

@@ -2,6 +2,11 @@
 
 // Command pattern
 
+spl_autoload_register(
+    function ($class) {
+        $class_name = str_replace("\\", "/", $class);
+        require_once   $class_name . ".php";
+    });
 $file_not_found = false;
 
 $controller_name = isset($_GET['target']) ? htmlentities($_GET['target']) : 'base';
@@ -29,7 +34,6 @@ if($page_name !== 'login' && $page_name !== 'register' && $page_name !== 'cart' 
 
 $controller_class_name = "controller\\" . ucfirst($controller_name) . "Controller";
 $page_path = './view/' . $page_name . ".html" ;
-
 if (class_exists($controller_class_name)) {
     if(!empty($page_name)){
         if(file_exists($page_path)){
@@ -44,7 +48,7 @@ if (class_exists($controller_class_name)) {
     if (method_exists($controller_class_name, $method_name)) {
 
         try{
-            $class::$method_name();
+            $class->$method_name();
         }
         catch(\PDOException $e){
             header("HTTP/1.1 500");

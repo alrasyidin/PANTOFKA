@@ -110,7 +110,7 @@ class ProductsDao extends AbstractDao implements IProductsDao
         $stmt = self::$pdo->prepare(
             "SELECT category_id
                        FROM final_project_pantofka.categories
-                       WHERE  category = ? ");
+                       WHERE  name = ? ");
         $stmt->execute(array($category));
         $category_id = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $category_id["category_id"];
@@ -126,7 +126,7 @@ class ProductsDao extends AbstractDao implements IProductsDao
             $products = [];
             $params = [];
             $sql = "SELECT p.product_id, p.product_name, p.price, p.info, p.product_image_url, p.promo_percentage,
-                      c.color,  m.material, 
+                      c.color,  m.material
                       FROM final_project_pantofka.products as p
                       JOIN colors as c ON p.color_id = c.color_id
                       JOIN materials as m ON p.material_id = m.material_id
@@ -169,12 +169,12 @@ class ProductsDao extends AbstractDao implements IProductsDao
         $stmt = self::$pdo->prepare("SELECT DISTINCT cat.name as category 
                                   FROM final_project_pantofka.categories as cat
                                   WHERE parent_id IS NULL  ");
-        $stmt->execute();
-        $categories = array();
+        $stmt->execute(array());
+        $category=[];
         while($row = $stmt->fetch(\PDO::FETCH_ASSOC)){
             $category[] = $row["category"];
         }
-        return $categories;
+        return $category;
     }
 
 
@@ -198,10 +198,13 @@ class ProductsDao extends AbstractDao implements IProductsDao
     }
 
 
-    public  function getProductById ($product_id){
+    public  function getProductById ($product_id)
+    {
+
+
         $stmt = self::$pdo->prepare(
             "SELECT p.product_id, p.product_name, p.price, p.info, p.product_image_url, p.promo_percentage,
-                      c.color,  m.material, 
+                      c.color,  m.material 
                       FROM final_project_pantofka.products as p
                       JOIN colors as c ON p.color_id = c.color_id
                       JOIN materials as m ON p.material_id = m.material_id
@@ -209,10 +212,46 @@ class ProductsDao extends AbstractDao implements IProductsDao
                       WHERE p.product_id = ?");
 
         $stmt->execute(array($product_id));
-        $product= $stmt->fetch(\PDO::FETCH_ASSOC);
+        $product = $stmt->fetch(\PDO::FETCH_ASSOC);
         $product = new Product(json_encode($product));
-
         return $product;
 
     }
+
+    public  function getAllProducts ()
+    {
+
+        $products = [];
+        $stmt = self::$pdo->prepare(
+            "SELECT p.product_id, p.product_name, p.price, p.info, p.product_image_url, p.promo_percentage,
+                      c.color,  m.material 
+                      FROM final_project_pantofka.products as p
+                      JOIN colors as c ON p.color_id = c.color_id
+                      JOIN materials as m ON p.material_id = m.material_id
+                      JOIN categories as cat ON p.category_id = cat.category_id ");
+
+        $stmt->execute(array());
+        while($product = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $products[] = new Product(json_encode($product));
+        }
+        return $products;
+
+    }
+
+    public function getStylesByParentCategory($parent_category){
+        $parent_id = $this->getCategoryId($parent_category);
+        $styles = [];
+
+        $stmt = self::$pdo->prepare(
+            "SELECT s.name as style
+                      FROM categories as s
+                      JOIN categories as c on s.parent_id = c.category_id
+                      WHERE s.parent_id = ? ");
+        $stmt->execute(array($parent_id));
+        While ($style = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $styles[] = $style["style"];
+        }
+        return $styles;
+    }
+
 }

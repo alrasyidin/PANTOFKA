@@ -1,37 +1,32 @@
+<main>
+    <a id="banner" href="index.php?page=visualisation_of_products">
+        <img class="banners" src="view/assets/banners/women_banner.jpg" alt="">
+    </a>
 
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title></title>
-</head>
-<body>
+    <a id="banner" href="index.php?page=visualisation_of_products">
+        <img class="banners" src="view/assets/banners/man_banner.png" alt="">
+    </a>
 
-<div >
-    <span id="prod_name"></span><br>
-    <span id="prod_price"></span><br>
-    <img width="100px" height="100px" id="prod_img" alt="">
-</div>
 
-<script>
+    <a id="banner" href="index.php?page=visualisation_of_products">
+        <img class="banners" src="view/assets/banners/new_banner.gif" alt="">
+    </a>
 
-    var productRequest = new XMLHttpRequest();
-    productRequest.open("get", "index.php?target=product&action=getProductById&id=2");
-    productRequest.onreadystatechange = function (ev) {
-        if(this.readyState == 4 && this.status == 200){
-            var response = this.responseText;
-            var product = JSON.parse(response);
 
-            var name_span = document.getElementById("prod_name");
-            var price_span = document.getElementById("prod_price");
-            var img = document.getElementById("prod_img");
-            name_span.innerHTML = product.product_name;
-            price_span.innerHTML = product.price;
-            img.src = product.product_img_url;
-        }
-    }
-    productRequest.send();
+    <a id="banner" href="index.php?page=visualisation_of_products">
+        <img class="banners" src="view/assets/banners/sale_banner2.gif" alt="">
+    </a>
 
-</script>
-</body>
-</html>
+
+    <a id="banner" href="index.php?page=visualisation_of_products">
+        <img class="banners" src="view/assets/banners/girls_banner.jpg" alt="">
+    </a>
+
+
+    <a id="banner" href="index.php?page=visualisation_of_products">
+        <img class="banners" src="view/assets/banners/boys_banner.jpg" alt="">
+    </a>
+
+
+</main>
+
