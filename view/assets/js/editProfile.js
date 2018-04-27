@@ -1,5 +1,5 @@
 function showEditProfileSection(showInfo , showSecurity) {
-
+    var resultDiv = document.getElementById('edit-form-result');
     var infoSection = document.getElementById('edit-info-div');
     var securitySection = document.getElementById('edit-security-div');
 
@@ -10,6 +10,7 @@ function showEditProfileSection(showInfo , showSecurity) {
     infoSection.style.display = 'none';
     infoSection.style.visibility = 'hidden';
     infoSection.style.display = 'none';
+    resultDiv.innerHTML = '';
 
     if (showInfo !== false ){
 
@@ -47,8 +48,9 @@ function loadSessionUserDataInEditForm(){
     request.onreadystatechange = function (ev) {
         if(this.readyState == 4){
             if(this.status == 200){
-                var data = JSON.parse(this.responseText);
+                var data = JSON.parse(this.response);
 
+                console.log(data);
                 document.getElementById("edit-form-f-name").value = data.first_name;
                 document.getElementById("edit-form-l-name").value = data.last_name;
                 document.getElementById("edit-form-email").value = data.email;
@@ -71,6 +73,8 @@ function loadSessionUserDataInEditForm(){
 }
 
 function saveInfoChanges(){
+    var resultDiv = document.getElementById('edit-form-result');
+    resultDiv.innerHTML = '';
     var firstName = document.getElementById('edit-info-form').first_name.value;
     var lastName = document.getElementById('edit-info-form').last_name.value;
     var email = document.getElementById('edit-info-form').email.value;
@@ -90,7 +94,9 @@ function saveInfoChanges(){
     request.onreadystatechange = function (ev) {
         if(this.readyState == 4 ){
             if(this.status == 200){
-                alert(this.responseText);
+
+                resultDiv.innerHTML = this.responseText;
+                return true;
             }else{
                 alert( "'" + this.status + " :\n" + this.statusText +  "'");
             }
@@ -100,6 +106,8 @@ function saveInfoChanges(){
 }
 
 function saveSecurityChanges(){
+    var resultDiv = document.getElementById('edit-form-result');
+    resultDiv.innerHTML = '';
 
     var oldPassword = document.getElementById('edit-security-form-old').value;
     var newPassword = document.getElementById('edit-security-form-new').value;
@@ -116,11 +124,45 @@ function saveSecurityChanges(){
     request.onreadystatechange = function (ev) {
         if(this.readyState == 4 ){
             if(this.status == 200){
-                alert(this.responseText);
+                resultDiv.innerHTML = this.responseText;
             }else{
                 alert(this.status + " :\n" + this.statusText);
             }
         }
     };
     request.send(JSON.stringify(changedPasswords));
+}
+
+function validateEditInfoFormOnSubmit(theForm) {
+    var resultDiv = document.getElementById('edit-form-result');
+    var reason = "";
+
+    reason += validateName(theForm.first_name);
+    reason += validateName(theForm.last_name);
+    reason += validateEmail(theForm.email);
+
+    if (reason != "") {
+        resultDiv.innerHTML = "";
+        resultDiv.innerHTML = "Some fields need correction:\n" + reason;
+        return false;
+    }
+
+    return saveInfoChanges();
+}
+
+function validateSecurityFormOnSubmit(theForm) {
+    var resultDiv = document.getElementById('edit-form-result');
+
+    var reason = "";
+    reason += comparePasswords(theForm.new_password , theForm.repeat_new_password);
+    reason += validatePassword(theForm.old_password);
+    reason += validatePassword(theForm.new_password);
+    reason += validatePassword(theForm.repeat_new_password);
+
+    if (reason != "") {
+        resultDiv.innerHTML = "";
+        resultDiv.innerHTML = "Some fields need correction:\n" + reason;
+        return false;
+    }
+    return saveSecurityChanges();
 }

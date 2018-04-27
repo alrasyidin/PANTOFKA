@@ -36,6 +36,9 @@ abstract class AbstractController{
         }elseif($controller_name === 'FilterController'){
             return FilterController::getInstance();
 
+        }elseif($controller_name === 'FrontController'){
+            return FrontController::getInstance();
+
         }elseif($controller_name === 'OrderController'){
             return OrderController::getInstance();
 
