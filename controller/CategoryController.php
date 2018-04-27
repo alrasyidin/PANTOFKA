@@ -8,6 +8,8 @@
 
 namespace controller;
 
+
+
 class CategoryController extends AbstractController{
 
     private static $instance;
@@ -27,7 +29,6 @@ class CategoryController extends AbstractController{
     }
 
 
-    public function show(){
-        header("location: http://localhost:63342/PANTOFKA/index.php?page=visualisation_of_products");
-    }
+
+
 }

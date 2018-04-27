@@ -48,6 +48,7 @@ function loadSessionUserDataInEditForm(){
         if(this.readyState == 4){
             if(this.status == 200){
                 var data = JSON.parse(this.responseText);
+
                 document.getElementById("edit-form-f-name").value = data.first_name;
                 document.getElementById("edit-form-l-name").value = data.last_name;
                 document.getElementById("edit-form-email").value = data.email;

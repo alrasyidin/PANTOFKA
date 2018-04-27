@@ -46,7 +46,7 @@ class SizeDao extends AbstractDao implements ISizeDao
     public  function getSizesAndQuantities($product_id)
     {
        $stmt = self::$pdo->prepare(
-           "SELECT s.size_number, ps.quantity as size_quantity FROM final_project_pantofka.sizes as s
+           "SELECT s.size_id, s.size_number, ps.quantity as size_quantity FROM final_project_pantofka.sizes as s
                       JOIN products_has_sizes as ps ON s.size_id = ps.size_id
                       JOIN products as p ON ps.product_id = p.product_id
                       WHERE p.product_id = ?");

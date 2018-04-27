@@ -15,7 +15,7 @@ use model\dao\ProductsDao;
 class Product extends AbstractModel
 {
 
-    protected $id;
+    protected $product_id;
     protected $product_name;
     protected $price;
     protected $info;
@@ -75,24 +75,12 @@ class Product extends AbstractModel
     /**
      * @return mixed
      */
-    public function getId()
+    public function getProductId()
     {
-        return $this->id;
+        return $this->product_id;
     }
 
-    /**
-     * @param mixed $id
-     */
-    public function setId($id)
-    {
-        if ($id<0){
 
-                throw new \RuntimeException("the id can not be < 0");
-
-
-        }
-        $this->id = $id;
-    }
 
     /**
      * @param mixed $product_image_url

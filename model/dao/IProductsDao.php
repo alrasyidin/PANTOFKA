@@ -23,15 +23,15 @@ interface IProductsDao
 
     public function getCategoryId($category);
 
-    public function productIdExists($product_id);
-
-    public function getCategories();
+    public function productExists($product_name, $category, $color, $material);
 
     public function getProductsCount($category);
 
     public function getProductById($product_id);
 
     public function getAllProducts();
+
+    public function getCategories();
 
 
 

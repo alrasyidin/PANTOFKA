@@ -56,22 +56,19 @@ class ProductController extends AbstractController
             try {
                 $dao = new ProductsDao();
                 $products = $dao->getProducts($_GET["pages"], $_GET["entries"], $_GET["category"]);
-//                $daoSize = new SizeDao();
-//
+                $daoSize = new SizeDao();
+
                 $allProducts = [];
-//                foreach ($products as $product) {
-//                    $product_id = $product["product_id"];
-//                    $sizes = $daoSize->getSizesAndQuantities($product_id);
-//                    $product = json_encode($product);
-//                    $product = new Product($product);
-//                    $product->setSizes($sizes);
-//                    $allProducts[] = $product;
-//                }
-//                /* @var $allProducts \JsonSerializable*/
-//                $allProducts= $allProducts->jsonSerialize();
-//                echo json_encode($allProducts);
-                /* @var $products \JsonSerializable */
-                echo json_encode($products);
+                /* @var $product Product */
+                foreach ($products as $product) {
+                    $sizes = $daoSize->getSizesAndQuantities($product->getProductId());
+                    $product->setSizes($sizes);
+                    $allProducts[] = $product;
+                }
+
+
+
+         echo json_encode($products);
             } catch (\PDOException $e) {
                 echo "error in Get products";
             }
@@ -79,20 +76,6 @@ class ProductController extends AbstractController
 
     }
 
-    public static function getCategories()
-    {
-        if ($_SERVER["REQUEST_METHOD"] == "GET") {
-            try {
-
-                $dao = new ProductsDao();
-                $categories = $dao->getCategories();
-                echo json_encode($categories);
-            } catch (\PDOException $e) {
-                echo "error in Get categories";
-            }
-        }
-
-    }
 
 
     public static function saveNewProduct()
@@ -175,31 +158,18 @@ class ProductController extends AbstractController
                     $product["category_parent"] = $category_parent;
 
 
+
+
                     $product = json_encode($product);
                     $new_product = new Product($product);
-                    $product_exists = $dao->getProductId($new_product);
-                    if (!$product_exists) {
-
-                        $dao->saveNewProduct($new_product);
-                        $product_id = $dao->getProductId($new_product);
-
-                        if ($dao->productIdExists($product_id)) {
-                            $daoSize = new SizeDao();
-                            foreach ($sizes as $size) {
-                                $size = json_encode($size);
-                                $new_size = new Size($size);
-                                $daoSize->saveSize($product_id, $new_size);
-                            }
-                        }
-                    } else {
-                        $error .= "Product already exists";
+                    $sizes_and_numbers = [];
+                    foreach ($sizes as $size){
+                        $new_size = new Size(json_encode($size));
+                        $sizes_and_numbers[] = $new_size;
                     }
-                    if ($error !== "") {
-                        return $error;
-                    } else {
-                        //"Product added successfully";
-                    }
+                    $new_product->setSizes($sizes_and_numbers);
 
+                    $dao->saveNewProduct($new_product);
 
                 } catch (\Exception $e) {
                     throw $e;
@@ -232,6 +202,21 @@ class ProductController extends AbstractController
 
     }
 
+    public static function getCategories()
+    {
+        if ($_SERVER["REQUEST_METHOD"] == "GET") {
+            try {
+
+                $dao = new ProductsDao();
+                $categories = $dao->getCategories();
+                echo json_encode($categories);
+            } catch (\PDOException $e) {
+                echo "error in Get categories";
+            }
+        }
+
+    }
+
     public function getAllProducts()
     {
         if ($_SERVER["REQUEST_METHOD"] == "GET") {
@@ -243,13 +228,10 @@ class ProductController extends AbstractController
                 $daoSize = new SizeDao();
 
                 $allProducts = [];
+                /* @var $product Product */
                 foreach ($products as $product) {
-                    $product_id = $dao->getProductId($product);
-                    $sizes = $daoSize->getSizesAndQuantities($product_id);
-                    $product = json_encode($product);
-                    $product = new Product($product);
+                    $sizes = $daoSize->getSizesAndQuantities($product->getProductId());
                     $product->setSizes($sizes);
-                    $product->setId($product_id);
                     $allProducts[] = $product;
                 }
 
@@ -258,5 +240,32 @@ class ProductController extends AbstractController
                 echo "error in getAllProducts";
             }
         }
+    }
+
+    public function show(){
+
+        $category = htmlentities($_GET["tab"]);
+            self::showCategory($category);
+
+        }
+
+    private static function showCategory($category){
+        try{
+        $dao = new ProductsDao();
+        $products = $dao->getAllProductsByCategory($category);
+
+        $daoSize = new SizeDao();
+
+        $allProducts = [];
+        /* @var $product Product */
+        foreach ($products as $product) {
+            $sizes = $daoSize->getSizesAndQuantities($product->getProductId());
+            $product->setSizes($sizes);
+            $allProducts[] = $product;
+        }
+        echo json_encode($products);
+    } catch (\PDOException $e) {
+            echo "error in getAllProductsByCategory";
+}
     }
 }

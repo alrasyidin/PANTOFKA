@@ -1,11 +1,11 @@
 <section class="centered-section min-height-600">
     <div class="centered-section">
-        <button class="inline_block" onclick="showEditProfileSection(true , false); loadSessionUserDataInEditForm();" >General info</button>
+        <button class="inline_block" onclick="showEditProfileSection(true , false); " >General info</button>
         <button class="inline_block" onclick="showEditProfileSection(false , true)">Security</button>
     </div>
 
     <div id="sections" style="visibility: hidden; display: none">
-        <div class="form" id="edit-info-div" >
+        <div class="form" id="edit-info-div" onload="alert('hey');loadSessionUserDataInEditForm();">
 
             <label for="edit-info-form">General info</label>
             <form method="post" id="edit-info-form" onsubmit="return validateEditInfoFormOnSubmit(this); saveInfoChanges(); return false;">

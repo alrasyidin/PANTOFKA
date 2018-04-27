@@ -13,7 +13,7 @@ use model\dao\SizeDao;
 
 class Size extends AbstractModel
 {
-   protected  $id;
+    protected $size_id;
     protected  $size_number;
     protected  $size_quantity;
 
@@ -29,9 +29,9 @@ class Size extends AbstractModel
     /**
      * @return mixed
      */
-    public function getId()
+    public function getSizeId()
     {
-        return $this->id;
+        return $this->size_id;
     }
 
     /**
@@ -55,14 +55,23 @@ class Size extends AbstractModel
      */
     public function setSizeNumber($size_number)
     {
-        $this->size_number = $size_number;
+        { if ($size_number <  20 || $size_number > 0 || !is_numeric($size_number)){
+            throw new \RuntimeException("Invalid data for size");
+
+        }
+
+            $this->size_number = $size_number;
+        }
     }
 
     /**
      * @param mixed $size_quantity
      */
     public function setSizeQuantity($size_quantity)
-    {
+    { if ($size_quantity < 0 || $size_quantity > 9999 || !is_numeric($size_quantity)){
+        throw new \RuntimeException("Invalid data for quantity");
+
+    }
         $this->size_quantity = $size_quantity;
     }
 
