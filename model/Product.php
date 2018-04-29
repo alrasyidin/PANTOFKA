@@ -21,13 +21,41 @@ class Product extends AbstractModel
     protected $info;
     protected $product_image_url;
     protected $promo_percentage;
+    protected $price_on_promotion;
     protected $color;
     protected $material;
     protected $category;
-    protected $category_parent;
+    protected $style;
 
     protected $sizes = []; // Array of sizes
-    protected $ratings = []; // Array of ratings
+    protected $ratings = [];
+
+    /**
+     * @return float
+     */
+    public function getPriceOnPromotion()
+    {
+        return $this->price_on_promotion;
+    }
+
+
+
+
+    /**
+     * @return mixed
+     */
+    public function getStyle()
+    {
+        return $this->style;
+    }
+
+    /**
+     * @param mixed $style
+     */
+    public function setStyle($style)
+    {
+        $this->style = $style;
+    } // Array of ratings
 
 
     public function jsonSerialize() {
@@ -69,6 +97,7 @@ class Product extends AbstractModel
     public function __construct($json = null)
     {
         parent::__construct($json);
+        $this->price_on_promotion = round(($this->price -($this->price * $this->promo_percentage)/100), 2);
         //$this->setSizes(ProductsDao::getSizes($this->id));
     }
 
@@ -128,7 +157,7 @@ class Product extends AbstractModel
     /**
      * @return mixed
      */
-    public function getPromoPercantage()
+    public function getPromoPercentage()
     {
         return $this->promo_percentage;
     }
@@ -189,12 +218,12 @@ class Product extends AbstractModel
     /**
      * @param mixed $promo_percantage
      */
-    public function setPromoPercantage($promo_percantage)
+    public function setPromoPercentage($promo_percentage)
     {
-        if ($promo_percantage <0 || $promo_percantage > 99){
+        if ($promo_percentage <0 || $promo_percentage > 99){
             throw new \RuntimeException("The promo percentage must be from 0 to 99 !");
         }
-        $this->promo_percentage = $promo_percantage;
+        $this->promo_percentage = $promo_percentage;
     }
 
     /**
@@ -255,24 +284,8 @@ class Product extends AbstractModel
         $this->category = $category;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getCategoryParent()
-    {
-        return $this->category_parent;
-    }
 
-    /**
-     * @param mixed $category_parent
-     */
-    public function setCategoryParent($category_parent)
-    {
-        if (is_numeric($category_parent) || strlen($category_parent) > 30){
-            throw new \RuntimeException("Invalid data for parent category");
-        }
-        $this->category_parent = $category_parent;
-    }
+
 
 
 

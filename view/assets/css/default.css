@@ -441,6 +441,16 @@ main{
     border-left: 1px solid rgba(42, 42, 42, 0.51);
 }
 
+.page-button{
+    width: 2%;
+    text-align: center;
+}
+
+.page-links{
+text-align: center;
+    display: block;
+}
+
 
 
 .min-height-500{
@@ -460,4 +470,3 @@ main{
 .width-100-percents{
     min-width: 100%;
 }
-

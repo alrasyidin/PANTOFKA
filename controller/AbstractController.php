@@ -28,16 +28,13 @@ abstract class AbstractController{
             return CategoryController::getInstance();
 
         }elseif($controller_name === 'CustomerController'){
-            return CustomerController::getInstance();
+            return ProductController::getInstance();
 
         }elseif($controller_name === 'FavoritesController'){
             return FavoritesController::getInstance();
 
         }elseif($controller_name === 'FilterController'){
             return FilterController::getInstance();
-
-        }elseif($controller_name === 'FrontController'){
-            return FrontController::getInstance();
 
         }elseif($controller_name === 'OrderController'){
             return OrderController::getInstance();

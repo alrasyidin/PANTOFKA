@@ -15,7 +15,6 @@ use model\Size;
 
 class ProductController extends AbstractController
 {
-
     private static $instance;
 
     /**
@@ -25,7 +24,13 @@ class ProductController extends AbstractController
     {
 
     }
-
+    public static function getInstance()
+    {
+        if (self::$instance === null) {
+            self::$instance = new ProductController();
+        }
+        return self::$instance;
+    }
     public static function getProductById()
     {
         if ($_SERVER["REQUEST_METHOD"] == "GET") {
@@ -39,13 +44,6 @@ class ProductController extends AbstractController
         }
     }
 
-    public static function getInstance()
-    {
-        if (self::$instance === null) {
-            self::$instance = new ProductController();
-        }
-        return self::$instance;
-    }
 
 
     public static function getProducts()
@@ -67,8 +65,7 @@ class ProductController extends AbstractController
                 }
 
 
-
-         echo json_encode($products);
+                echo json_encode($products);
             } catch (\PDOException $e) {
                 echo "error in Get products";
             }
@@ -77,8 +74,37 @@ class ProductController extends AbstractController
     }
 
 
+    public static function getSizesByParentCategory(){
+        $category=$_GET["pc"];
 
-    public static function saveNewProduct()
+        $sizes = [];
+        $min_size = 0;
+        $max_size = 0;
+        if ($category === "girls" || $category === "boys") {
+            $min_size = 25;
+            $max_size = 34;
+        } elseif ($category === "women") {
+            $min_size = 35;
+            $max_size = 42;
+        } elseif ($category === "men") {
+            $min_size = 40;
+            $max_size = 48;
+        }
+        for ($i = $min_size; $i <= $max_size; $i++) {
+            $sizes[] = $i;
+
+        }
+
+        echo json_encode($sizes);
+
+    }
+
+
+
+
+
+
+    public static function addProduct()
     {
         if (isset($_POST["add_product"])) {
             $error = "";
@@ -88,8 +114,7 @@ class ProductController extends AbstractController
             $material = htmlentities($_POST["material"]);
             $style = htmlentities($_POST["style"]);
             $category = htmlentities($_POST["category"]);
-            $category_parent = htmlentities($_POST["category_parent"]);
-            $sale_percentage = htmlentities($_POST["sale_percentage"]);
+            $promo_percentage = htmlentities($_POST["promo_percentage"]);
             $picture_url = "view/assets/products_imgs/no_image.jpg";
             $product_price = htmlentities($_POST["product_price"]);
             $info = htmlentities($_POST["info"]);
@@ -136,7 +161,7 @@ class ProductController extends AbstractController
             if (empty($product_name) || empty($product_price) || empty($color) || empty($material) || empty($style) ||
                 empty($category)) {
                 $error .= "Missing info";
-            } elseif ($sale_percentage < 0 || $sale_percentage > 99 || $product_price < 0 || $product_price > 9999
+            } elseif ($promo_percentage < 0 || $promo_percentage > 99 || $product_price < 0 || $product_price > 9999
                 || strlen($product_name) < 3 || strlen($product_name) > 15 || strlen($info) > 150) {
                 $error .= "Invalid input data";
 
@@ -148,31 +173,30 @@ class ProductController extends AbstractController
 
                     $product = [];
                     $product["product_name"] = $product_name;
-                    $product["sale_percentage"] = $sale_percentage;
+                    $product["promo_percentage"] = $promo_percentage;
                     $product["price"] = $product_price;
-                    $product["product_img_url"] = $picture_url;
+                    $product["product_image_url"] = $picture_url;
                     $product["info"] = $info;
                     $product["color"] = $color;
                     $product["material"] = $material;
                     $product["category"] = $category;
-                    $product["category_parent"] = $category_parent;
-
+                    $product["style"] = $style;
 
 
 
                     $product = json_encode($product);
                     $new_product = new Product($product);
                     $sizes_and_numbers = [];
-                    foreach ($sizes as $size){
+                    foreach ($sizes as $size) {
                         $new_size = new Size(json_encode($size));
                         $sizes_and_numbers[] = $new_size;
                     }
                     $new_product->setSizes($sizes_and_numbers);
 
                     $dao->saveNewProduct($new_product);
-
-                } catch (\Exception $e) {
-                    throw $e;
+header("location: index.php?page=show_products");
+                } catch (\PDOException $e) {
+                    var_dump($e);
                 }
 
             }
@@ -190,13 +214,17 @@ class ProductController extends AbstractController
     public function getStylesByParentCategory()
     {
         if ($_SERVER["REQUEST_METHOD"] == "GET") {
-            try {
-
-                $dao = new ProductsDao();
-                $styles = $dao->getStylesByParentCategory($_GET["pc"]);
-                echo json_encode($styles);
-            } catch (\PDOException $e) {
-                echo "error in getStylesByParentCategory";
+            if ($_GET["pc"] === "none") {
+                echo json_encode(array());
+            }
+            else {
+                try {
+                    $dao = new ProductsDao();
+                    $styles = $dao->getStylesByParentCategory($_GET["pc"]);
+                    echo json_encode($styles);
+                } catch (\PDOException $e) {
+                    echo "error in getStylesByParentCategory";
+                }
             }
         }
 
@@ -212,6 +240,37 @@ class ProductController extends AbstractController
                 echo json_encode($categories);
             } catch (\PDOException $e) {
                 echo "error in Get categories";
+            }
+        }
+
+    }
+
+    public static function getColors()
+    {
+        if ($_SERVER["REQUEST_METHOD"] == "GET") {
+            try {
+
+                $dao = new ProductsDao();
+                $colors = $dao->getColors();
+                echo json_encode($colors);
+            } catch (\PDOException $e) {
+                echo "error in Get colors";
+            }
+        }
+
+    }
+
+
+    public static function getMaterials()
+    {
+        if ($_SERVER["REQUEST_METHOD"] == "GET") {
+            try {
+
+                $dao = new ProductsDao();
+                $materials = $dao->getMaterials();
+                echo json_encode($materials);
+            } catch (\PDOException $e) {
+                echo "error in Get materials";
             }
         }
 
@@ -242,30 +301,32 @@ class ProductController extends AbstractController
         }
     }
 
-    public function show(){
+    public function show()
+    {
 
         $category = htmlentities($_GET["tab"]);
-            self::showCategory($category);
+        self::showCategory($category);
 
-        }
+    }
 
-    private static function showCategory($category){
-        try{
-        $dao = new ProductsDao();
-        $products = $dao->getAllProductsByCategory($category);
+    private static function showCategory($category)
+    {
+        try {
+            $dao = new ProductsDao();
+            $products = $dao->getAllProductsByCategory($category);
 
-        $daoSize = new SizeDao();
+            $daoSize = new SizeDao();
 
-        $allProducts = [];
-        /* @var $product Product */
-        foreach ($products as $product) {
-            $sizes = $daoSize->getSizesAndQuantities($product->getProductId());
-            $product->setSizes($sizes);
-            $allProducts[] = $product;
-        }
-        echo json_encode($products);
-    } catch (\PDOException $e) {
+            $allProducts = [];
+            /* @var $product Product */
+            foreach ($products as $product) {
+                $sizes = $daoSize->getSizesAndQuantities($product->getProductId());
+                $product->setSizes($sizes);
+                $allProducts[] = $product;
+            }
+            echo json_encode($products);
+        } catch (\PDOException $e) {
             echo "error in getAllProductsByCategory";
-}
+        }
     }
 }

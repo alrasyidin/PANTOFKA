@@ -28,14 +28,6 @@ header('Content-Type: text/html; charset=UTF-8');
 
 session_start();
 var_dump($_SESSION);
-
-// Since we visualize the page content in the wrapper bellow sending and ajax request to controller
-// the page from URL went lost. Because of that i take the parameter here and apply it to html body element.
-// That way if the user clicked on a page link the first time the show() function will be invoked with that specific page,
-// but every other ajax request inside the wrapper won't be broken.
-// This is basically an onion with requests and that page is the top layer :D
-$page_parameter = isset($_GET['page'])? ("'" . htmlentities($_GET['page']) . "'") : null;
-
 ?>
 
 <!DOCTYPE html>
@@ -67,16 +59,14 @@ $page_parameter = isset($_GET['page'])? ("'" . htmlentities($_GET['page']) . "'"
         <link rel="stylesheet" href="view/assets/css/default.css">
         <link rel="stylesheet" href="view/assets/css/normalize.css">
         <link rel="stylesheet" href="view/assets/css/skeleton.css">
-        <link rel="stylesheet" href="view/assets/css/custom.css">
-
 
         <!-- JS
        –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-        <script src= "./view/assets/js/validation.js" type="text/javascript"></script>
         <script src="./view/assets/js/showProducts.js" type="text/javascript"></script>
         <script src= "./view/assets/js/register.js" type="text/javascript"></script>
         <script src= "./view/assets/js/login.js" type="text/javascript"></script>
         <script src="./view/assets/js/editProfile.js" type="text/javascript"></script>
+        <script src= "./view/assets/js/validation.js" type="text/javascript"></script>
 
 
 
@@ -87,7 +77,7 @@ $page_parameter = isset($_GET['page'])? ("'" . htmlentities($_GET['page']) . "'"
 
 
     </head>
-    <body onload="show(<?= $page_parameter ?>)">
+    <body>
 
     <!-- Primary Page Layout
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -102,23 +92,19 @@ $page_parameter = isset($_GET['page'])? ("'" . htmlentities($_GET['page']) . "'"
                 }
                 require_once "./view/header.html";
 
-                // ==================================== Content =========================================
-                ?>
+                // ==================================== Handle controller requests =========================================
 
-                <section>
-                    <div id="wrapper"></div>
-                </section>
+                require_once "./handle_requests.php";
+
+                // =========================================================================================================
+                 ?>
 
         <?php
-        // =========================================================================================================
-
-        require_once "./view/footer.html";
+                require_once "./view/footer.html";
                 ?>
     </div>
 
-    <script src="view/assets/js/wrapperFunctions.js" type="text/javascript"></script>
-    <script src="view/assets/js/sectionFunctions.js" type="text/javascript"></script>
-
     <!-- End Document–––––––––––––––––––––––––––––––––––––-->
     </body>
+
 </html>

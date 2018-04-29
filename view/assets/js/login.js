@@ -34,18 +34,3 @@ function sendLoginRequest(theForm){
     };
     request.send(JSON.stringify(user));
 }
-
-function validateLoginFormOnSubmit(theForm)
-{   return alert(theForm);
-    var reason = "";
-
-    reason += validateEmail(theForm.email);
-    reason += validatePassword(theForm.password);
-
-    if (reason != "") {
-        alert("Some fields need correction:\n" + reason);
-        return false;
-    }
-    return true;
-}
-

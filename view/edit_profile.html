@@ -1,17 +1,14 @@
 <section class="centered-section min-height-600">
     <div class="centered-section">
-        <button class="inline_block" onclick="showEditProfileSection(true , false); loadSessionUserDataInEditForm();" >General info</button>
+        <button class="inline_block" onclick="showEditProfileSection(true , false); " >General info</button>
         <button class="inline_block" onclick="showEditProfileSection(false , true)">Security</button>
     </div>
 
-    <div class="form" id="sections" style="visibility: hidden; display: none">
-        <div class="centered-section message" id="edit-form-result"></div>
-
-        <div  id="edit-info-div">
+    <div id="sections" style="visibility: hidden; display: none">
+        <div class="form" id="edit-info-div" onload="alert('hey');loadSessionUserDataInEditForm();">
 
             <label for="edit-info-form">General info</label>
-
-            <form method="post" id="edit-info-form" onsubmit="validateEditInfoFormOnSubmit(this);return false;">
+            <form method="post" id="edit-info-form" onsubmit="return validateEditInfoFormOnSubmit(this); saveInfoChanges(); return false;">
 
                 <input type="text" id="edit-form-f-name" name="first_name" placeholder="First name" required> <br>
 
@@ -28,15 +25,15 @@
 
                 </select> </p> <br>
 
-                <input type="submit" value="Save changes">
+                <input type="submit" name="edit_info_button" value="Save changes">
             </form>
 
         </div>
 
-        <div  id="edit-security-div" >
+        <div class="form" id="edit-security-div" >
             <label for="edit-security-form">Security</label>
 
-            <form method="post" id="edit-security-form" onsubmit="validateSecurityFormOnSubmit(this);return false;">
+            <form method="post" id="edit-security-form" onsubmit="return validateSecurityFormOnSubmit(this);">
 
                 <input type="password" id="edit-security-form-old" name="old_password" placeholder="Old password" required> <br>
 
@@ -51,6 +48,5 @@
     </div>
 </section>
 
-<script src="./assets/js/editProfile.js" type="text/javascript"></script>
 
 

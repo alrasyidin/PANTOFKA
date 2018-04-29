@@ -62,19 +62,3 @@ function sendRegisterRequest(theForm) {
     request.send(JSON.stringify(newUser));
 
 }
-
-function validateRegisterFormOnSubmit(theForm) {
-    var reason = "";
-
-    reason += comparePasswords(theForm.password , theForm.password_repeat);
-    reason += validateName(theForm.first_name);
-    reason += validateName(theForm.last_name);
-    reason += validateEmail(theForm.email);
-
-    if (reason != "") {
-        alert("Some fields need correction:\n" + reason);
-        return false;
-    }
-    return true;
-}
-

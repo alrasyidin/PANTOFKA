@@ -21,10 +21,13 @@ class ProductsDao extends AbstractDao implements IProductsDao
 
 
     // Function is not tested yet .. maybe its gonna need some light changes
+
+
     public function saveNewProduct(Product $product)
     {
 
-            // Getting ids for details of the product
+
+        // Getting ids for details of the product
         $color_id = $this->getColorId($product->getColor());
 
         $material_id = $this->getMaterialId($product->getMaterial());
@@ -32,34 +35,39 @@ class ProductsDao extends AbstractDao implements IProductsDao
         $category_id = $this->getCategoryId($product->getCategory());
 
 
-            // Checking if product with this name and details already exists
+        //  Checking if product with this name and details already exists
         $query = self::$pdo->prepare(
-            "SELECT count(*) as product_exists FROM final_project_pantofka.products 
-                      WHERE product_name = ? 
-                      AND category_id = ?  
-                      AND color_id = ?
-                       AND material_id = ?");
-        $query->execute(array($product->getProductName(), $category_id, $color_id, $material_id ));
+            "SELECT count(*) as product_exists FROM final_project_pantofka.products as p
+                       JOIN categories as c ON p.category_id = c.category_id
+                       WHERE p.product_name = ?
+                       AND c.parent_id = ?
+                       AND p.color_id = ?
+                       AND p.material_id = ?");
+        $query->execute(array($product->getProductName(), $category_id, $color_id, $material_id));
         $count = $query->fetch(\PDO::FETCH_ASSOC);
 
-        //if the product not exists we can save it
-        if ($count["product_exists"] === 0) {
+//          if the product not exists we can save it
+        if ($count["product_exists"] !==1) {
 
-//try{
-//    self::$pdo->beginTransaction();
+//            self::$pdo->beginTransaction();
+
+            $category_id = $this->getCategoryAndStyleId($product->getStyle(), $product->getCategory());
+
             $stmt = self::$pdo->prepare(
-                "INSERT INTO final_project_pantofka.products (product_name, price, info, promo_percantage, 
-                        color_id, material_id, category_id) 
-                       VALUES (?, ?, ?, ?, ?, ?, ? )");
+                "INSERT INTO final_project_pantofka.products (product_name, price, info, promo_percentage,
+                        product_image_url, color_id, material_id, category_id) 
+                       VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
             $stmt->execute(array(
                 $product->getProductName(),
                 $product->getPrice(),
                 $product->getInfo(),
-                $product->getPromoPercantage(),
+                $product->getPromoPercentage(),
+                $product->getProductImgUrl(),
                 $color_id,
                 $material_id,
                 $category_id,
             ));
+
 
             // We have to get the last insert product_id because we need to save sizes for the product
             $product_id = self::$pdo->lastInsertId("product_id");
@@ -68,7 +76,7 @@ class ProductsDao extends AbstractDao implements IProductsDao
 
             //foreach size of the new product we need to make insert into DB
             /* @var $size Size */
-            foreach ($sizes as $size){
+            foreach ($sizes as $size) {
                 // getting the size_id from DB
                 $stmt = self::$pdo->prepare(
                     "SELECT size_id
@@ -86,17 +94,29 @@ class ProductsDao extends AbstractDao implements IProductsDao
                 $stmt = self::$pdo->prepare(
                     "INSERT INTO final_project_pantofka.products_has_sizes (product_id, size_id, quantity) 
                                VALUES (?, ?, ?)");
-                $stmt->execute(array($product_id, $size_id, $quantity ));
-
-            }
-
+                $stmt->execute(array($product_id, $size_id, $quantity));
 
 //        self::$pdo->commit();
 //    }catch (\PDOexeption $e)
 //{
 //self::$pdo->e->rollback();
 //throw $e;
+
+            }
         }
+   }
+
+    public function getCategoryAndStyleId($style, $category)
+    {
+        $parent_id = $this->getCategoryId($category);
+        $stmt = self::$pdo->prepare(
+            "SELECT category_id
+                       FROM final_project_pantofka.categories
+                       WHERE  name = ? AND parent_id = ?");
+        $stmt->execute(array($style, $parent_id));
+        $category_id = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $category_id["category_id"];
+
     }
 
     public function getColorId($color)
@@ -113,7 +133,8 @@ class ProductsDao extends AbstractDao implements IProductsDao
 
     }
 
-    public function getMaterialId($material)
+    public
+    function getMaterialId($material)
     {
 
         $stmt = self::$pdo->prepare(
@@ -127,20 +148,23 @@ class ProductsDao extends AbstractDao implements IProductsDao
 
     }
 
-    public function getCategories(){
+    public
+    function getCategories()
+    {
         $stmt = self::$pdo->prepare("SELECT DISTINCT cat.name as category 
                                   FROM final_project_pantofka.categories as cat
                                   WHERE parent_id IS NULL  ");
         $stmt->execute(array());
-        $category=[];
-        while($row = $stmt->fetch(\PDO::FETCH_ASSOC)){
+        $category = [];
+        while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $category[] = $row["category"];
         }
         return $category;
     }
 
 
-    public function getCategoryId($category)
+    public
+    function getCategoryId($category)
     {
 
         $stmt = self::$pdo->prepare(
@@ -154,7 +178,8 @@ class ProductsDao extends AbstractDao implements IProductsDao
 
     }
 
-    public function getProducts($pages, $entries, $category)
+    public
+    function getProducts($pages, $entries, $category)
     {
         try {
             $offset = intval(($pages - 1) * $entries);
@@ -162,11 +187,12 @@ class ProductsDao extends AbstractDao implements IProductsDao
             $products = [];
             $params = [];
             $sql = "SELECT p.product_id, p.product_name, p.price, p.info, p.product_image_url, p.promo_percentage,
-                      c.color,  m.material
+                      c.color,  m.material, st.name as style, cat.name as category
                       FROM final_project_pantofka.products as p
                       JOIN colors as c ON p.color_id = c.color_id
                       JOIN materials as m ON p.material_id = m.material_id
-                      JOIN categories as cat ON p.category_id = cat.category_id";
+                      JOIN categories as st ON p.category_id = st.category_id
+                      JOIN categories as cat ON st.parent_id = cat.category_id";
 
             if ($category != "all") {
                 $params[] = $category;
@@ -185,13 +211,14 @@ class ProductsDao extends AbstractDao implements IProductsDao
 
             return $products;
 
-        }catch (\PDOException $e){
+        } catch (\PDOException $e) {
             throw $e;
         }
     }
 
 
-    public function productExists($product_name, $category, $color, $material)
+    public
+    function productExists($product_name, $category, $color, $material)
     {
         $query = self::$pdo->prepare(
             "SELECT count(*) as product_exists FROM final_project_pantofka.products 
@@ -199,20 +226,21 @@ class ProductsDao extends AbstractDao implements IProductsDao
                       AND category = ?  
                       AND color = ?
                        AND material = ?");
-        $query->execute(array($product_name, $category, $color, $material ));
+        $query->execute(array($product_name, $category, $color, $material));
         $count = $query->fetch(\PDO::FETCH_ASSOC);
         return boolval($count["product_exists"]);
     }
 
 
-    public function getProductsCount($category)
+    public
+    function getProductsCount($category)
     {
 
         $params = array();
         $sql = "SELECT count(*) as number_of_products FROM final_project_pantofka.products as p
                 JOIN final_project_pantofka.categories as cat 
                 ON p.category_id = cat.category_id";
-        if($category != "all"){
+        if ($category != "all") {
             $params[] = $category;
             $sql .= " WHERE cat.name = ?";
         }
@@ -225,7 +253,8 @@ class ProductsDao extends AbstractDao implements IProductsDao
     }
 
 
-    public  function getProductById ($product_id)
+    public
+    function getProductById($product_id)
     {
 
 
@@ -246,8 +275,8 @@ class ProductsDao extends AbstractDao implements IProductsDao
     }
 
 
-
-    public  function getAllProducts ()
+    public
+    function getAllProducts()
     {
         $stmt = self::$pdo->prepare(
             "SELECT p.product_id, p.product_name, p.price, p.info, p.product_image_url, p.promo_percentage,
@@ -258,15 +287,16 @@ class ProductsDao extends AbstractDao implements IProductsDao
                       JOIN categories as cat ON p.category_id = cat.category_id ");
         $stmt->execute();
         $products = [];
-        while($product = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+        while ($product = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $products[] = new Product(json_encode($product));
         }
         return $products;
     }
 
 
-
-    public  function getAllProductsByCategory ($category) {
+    public
+    function getAllProductsByCategory($category)
+    {
         $stmt = self::$pdo->prepare(
             "SELECT p.product_id, p.product_name, p.price, p.info, p.product_image_url, p.promo_percentage,
                       c.color,  m.material 
@@ -277,13 +307,16 @@ class ProductsDao extends AbstractDao implements IProductsDao
                       WHERE cat.name = ?");
         $stmt->execute(array($category));
         $products = [];
-        while($product = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+        while ($product = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $products[] = new Product(json_encode($product));
         }
         return $products;
     }
 
-    public function getStylesByParentCategory($parent_category){
+    public
+    function getStylesByParentCategory($parent_category)
+    {
+
         $parent_id = $this->getCategoryId($parent_category);
         $styles = [];
 
@@ -297,6 +330,36 @@ class ProductsDao extends AbstractDao implements IProductsDao
             $styles[] = $style["style"];
         }
         return $styles;
+    }
+
+    public
+    function getColors()
+    {
+
+        $stmt = self::$pdo->prepare(
+            "SELECT DISTINCT color
+                      FROM colors");
+        $stmt->execute();
+        $colors = [];
+        While ($color = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $colors[] = $color["color"];
+        }
+        return $colors;
+    }
+
+    public
+    function getMaterials()
+    {
+
+        $stmt = self::$pdo->prepare(
+            "SELECT DISTINCT material
+                      FROM materials ");
+        $stmt->execute();
+        $materials = [];
+        While ($material = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $materials[] = $material["material"];
+        }
+        return $materials;
     }
 
 }

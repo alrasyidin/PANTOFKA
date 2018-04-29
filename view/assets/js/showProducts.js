@@ -14,14 +14,79 @@ function loadCategories() {
     request.send();
 }
 
+
+function loadParentCategories() {
+    var request = new XMLHttpRequest();
+    request.open("get", "handle_requests.php?target=product&action=getCategories");
+    request.onreadystatechange = function (ev) {
+        if (this.readyState == 4 && this.status == 200) {
+            var allCategories = JSON.parse(this.responseText);
+            var select = document.getElementById("parent-categories");
+            for (var i = 0; i < allCategories.length; i++) {
+                var category = allCategories[i];
+                select.options[select.options.length] = new Option(category, category);
+            }
+        }
+    };
+    request.send();
+}
+
+function loadColors() {
+    var request = new XMLHttpRequest();
+    request.open("get", "handle_requests.php?target=product&action=getColors");
+    request.onreadystatechange = function (ev) {
+        if (this.readyState == 4 && this.status == 200) {
+            var allColors = JSON.parse(this.responseText);
+            var select = document.getElementById("select-color");
+            for (var i = 0; i < allColors.length; i++) {
+                var color = allColors[i];
+                select.options[select.options.length] = new Option(color, color);
+            }
+        }
+    };
+    request.send();
+}
+
+function loadMaterials() {
+    var request = new XMLHttpRequest();
+    request.open("get", "handle_requests.php?target=product&action=getMaterials");
+    request.onreadystatechange = function (ev) {
+        if (this.readyState == 4 && this.status == 200) {
+            var allMaterials = JSON.parse(this.responseText);
+            var select = document.getElementById("select-material");
+            for (var i = 0; i < allMaterials.length; i++) {
+                var material = allMaterials[i];
+                select.options[select.options.length] = new Option(material, material);
+            }
+        }
+    };
+    request.send();
+}
+
+
+
+function filterProducts(pages, entries, category) {
+    var request = new XMLHttpRequest();
+    request.open("get", "handle_requests.php?target=product&action=getProducts&pages=" + pages + "&entries=" + entries + "&category=" + category);
+    request.onreadystatechange = function (ev) {
+        if (this.readyState == 4 && this.status == 200) {
+            var response = this.responseText;
+            var products = JSON.parse(response);
+            document.getElementById('visualisation').innerHTML = "";
+            visualiseProducts(products);
+
+    }
+    loadPageLinks(entries, category);
+}
+
+request.send();
+}
+
 function visualiseProducts(products) {
-    console.log(products);
     for (var i = 0; i < products.length; i++) {
 
         var product = products[i];
-
-        var visualisation = document.createElement("div");
-        visualisation.className = "visualisation";
+        var visualisation = document.getElementById("visualisation");
         var showProduct = document.createElement('div');
         showProduct.className = "shown_products";
         visualisation.appendChild(showProduct);
@@ -50,76 +115,58 @@ function visualiseProducts(products) {
         showProduct.appendChild(productName);
         showProduct.appendChild(productImg);
         showProduct.appendChild(productPrice);
-        showProduct.appendChild(divButtons);
         showProduct.appendChild(productSizes);
+        showProduct.appendChild(divButtons);
 
 
         productName.innerHTML = product.product_name;
         img.src = product.product_image_url;
-        showProductInfoLink.href = "index.php?page=product_info&id=" + product.product_id;
-
+        var sizeText = document.createElement('h6');
         var selectSize = document.createElement("select");
         selectSize.className = "sizes";
         selectSize.style = "display: inline-block";
-        productSizes.appendChild(selectSize);
         var sizes = product.sizes;
-        for (var j = 0; j < sizes.length; j++ ){
+        if (sizes.length === 0){
+            sizeText.innerHTML = "Out of stock!"
+        }
+        else {
+            sizeText.innerHTML = "Sizes: ";
+
+        }
+        productSizes.appendChild(sizeText);
+        productSizes.appendChild(selectSize);
+
+
+        for (var j = 0; j < sizes.length; j++) {
             var size = sizes[j];
-            selectSize.options[selectSize.options.length] = new Option(size.size, size.size);
-
+            if (size.size_quantity > 0) {
+                selectSize.options[selectSize.options.length] = new Option(size.size_number, size.size_number);
+            }
         }
 
-        var price = product.price;
-        if(product.promo_percentage > 0){
 
-            var newPrice = product.price  - (product.price * product.promo_percentage)/100;
-            spanPrice.innerHTML =  " Now: " + newPrice + " BGN Was: ";
-            spanPriceOnSale.innerHTML =  price;
+        if (product.promo_percentage > 0) {
+
+            var newPrice = product.price_on_promotion;
+            spanPriceOnSale.innerHTML = product.price;
+            spanPrice.innerHTML = " Now: " + newPrice + " BGN Was: ";
 
         }
-        else{
-            spanPrice.innerHTML = " Price: " + price + " BGN ";
+        else {
+            spanPrice.innerHTML = " Price: " + product.price + " BGN ";
         }
 
         var addToCartButton = document.createElement("button");
         divButtons.appendChild(addToCartButton);
-
         addToCartButton.innerHTML = "Add to cart";
-        addToCartButton.onclick = addToCart(product.product_id);
 
         var addToFavButton = document.createElement("button");
         divButtons.appendChild(addToFavButton);
         addToFavButton.innerHTML = "Add to favorites";
-        addToFavButton.onclick = addToFav(product.product_id);
 
     }
 
 }
-
-function filterProducts(pages, entries, category) {
-    var request = new XMLHttpRequest();
-    request.open("get", "handle_requests.php?target=product&action=getProducts&pages=" + pages + "&entries=" + entries + "&category=" + category);
-    request.onreadystaychange = function (ev) {
-        if (this.readyState == 4 && this.status == 200) {
-
-            if (this.responseText == "error") {
-                location.href = "view/error.html";
-            }
-            var products = JSON.parse(this.responseText);
-            var showProducts = document.getElementById("shown-products");
-            if (products.length == 0) {
-                showProducts.innerHTML = "No results!";
-            }
-            else {
-                visualiseProducts(products);
-            }
-        }
-        loadPageLinks(entries, category);
-    }
-
-    request.send();
-}
-
 
 
 function filter() {
@@ -141,6 +188,7 @@ function loadPageLinks(entries, category) {
             div.innerHTML = "";
             for (var i = 0; i < pages; i++) {
                 var button = document.createElement("button");
+                button.className = "page-button";
                 button.innerHTML = i + 1;
                 button.addEventListener("click", function () {
 
@@ -163,7 +211,10 @@ function getStyles(parentCategory) {
     request.onreadystatechange = function (ev) {
         if (this.readyState == 4 && this.status == 200) {
             var styles = JSON.parse(this.responseText);
-            var select = document.getElementById("product-styles");
+            var select = document.getElementById("select-style");
+            while (select.options.length) {
+                select.remove(0);
+            }
             for (var i = 0; i < styles.length; i++) {
                 var style = styles[i];
                 select.options[select.options.length] = new Option(style, style);
@@ -174,33 +225,43 @@ function getStyles(parentCategory) {
 
 }
 
-function filterCategories() {
-    function filter() {
-        var categorySelect = document.getElementById("categories");
-        var category = categorySelect.options[categorySelect.selectedIndex].value;
-
-        getStyles(category);
-    }
-}
 
 
-function visualisationOfProducts() {
-
-    var productRequest = new XMLHttpRequest();
-    productRequest.open("get", "handle_requests.php?target=product&action=getAllProducts");
-    productRequest.onreadystatechange = function (ev) {
+function loadInputSizes(parentCategory) {
+    var request = new XMLHttpRequest();
+    request.open("get", "handle_requests.php?target=product&action=getSizesByParentCategory&pc=" + parentCategory);
+    request.onreadystatechange = function (ev) {
         if (this.readyState == 4 && this.status == 200) {
-            var response = this.responseText;
-            var products = JSON.parse(response);
-            console.log(products);
+            var sizes = JSON.parse(this.responseText);
+            var div = document.getElementById("input-sizes");
+            div.innerHTML = "";
 
-
+            for (var i = 0; i < sizes.length; i++) {
+                var size = sizes[i];
+                var sizeNumber = document.createElement('h6');
+                div.appendChild(sizeNumber);
+                sizeNumber.style.display = "inline-block";
+                sizeNumber.innerHTML = size + ": ";
+                var inputQuantity = document.createElement("input");
+                div.appendChild(inputQuantity);
+                inputQuantity.type = "number";
+                inputQuantity.name = size;
+            }
         }
-    }
-    productRequest.send();
+    };
+    request.send();
+}
 
+function filterCategories() {
+        var categorySelect = document.getElementById("parent-categories");
+        var category = categorySelect.options[categorySelect.selectedIndex].value;
+        getStyles(category);
+        loadInputSizes(category);
 
 }
+
+
+
 
 function productInfo(product_id) {
     var productRequest = new XMLHttpRequest();
@@ -210,33 +271,10 @@ function productInfo(product_id) {
             var response = this.responseText;
             var product = JSON.parse(response);
 
-            var visualisation = document.getElementById("visualisation");
-            var showProduct = document.createElement('div');
-            showProduct.className = "shown_products";
-            visualisation.appendChild(showProduct);
-            var productName = document.createElement("div");
-            productName.className = "product_name";
-            var productImg = document.createElement("div");
-            productImg.className = "product_img";
-            var showProductInfoLink = document.createElement("a");
-            showProductInfoLink.id = "show_product";
-            var img = document.createElement("img");
-            showProductInfoLink.appendChild(img);
-            productImg.appendChild(showProductInfoLink);
-            var productPrice = document.createElement("div");
-            productPrice.className = "price";
-            var spanPrice = document.createElement("span");
-            spanPrice.className = "price";
-            productPrice.appendChild(spanPrice);
-
-            showProduct.appendChild(productName);
-            showProduct.appendChild(productImg);
-            showProduct.appendChild(productPrice);
-
-            productName.innerHTML = product.product_name;
-            img.src = product.product_image_url;
-            productPrice.innerHTML = product.price;
-            showProductInfoLink.href = "index.php?page=main";
+            var div = document.getElementById("products-page");
+            div.visibility = "hidden";
+            var h6 =  document.createElement("h6");
+            h6.innerHTML = product.product_name;
 
 
         }
@@ -244,20 +282,5 @@ function productInfo(product_id) {
     }
     productRequest.send();
 }
-function loadProducts(category) {
 
 
-    var productRequest = new XMLHttpRequest();
-    productRequest.open("get", "handle_requests.php?target=product&action=getAllProductsByCategory&category" + category);
-    productRequest.onreadystatechange = function (ev) {
-        if (this.readyState == 4 && this.status == 200) {
-            var response = this.responseText;
-            var products = JSON.parse(response);
-            console.log(products);
-            visualiseProducts(products);
-
-        }
-        productRequest.send();
-
-    }
-}

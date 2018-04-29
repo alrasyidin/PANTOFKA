@@ -32,18 +32,6 @@ class User extends AbstractModel {
         if (isset($this->password)){
             $this->setPassword($this->password);
         }
-        if (isset($this->email)){
-            $this->setEmail($this->email);
-        }
-        if (isset($this->first_name)){
-            $this->setFirstName($this->first_name);
-        }
-        if (isset($this->last_name)){
-            $this->setLastName($this->last_name);
-        }
-        if (isset($this->gender)){
-            $this->setGender($this->gender);
-        }
 
     }
 

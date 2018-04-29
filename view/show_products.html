@@ -1,20 +1,30 @@
-<main class="products_page">
+<div id="products-page" class="products_page">
+
     Categories
-    <select onchange="filter()" style="width: 150px" id="categories">
+    <select  onchange="filter()" style="width: 150px" id="categories">
         <option value="all">All</option>
+
+
     </select>
 
 
-    <div class="shown_products ">
+    <div id="visualisation" class="show_products">
+
+
+
 
     </div>
-    <div id="page-links">
-
-    </div>
 
 
-    <script>
-        filterProducts(1, 20, 'all');
-        loadCategories();
-    </script>
-</main>
+
+
+</div>
+<div id="page-links" class="page-links">
+
+</div>
+
+<script>
+    loadCategories();
+    filterProducts(1, 20, 'all');
+
+</script>
