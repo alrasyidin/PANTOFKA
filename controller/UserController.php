@@ -29,17 +29,17 @@ class UserController extends AbstractController {
         return self::$instance;
     }
 
-    public function logout(){
+    public static function logout(){
         session_destroy();
-        header("location: index.php?page=main");
-        die();
-
+        header('HTTP/1.1 200 OK');
+        header("location: index.php?page=login");
+        die("Went fine!");
     }
 
     public static function login(){
         if (isset($_SESSION["user"])) {
-            // header('HTTP/1.1 401 Unauthorized');
-            echo 'Logged user is trying to log in';
+            header('HTTP/1.1 401 Unauthorized');
+            header("location: index.php?page=main");
             die();
         }
         $logging_user_data = array();
@@ -48,7 +48,8 @@ class UserController extends AbstractController {
         try {
             $user = new User(json_encode($logging_user_data));
         } catch (\RuntimeException $e) {
-            echo "'error' => $e->getMessage() , 'code' => $e->getCode()))";
+            //header("location: index.php?page=failed_login");
+            die($e);
         }
 
         try{
@@ -57,16 +58,24 @@ class UserController extends AbstractController {
                 $logged_user = $user_dao->login($user);
                 $logged_user->__unset($user->getPassword());
                 $_SESSION["user"] = $logged_user;
-                echo "went fine!";
+                header('HTTP/1.1 200 OK');
+                header("location: index.php?page=edit_profile");
+                die();
             }else {
-                //header('HTTP/1.1 401 Unauthorized');
-                echo 'UserController , login method : Wrong username/password';
+                header('HTTP/1.1 401 Unauthorized');
+                header("location: index.php?page=failed_login");
+                die();
             }
         } catch (\PDOException $e) {
             // header('HTTP/1.1 500 Something went terribly wrong . . .');
+            // header("location: index.php?page=failed_login");
             echo "Problem in DB with login: " . $e->getMessage() ."\n". $e->getCode() ."\n".$e->getTraceAsString();
+            die();
         } catch (\RuntimeException $e){
+            //header('HTTP/1.1 401 Unauthorized');
+            //header("location: index.php?page=failed_login");
             echo "Problem with validation in User class: " . $e->getMessage() ."\n".$e->getTraceAsString();
+            die();
         }
     }
 
@@ -101,21 +110,26 @@ class UserController extends AbstractController {
             if (!($user_dao->userExists($email))) {
 
                 if ($user_dao->register($new_user) instanceof User){
-                    echo 'success';
+                    header('HTTP/1.1 200 OK');
+                    header("location: index.php?page=login");
+                    die();
                 }else{
                     echo "Problem in Dao:\n";
                 }
             } else {
-                echo "email is taken";
+                header('HTTP/1.1 401 Unauthorized');
+                header("location: index.php?page=email_taken");
+                die();
             }
         } catch (\Exception $e) {
             echo $e->getMessage();
+            die();
         }
     }
 
 
-
     public static function getLoggedUserAsJson(){
+        /* @var $user User*/
         $user = $_SESSION["user"];
         echo json_encode($user);
     }
@@ -125,7 +139,7 @@ class UserController extends AbstractController {
         if($tab === "info"){
             self::editInfo();
         }elseif ($tab === 'security'){
-          return self::editSecurity();
+            return self::editSecurity();
         }
     }
 
@@ -152,9 +166,13 @@ class UserController extends AbstractController {
             $_SESSION['user'] = $user ;
             header('HTTP/1.1 200 OK');
             echo "Changes were saved";
+        }catch (\RuntimeException $e){
+            echo "Bad data: " . $e->getMessage() . "\n Found in:\n" . $e->getTraceAsString();
+        }catch (\PDOException $e){
+            echo "500: " . $e->getMessage() . "\n Found in:\n" . $e->getTraceAsString();
         }catch (\Exception $e){
-            header('HTTP/1.1 500');
-            echo $e->getMessage() . "\n Found in:\n" . $e->getTraceAsString();
+            echo "Random exception: " . $e->getMessage() . "\n Found in:\n" . $e->getTraceAsString();
+
         }
     }
 

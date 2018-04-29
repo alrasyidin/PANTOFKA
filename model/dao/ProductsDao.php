@@ -362,4 +362,6 @@ class ProductsDao extends AbstractDao implements IProductsDao
         return $materials;
     }
 
+
+
 }

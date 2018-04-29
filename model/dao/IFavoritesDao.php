@@ -12,8 +12,14 @@ namespace model\dao;
 
 interface IFavoritesDao{
 
-    public function addToFavorites();
+    /**Returns product object or false
+     * @param $product_id
+     * @return mixed
+     */
+    public static  function productIsAvailable($product_id , $size_id);
 
-    public function removeFromFavorites();
+    public static function addToFavorites($product_id , $size_id);
+
+    public static function removeFromFavorites();
 
 }

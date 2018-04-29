@@ -123,6 +123,7 @@ function visualiseProducts(products) {
         img.src = product.product_image_url;
         var sizeText = document.createElement('h6');
         var selectSize = document.createElement("select");
+        selectSize.id = 'sizes-for-product' + product.product_id;
         selectSize.className = "sizes";
         selectSize.style = "display: inline-block";
         var sizes = product.sizes;
@@ -157,10 +158,14 @@ function visualiseProducts(products) {
         }
 
         var addToCartButton = document.createElement("button");
+        addToCartButton.id = 'add-to-cart-button';
+        addToCartButton.setAttribute('onclick' , 'addToCart('+ product.product_id + ')');
         divButtons.appendChild(addToCartButton);
         addToCartButton.innerHTML = "Add to cart";
 
         var addToFavButton = document.createElement("button");
+        addToFavButton.id = 'add-to-fav-button';
+        addToFavButton.setAttribute('onclick' , 'addToFav('+ product.product_id + ')');
         divButtons.appendChild(addToFavButton);
         addToFavButton.innerHTML = "Add to favorites";
 

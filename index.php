@@ -59,15 +59,16 @@ var_dump($_SESSION);
         <link rel="stylesheet" href="view/assets/css/default.css">
         <link rel="stylesheet" href="view/assets/css/normalize.css">
         <link rel="stylesheet" href="view/assets/css/skeleton.css">
+        <link rel="stylesheet" href="view/assets/css/custom.css">
+
 
         <!-- JS
        –––––––––––––––––––––––––––––––––––––––––––––––––– -->
+        <script src= "./view/assets/js/favoritesAndCartFunctions.js" type="text/javascript"></script>
         <script src="./view/assets/js/showProducts.js" type="text/javascript"></script>
         <script src= "./view/assets/js/register.js" type="text/javascript"></script>
         <script src= "./view/assets/js/login.js" type="text/javascript"></script>
-        <script src="./view/assets/js/editProfile.js" type="text/javascript"></script>
-        <script src= "./view/assets/js/validation.js" type="text/javascript"></script>
-
+        <script src= "./view/assets/js/validation.js" type="text/javascript"></script
 
 
 
@@ -105,6 +106,8 @@ var_dump($_SESSION);
     </div>
 
     <!-- End Document–––––––––––––––––––––––––––––––––––––-->
+    <script src="./view/assets/js/editProfile.js" type="text/javascript"></script>
+
     </body>
 
 </html>

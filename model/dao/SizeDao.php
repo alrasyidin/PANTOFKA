@@ -22,7 +22,7 @@ class SizeDao extends AbstractDao implements ISizeDao
         $stmt = self::$pdo->prepare(
             "SELECT size_id
                        FROM final_project_pantofka.sizes
-                       WHERE size = ?");
+                       WHERE size_number = ?");
         $stmt->execute(array($size));
         $size_id = $stmt->fetch(\PDO::FETCH_ASSOC);
         return $size_id['size_id'];
