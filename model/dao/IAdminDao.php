@@ -11,14 +11,14 @@ namespace model\dao;
 
 interface IAdminDao{
 
-    public function changeQuantity();
+    public static  function changeQuantity();
 
-    public function removeProduct();
+    public static  function removeProduct();
 
-    public function addProduct();
+    public  static function addProduct();
 
-    public function changeProduct();
+    public static  function unsetProduct($product_id);
 
-    public function addDiscount();
+    public  static function addDiscount();
 
 }

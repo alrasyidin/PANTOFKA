@@ -65,12 +65,13 @@ var_dump($_SESSION);
         <!-- JS
        –––––––––––––––––––––––––––––––––––––––––––––––––– -->
         <script src= "./view/assets/js/favoritesAndCartFunctions.js" type="text/javascript"></script>
+        <script src= "./view/assets/js/product.js" type="text/javascript"></script>
         <script src="./view/assets/js/showProducts.js" type="text/javascript"></script>
         <script src="./view/assets/js/Pagination.js" type="text/javascript"></script>
         <script src="./view/assets/js/getProductCharacteristics.js" type="text/javascript"></script>
         <script src= "./view/assets/js/register.js" type="text/javascript"></script>
         <script src= "./view/assets/js/login.js" type="text/javascript"></script>
-        <script src= "./view/assets/js/validation.js" type="text/javascript"></script
+        <script src= "./view/assets/js/validation.js" type="text/javascript"></script>
 
 
 

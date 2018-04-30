@@ -1,0 +1,21 @@
+<section onload="generateData(productId)" class="centered-section">
+    <form action="handle_requests.php?target=admin&action=editProduct" method="post" enctype="multipart/form-data">
+
+    </form>
+    
+</section>
+
+<script>
+    function generateData(productId) {
+        var request = new XMLHttpRequest();
+        request.open("get", "handle_requests.php?target=product&action=getProduct&id=" + productId);
+        request.onreadystatechange = function (ev) {
+            if (this.readyState == 4 && this.status == 200) {
+                var styles = JSON.parse(this.responseText);
+                alert(styles);
+            }
+        };
+        request.send();
+
+    }
+</script>

@@ -9,9 +9,11 @@
 namespace controller;
 
 
+use model\dao\AdminDao;
+use model\dao\ProductsDao;
 use model\Product;
 
-class AdminController extends CustomerController {
+class AdminController extends AbstractController {
 
     private static $instance;
 
@@ -37,7 +39,24 @@ class AdminController extends CustomerController {
 
     }
 
-    public function deleteProduct(Product $product){
+    public function unsetProduct(){
+        if (isset($_GET['id'])){
+            $product_id = htmlentities($_GET['id']);
+            if ($product_id < 1 || !is_numeric($product_id)){
+                die('Bad data passed to the controller');
+            }
+            try{
+                if (AdminDao::productIsAvailable($product_id)){
+                    AdminDao::unsetProduct($product_id);
+                    echo 'The product size quantities were set to zero';
+                }else{
+                    echo 'There is nothing else to remove from here';
+                }
 
+            }catch (\PDOException $e){
+                die($e->getMessage());
+            }
+
+        }
     }
 }

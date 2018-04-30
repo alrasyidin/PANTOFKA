@@ -129,6 +129,19 @@ function visualiseProducts(products) {
         divButtons.appendChild(addToFavButton);
         addToFavButton.innerHTML = "Add to favorites";
 
+        // If admin
+        var editProductButton = document.createElement("button");
+        editProductButton.id = 'edit-product-button';
+        editProductButton.setAttribute('onclick' , 'editProduct('+ product.product_id + ')');
+        divButtons.appendChild(editProductButton);
+        editProductButton.innerHTML = "Edit product";
+
+        var deleteProductButton = document.createElement("button");
+        deleteProductButton.id = 'delete-product-button';
+        deleteProductButton.setAttribute('onclick' , 'deleteProduct('+ product.product_id + ')');
+        divButtons.appendChild(deleteProductButton);
+        deleteProductButton.innerHTML = "Unset product";
+
     }
 
 }
@@ -268,6 +281,18 @@ function fillModal(product_id) {
             divButtons.appendChild(addToFavButton);
             addToFavButton.innerHTML = "Add to favorites";
 
+            // If admin !!!!!!!!!!!!
+            var editProductButton = document.createElement("button");
+            editProductButton.id = 'edit-product-button';
+            editProductButton.setAttribute('onclick' , 'editProduct('+ product.product_id + ')');
+            divButtons.appendChild(editProductButton);
+            editProductButton.innerHTML = "Edit product";
+
+            var deleteProductButton = document.createElement("button");
+            deleteProductButton.id = 'delete-product-button';
+            deleteProductButton.setAttribute('onclick' , 'deleteProduct('+ product.product_id + ')');
+            divButtons.appendChild(deleteProductButton);
+            deleteProductButton.innerHTML = "Unset product";
 
         }
 
