@@ -8,8 +8,9 @@
 
 namespace model\dao;
 
+use model\Order;
 
 interface ICustomerDao{
 
-    public function makeOrder();
+    public function makeOrder(Order $data);
 }

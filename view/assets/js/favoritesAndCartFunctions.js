@@ -73,9 +73,23 @@ function removeItemFromFavorites(id){
     request.send();
 }
 
-function removeItemFromCart(product_id , size_no){
+function removeItemSizeFromCart(product_id , size_no){
     var request = new XMLHttpRequest();
-    request.open("get", "handle_requests.php?target=cart&action=removeItem&productId=" + product_id + '&sizeNo=' +size_no );
+    request.open("get", "handle_requests.php?target=cart&action=removeItemSize&productId=" + product_id + '&sizeNo=' +size_no );
+    request.onreadystatechange = function (ev) {
+        if(this.readyState == 4){
+            if(this.status == 200){
+                console.log(this.responseText);
+                alert(this.responseText);
+            }
+        }
+    };
+    request.send();
+}
+
+function removeItemFromCart(product_id ){
+    var request = new XMLHttpRequest();
+    request.open("get", "handle_requests.php?target=cart&action=removeItem&productId=" + product_id);
     request.onreadystatechange = function (ev) {
         if(this.readyState == 4){
             if(this.status == 200){

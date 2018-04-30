@@ -27,10 +27,6 @@ class PasswordData extends AbstractModel
         parent::__construct($json);
     }
 
-    public function jsonSerialize() {
-        return get_object_vars($this);
-    }
-
     /**
      * @return mixed
      */

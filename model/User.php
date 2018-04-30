@@ -22,9 +22,6 @@ class User extends AbstractModel {
     protected $favorites;
     protected $cart;
 
-    public function jsonSerialize() {
-        return get_object_vars($this);
-    }
 
     public function __construct($json = null)
     {
@@ -61,21 +58,17 @@ class User extends AbstractModel {
 
 
 
-    public function removeFavoriteItem($item_no){
-        if ($item_no > 0 && is_numeric($item_no)){
-            // Nothing else worked .....
-            $clone_fav = array();
-            foreach ($this->getFavorites() as $index=>$item){
-                if ($index === $item_no){
-                    if ($item_no === 0){
-                       return $this->unsetFavorites();
-                    }
-                    $index--;
-                    continue;
+    public function removeFavoriteItem($item_no)
+    {
+        if ($item_no >= 0 && is_numeric($item_no)) {
+            $favorites = $this->getFavorites();
+            foreach ($favorites as $index => &$item) {
+                if ($index === $item_no) {
+                    unset($favorites[$index]);
+                    $this->setFavorites($favorites);
+                    break;
                 }
-                $clone_fav[$index] = $item;
             }
-            return $this->setFavorites($clone_fav);
         }
     }
 

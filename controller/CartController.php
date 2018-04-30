@@ -114,8 +114,8 @@ class CartController extends AbstractController{
       }
     }
 
-    public function removeItem()
-    { //removeItem&productId=" + product_id + '&sizeNo' +size_no
+    public function removeItemSize()
+    {
         if (isset($_GET['productId']) && isset($_GET['sizeNo'])) {
             $product_id = htmlentities($_GET['productId']);
             $product_size = htmlentities($_GET['sizeNo']);
@@ -153,4 +153,38 @@ class CartController extends AbstractController{
             }
         }
     }
+
+    public function removeItem(){
+       if (isset($_GET['productId'])){
+           $product_id = htmlentities($_GET['productId']);
+           if ($product_id < 0 || !is_numeric($product_id)){
+               die('bad data passed to controller');
+           }
+
+           $cart = &$_SESSION['cart'];
+           /* @var $cart_item Product */
+           foreach ($cart as $index=>&$cart_item) {
+               if ($cart_item->getProductId() === $product_id){
+                   unset($cart[$index]);
+                   $cart = array_values($cart);
+                   die('success!');
+               }
+           }
+       }
+    }
+
+    public function getCartTotalPrice(){
+        if (isset($_SESSION['cart'])){
+            $cart = $_SESSION['cart'];
+            $total = 0;
+            /* @var $item Product*/
+            foreach ($cart as $item_index=>$item){
+                $price = $item->getPriceOnPromotion();
+                $quantity = count($item->getSizes());
+                $total += $price*$quantity;
+            }
+            echo $total;
+        }
+    }
+
 }

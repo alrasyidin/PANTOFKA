@@ -9,15 +9,18 @@
 namespace model\dao;
 
 
+use model\Order;
+use model\Product;
+
 class CustomerDao extends UserDao implements ICustomerDao {
 
-    public function __construct() {
-        parent::init();
-    }
+    public  function makeOrder(Order $data){
 
-    public function makeOrder(){
 
     }
+
+
+
 
 
 }
