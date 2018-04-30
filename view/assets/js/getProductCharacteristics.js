@@ -1,0 +1,112 @@
+function loadCategories() {
+    var request = new XMLHttpRequest();
+    request.open("get", "handle_requests.php?target=product&action=getCategories");
+    request.onreadystatechange = function (ev) {
+        if (this.readyState == 4 && this.status == 200) {
+            var allCategories = JSON.parse(this.responseText);
+            var select = document.getElementById("categories");
+            for (var i = 0; i < allCategories.length; i++) {
+                var category = allCategories[i];
+                select.options[select.options.length] = new Option(category, category);
+            }
+        }
+    };
+    request.send();
+}
+
+
+function loadParentCategories() {
+    var request = new XMLHttpRequest();
+    request.open("get", "handle_requests.php?target=product&action=getCategories");
+    request.onreadystatechange = function (ev) {
+        if (this.readyState == 4 && this.status == 200) {
+            var allCategories = JSON.parse(this.responseText);
+            var select = document.getElementById("parent-categories");
+            for (var i = 0; i < allCategories.length; i++) {
+                var category = allCategories[i];
+                select.options[select.options.length] = new Option(category, category);
+            }
+        }
+    };
+    request.send();
+}
+
+function loadColors() {
+    var request = new XMLHttpRequest();
+    request.open("get", "handle_requests.php?target=product&action=getColors");
+    request.onreadystatechange = function (ev) {
+        if (this.readyState == 4 && this.status == 200) {
+            var allColors = JSON.parse(this.responseText);
+            var select = document.getElementById("select-color");
+            for (var i = 0; i < allColors.length; i++) {
+                var color = allColors[i];
+                select.options[select.options.length] = new Option(color, color);
+            }
+        }
+    };
+    request.send();
+}
+
+function loadMaterials() {
+    var request = new XMLHttpRequest();
+    request.open("get", "handle_requests.php?target=product&action=getMaterials");
+    request.onreadystatechange = function (ev) {
+        if (this.readyState == 4 && this.status == 200) {
+            var allMaterials = JSON.parse(this.responseText);
+            var select = document.getElementById("select-material");
+            for (var i = 0; i < allMaterials.length; i++) {
+                var material = allMaterials[i];
+                select.options[select.options.length] = new Option(material, material);
+            }
+        }
+    };
+    request.send();
+}
+
+
+function getStyles(parentCategory) {
+    var request = new XMLHttpRequest();
+    request.open("get", "handle_requests.php?target=product&action=getStylesByParentCategory&pc=" + parentCategory);
+    request.onreadystatechange = function (ev) {
+        if (this.readyState == 4 && this.status == 200) {
+            var styles = JSON.parse(this.responseText);
+            var select = document.getElementById("select-style");
+            while (select.options.length) {
+                select.remove(0);
+            }
+            for (var i = 0; i < styles.length; i++) {
+                var style = styles[i];
+                select.options[select.options.length] = new Option(style, style);
+            }
+        }
+    };
+    request.send();
+
+}
+
+
+
+function loadInputSizes(parentCategory) {
+    var request = new XMLHttpRequest();
+    request.open("get", "handle_requests.php?target=product&action=getSizesByParentCategory&pc=" + parentCategory);
+    request.onreadystatechange = function (ev) {
+        if (this.readyState == 4 && this.status == 200) {
+            var sizes = JSON.parse(this.responseText);
+            var div = document.getElementById("input-sizes");
+            div.innerHTML = "";
+
+            for (var i = 0; i < sizes.length; i++) {
+                var size = sizes[i];
+                var sizeNumber = document.createElement('h6');
+                div.appendChild(sizeNumber);
+                sizeNumber.style.display = "inline-block";
+                sizeNumber.innerHTML = size + ": ";
+                var inputQuantity = document.createElement("input");
+                div.appendChild(inputQuantity);
+                inputQuantity.type = "number";
+                inputQuantity.name = size;
+            }
+        }
+    };
+    request.send();
+}

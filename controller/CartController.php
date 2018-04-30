@@ -36,7 +36,7 @@ class CartController extends AbstractController{
         if (isset($_GET['id']) && isset($_GET['size'])){
             $product_id = htmlentities($_GET['id']);
             $size_no = htmlentities($_GET['size']);
-            if ($product_id < 1 || !is_numeric($product_id) || $size_no < 25 || $size_no > 47 || !is_numeric($size_no)){
+            if ($product_id < 1 || !is_numeric($product_id) || $size_no < 25 || $size_no > 48 || !is_numeric($size_no)){
                 json_encode('Bad data was passed in controller - ' . var_dump($product_id) . ' or ' . var_dump($size_no));
             }
             try{
@@ -85,7 +85,7 @@ class CartController extends AbstractController{
 
     // NOT TESTED YET TODO
     public function removeProduct(){
-        if (isset($_GET['cartItemId']) && isset($_GET['cartIdemNo'])){
+        if (isset($_GET['cartItemId']) && isset($_GET['cartItemSizeNo'])){
 
             $cart_item_id = htmlentities($_GET['cartItemId']);
             $cart_item_size_no = htmlentities($_GET['cartItemSizeNo']);

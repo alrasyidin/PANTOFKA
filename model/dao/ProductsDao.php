@@ -20,9 +20,6 @@ class ProductsDao extends AbstractDao implements IProductsDao
     }
 
 
-    // Function is not tested yet .. maybe its gonna need some light changes
-
-
     public function saveNewProduct(Product $product)
     {
 
@@ -38,8 +35,8 @@ class ProductsDao extends AbstractDao implements IProductsDao
         //  Checking if product with this name and details already exists
         $query = self::$pdo->prepare(
             "SELECT count(*) as product_exists FROM final_project_pantofka.products as p
-                       JOIN categories as c ON p.category_id = c.category_id
-                       WHERE p.product_name = ?
+                JOIN categories as c ON p.category_id = c.category_id
+                      WHERE p.product_name = ?
                        AND c.parent_id = ?
                        AND p.color_id = ?
                        AND p.material_id = ?");
@@ -47,7 +44,7 @@ class ProductsDao extends AbstractDao implements IProductsDao
         $count = $query->fetch(\PDO::FETCH_ASSOC);
 
 //          if the product not exists we can save it
-        if ($count["product_exists"] !==1) {
+        if ($count["product_exists"] !== 1) {
 
 //            self::$pdo->beginTransaction();
 
@@ -90,7 +87,7 @@ class ProductsDao extends AbstractDao implements IProductsDao
                 $quantity = $size->getSizeQuantity();
 
 
-                //insert into tabe - products_has_sizes product_id, size_id and the quantity
+                //insert into tabel - products_has_sizes product_id, size_id and the quantity
                 $stmt = self::$pdo->prepare(
                     "INSERT INTO final_project_pantofka.products_has_sizes (product_id, size_id, quantity) 
                                VALUES (?, ?, ?)");
@@ -103,8 +100,12 @@ class ProductsDao extends AbstractDao implements IProductsDao
 //throw $e;
 
             }
+
+            return 1;
+        } else {
+            return 0;
         }
-   }
+    }
 
     public function getCategoryAndStyleId($style, $category)
     {
@@ -284,7 +285,7 @@ class ProductsDao extends AbstractDao implements IProductsDao
                       FROM final_project_pantofka.products as p
                       JOIN colors as c ON p.color_id = c.color_id
                       JOIN materials as m ON p.material_id = m.material_id
-                      JOIN categories as cat ON p.category_id = cat.category_id ");
+                      JOIN categories as cat ON p.category_id = cat.category_id  ");
         $stmt->execute();
         $products = [];
         while ($product = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -361,7 +362,6 @@ class ProductsDao extends AbstractDao implements IProductsDao
         }
         return $materials;
     }
-
 
 
 }

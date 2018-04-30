@@ -35,9 +35,13 @@ class ProductController extends AbstractController
     {
         if ($_SERVER["REQUEST_METHOD"] == "GET") {
             try {
+                $daoSize = new SizeDao();
                 $dao = new ProductsDao();
                 $product = $dao->getProductById($_GET["id"]);
+                $sizes = $daoSize->getSizesAndQuantities($product->getProductId());
+                $product->setSizes($sizes);
                 echo json_encode($product);
+
             } catch (\PDOException $e) {
                 echo "error in Get product by ID - $e";
             }
@@ -193,8 +197,16 @@ class ProductController extends AbstractController
                     }
                     $new_product->setSizes($sizes_and_numbers);
 
-                    $dao->saveNewProduct($new_product);
-header("location: index.php?page=show_products");
+                   $result = $dao->saveNewProduct($new_product);
+                   if ($result ===1) {
+//Product is saved
+
+                       header("location: index.php?page=show_products");
+                   }
+                   else{
+                       //Product is not saved
+                       header("location: index.php?page=add_product");
+                   }
                 } catch (\PDOException $e) {
                     var_dump($e);
                 }

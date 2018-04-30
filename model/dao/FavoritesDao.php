@@ -24,7 +24,8 @@ class FavoritesDao extends AbstractDao implements IFavoritesDao {
 
     public static function productIsAlreadyInFavorites($product_id , $user_id){
         $query = self::$pdo->prepare(
-            "SELECT count(*) as found_match FROM final_project_pantofka.users_has_favorites WHERE product_id = ? AND user_id = ?");
+            "SELECT count(*) as found_match FROM final_project_pantofka.users_has_favorites 
+                        WHERE product_id = ? AND user_id = ?");
         $query->execute(array($product_id , $user_id));
         $r = $query->fetch(\PDO::FETCH_ASSOC);
         return boolval($r['found_match']);
