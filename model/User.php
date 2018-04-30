@@ -32,7 +32,15 @@ class User extends AbstractModel {
         if (isset($this->password)){
             $this->setPassword($this->password);
         }
-
+        if (!isset($this->favorites)){
+            $this->favorites = array();
+        }
+        if (!isset($this->cart)){
+            $this->cart = array();
+        }
+        if ($this->first_name === 'guest'){
+            $this->setUserId(0);
+        }
     }
 
     public function addToFav(Product $p){
@@ -41,6 +49,71 @@ class User extends AbstractModel {
 
     public function addToCart(Product $p){
         $this->cart[] = $p;
+    }
+
+    /**
+     * @param mixed $favorites
+     */
+    private function setFavorites(&$favorites)
+    {
+        $this->favorites = $favorites;
+    }
+
+
+
+    public function removeFavoriteItem($item_no){
+        if ($item_no > 0 && is_numeric($item_no)){
+            // Nothing else worked .....
+            $clone_fav = array();
+            foreach ($this->getFavorites() as $index=>$item){
+                if ($index === $item_no){
+                    if ($item_no === 0){
+                       return $this->unsetFavorites();
+                    }
+                    $index--;
+                    continue;
+                }
+                $clone_fav[$index] = $item;
+            }
+            return $this->setFavorites($clone_fav);
+        }
+    }
+
+    public function unsetCart(){
+       $cart = $this->getCart();
+       if (isset($cart)){
+           $cart = array();
+           return $this->setCart($cart);
+       }
+    }
+
+    public function unsetFavorites(){
+        $favorites = $this->getFavorites();
+        if (isset($favorites)){
+            $favorites = null;
+            $this->favorites = $favorites;
+        }
+    }
+
+    public function removeCartItem($item_no){
+        if ($item_no >= 0 && is_numeric($item_no)){
+            $cart = $this->getCart();
+            foreach ($cart as $index=>&$item){
+                if ($index === $item_no){
+                    unset($cart[$index]);
+                    $this->setCart($cart);
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * @param array $cart
+     */
+    private function setCart($cart)
+    {
+        $this->cart = $cart;
     }
 
 
@@ -56,7 +129,9 @@ class User extends AbstractModel {
     public function setUserId($user_id)
     {
         if ($user_id < 1){
-            throw new \RuntimeException("Bad data for id");
+            if ($this->first_name !== 'Guest' && $user_id !== 0){
+                throw new \RuntimeException("Bad data for id");
+            }
         }
         $this->user_id = $user_id;
     }
@@ -117,6 +192,7 @@ class User extends AbstractModel {
         if(strlen($first_name) < 5 || strlen($first_name) > 45 || is_numeric($first_name) ){
             throw new \RuntimeException("Bad data for first name");
         }
+
         $this->first_name = $first_name;
     }
 
@@ -181,6 +257,7 @@ class User extends AbstractModel {
     public function getFavorites()
     {
         return $this->favorites;
+
     }
 
     /**
@@ -190,8 +267,6 @@ class User extends AbstractModel {
     {
         return $this->cart;
     }
-
-
 
 
 }

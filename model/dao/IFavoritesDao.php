@@ -20,6 +20,6 @@ interface IFavoritesDao{
 
     public static function addToFavorites($product_id , $size_id);
 
-    public static function removeFromFavorites();
+    public static function removeFromFavorites($product_id , $user_id);
 
 }

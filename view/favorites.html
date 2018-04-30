@@ -1,3 +1,81 @@
-<section>
-    favs
+<section class="centered-section min-height-600">
+    <h3>Favorites</h3>
+
+    <hr>
+        <button id="clear-favorites-button"> Clear favorites </button>
+    <hr>
+
+    <div id="display-favorite-items"></div>
 </section>
+
+<script>
+    loadFavorites();
+
+    // ===============================================================================================================
+
+    function loadFavorites() {
+        var wrapper = document.getElementById("display-favorite-items");
+
+        var request = new XMLHttpRequest();
+        request.open("get", "handle_requests.php?target=favorites&action=getFavorites");
+        request.onreadystatechange = function (ev) {
+            if(this.readyState == 4){
+                if(this.status == 200){
+                   var favorites = JSON.parse(this.responseText);
+                   console.log(favorites);
+                   for (var i = 0; i < favorites.length ; i++){
+                       var item = favorites[i];
+                       var box = document.createElement('div');
+                       box.innerHTML = JSON.stringify(item);
+
+                       var addToCartButton = document.createElement("button");
+                       addToCartButton.id = 'add-to-cart-from-favs-button';
+
+                       var removeFromFavoritesButton = document.createElement("button");
+                       removeFromFavoritesButton.id = 'remove-from-favs-button';
+
+                       var sizeInput = document.createElement('input');
+                       sizeInput.type = 'number';
+                       sizeInput.placeholder = 'Choose a size';
+                       sizeInput.id = 'favorites-pick-size-for-product' + item.product_id;
+                       box.appendChild(sizeInput);
+
+                       addToCartButton.setAttribute('onclick' , 'addToCart('+ item.product_id + ')');
+                       removeFromFavoritesButton.setAttribute('onclick' , 'removeItemFromFavorites('+ item.product_id + ')');
+
+                       box.appendChild(addToCartButton);
+                       box.appendChild(removeFromFavoritesButton);
+
+                       addToCartButton.innerHTML = "Add to cart";
+                       removeFromFavoritesButton.innerHTML = 'Remove from favorites';
+
+                       wrapper.appendChild(box);
+                   }
+                }
+            }
+        };
+        request.send();
+
+    }
+
+    // ===============================================================================================================
+
+    var clearFavoritesButton = document.getElementById("clear-favorites-button");
+    clearFavoritesButton.onclick = function () {
+        alert('clearing...');
+        var request = new XMLHttpRequest();
+        request.open("get", "handle_requests.php?target=favorites&action=deleteFavorites");
+        request.onreadystatechange = function (ev) {
+            if (this.readyState == 4) {
+                if (this.status == 200) {
+                    alert(this.responseText);
+                }
+            }
+
+        };
+        request.send();
+    }
+
+
+
+</script>

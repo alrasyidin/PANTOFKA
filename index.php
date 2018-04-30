@@ -27,7 +27,7 @@ ini_set('mbstring.internal_encoding','UTF-8');
 header('Content-Type: text/html; charset=UTF-8');
 
 session_start();
-var_dump($_SESSION);
+
 ?>
 
 <!DOCTYPE html>
@@ -110,6 +110,7 @@ var_dump($_SESSION);
 
     <!-- End Document–––––––––––––––––––––––––––––––––––––-->
     <script src="./view/assets/js/editProfile.js" type="text/javascript"></script>
+    <script src= "./view/assets/js/favoritesAndCartFunctions.js" type="text/javascript"></script>
 
     </body>
 
