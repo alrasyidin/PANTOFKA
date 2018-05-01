@@ -87,7 +87,15 @@ function visualiseProducts(products) {
         selectSize.className = "sizes";
         selectSize.style = "display: inline-block";
         var sizes = product.sizes;
-        if (sizes.length === 0){
+        var flagSizes = false;
+        for (var k = 0; k < sizes.length; k++) {
+            var sizeN = sizes[k];
+            if (sizeN.size_quantity > 0) {
+                flagSizes = true;
+                break;
+            }
+        }
+        if (flagSizes === false){
             sizeText.innerHTML = "Out of stock!"
         }
         else {
@@ -129,7 +137,7 @@ function visualiseProducts(products) {
         divButtons.appendChild(addToFavButton);
         addToFavButton.innerHTML = "Add to favorites";
 
-        // If admin
+        // If admin !!!!!!!!!!!!
         var editProductButton = document.createElement("button");
         editProductButton.id = 'edit-product-button';
         editProductButton.setAttribute('onclick' , 'editProduct('+ product.product_id + ')');
@@ -141,7 +149,6 @@ function visualiseProducts(products) {
         deleteProductButton.setAttribute('onclick' , 'deleteProduct('+ product.product_id + ')');
         divButtons.appendChild(deleteProductButton);
         deleteProductButton.innerHTML = "Unset product";
-
     }
 
 }
@@ -240,21 +247,32 @@ function fillModal(product_id) {
             productSizes.appendChild(selectSize);
 
             var sizesOfProduct = product.sizes;
-            if (sizesOfProduct.length === 0){
+            var flagSizes = false;
+            for (var k = 0; k < sizesOfProduct.length; k++) {
+                var sizeN = sizesOfProduct[k];
+                if (sizeN.size_quantity > 0) {
+                    flagSizes = true;
+                    break;
+                }
+            }
+            if (flagSizes === false){
                 sizeText.innerHTML = "Out of stock!"
             }
             else {
                 sizeText.innerHTML = "Sizes: ";
 
             }
+            productSizes.appendChild(sizeText);
+            productSizes.appendChild(selectSize);
+
 
             for (var j = 0; j < sizesOfProduct.length; j++) {
-                var sizeOfProduct = sizesOfProduct[j];
-                if (sizeOfProduct.size_quantity > 0) {
-                    selectSize.options[selectSize.options.length] =
-                        new Option(sizeOfProduct.size_number, sizeOfProduct.size_number);
+                var size = sizesOfProduct[j];
+                if (size.size_quantity > 0) {
+                    selectSize.options[selectSize.options.length] = new Option(size.size_number, size.size_number);
                 }
             }
+
 
 
 

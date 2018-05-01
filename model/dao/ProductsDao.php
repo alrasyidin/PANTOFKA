@@ -20,31 +20,16 @@ class ProductsDao extends AbstractDao implements IProductsDao
     }
 
 
+
     public function saveNewProduct(Product $product)
     {
-
 
         // Getting ids for details of the product
         $color_id = $this->getColorId($product->getColor());
 
         $material_id = $this->getMaterialId($product->getMaterial());
 
-        $category_id = $this->getCategoryId($product->getCategory());
 
-
-        //  Checking if product with this name and details already exists
-        $query = self::$pdo->prepare(
-            "SELECT count(*) as product_exists FROM final_project_pantofka.products as p
-                JOIN categories as c ON p.category_id = c.category_id
-                      WHERE p.product_name = ?
-                       AND c.parent_id = ?
-                       AND p.color_id = ?
-                       AND p.material_id = ?");
-        $query->execute(array($product->getProductName(), $category_id, $color_id, $material_id));
-        $count = $query->fetch(\PDO::FETCH_ASSOC);
-
-//          if the product not exists we can save it
-        if ($count["product_exists"] !== 1) {
 
 //            self::$pdo->beginTransaction();
 
@@ -98,13 +83,31 @@ class ProductsDao extends AbstractDao implements IProductsDao
 //{
 //self::$pdo->e->rollback();
 //throw $e;
-
             }
 
-            return 1;
-        } else {
-            return 0;
-        }
+    }
+
+    public function productExists($product_name, $material, $category, $color){
+
+        // Getting ids for details of the product
+        $color_id = $this->getColorId($color);
+
+        $material_id = $this->getMaterialId($material);
+
+        $category_id = $this->getCategoryId($category);
+
+
+        //  Checking if product with this name and details already exists
+        $query = self::$pdo->prepare(
+            "SELECT count(*) as product_exists FROM final_project_pantofka.products as p
+                JOIN categories as c ON p.category_id = c.category_id
+                      WHERE p.product_name = ?
+                       AND c.parent_id = ?
+                       AND p.color_id = ?
+                       AND p.material_id = ?");
+        $query->execute(array($product_name, $category_id, $color_id, $material_id));
+        $count = $query->fetch(\PDO::FETCH_ASSOC);
+       return boolval($count["product_exists"]);
     }
 
     public function getCategoryAndStyleId($style, $category)
@@ -217,20 +220,6 @@ class ProductsDao extends AbstractDao implements IProductsDao
         }
     }
 
-
-    public
-    function productExists($product_name, $category, $color, $material)
-    {
-        $query = self::$pdo->prepare(
-            "SELECT count(*) as product_exists FROM final_project_pantofka.products 
-                      WHERE product_name = ? 
-                      AND category = ?  
-                      AND color = ?
-                       AND material = ?");
-        $query->execute(array($product_name, $category, $color, $material));
-        $count = $query->fetch(\PDO::FETCH_ASSOC);
-        return boolval($count["product_exists"]);
-    }
 
 
     public

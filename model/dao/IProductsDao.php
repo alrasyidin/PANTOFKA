@@ -23,7 +23,7 @@ interface IProductsDao
 
     public function getCategoryId($category);
 
-    public function productExists($product_name, $category, $color, $material);
+    public function productExists($product_name, $material, $category, $color);
 
     public function getProductsCount($category);
 

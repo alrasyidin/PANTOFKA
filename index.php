@@ -72,6 +72,8 @@ var_dump($_SESSION);
         <script src= "./view/assets/js/register.js" type="text/javascript"></script>
         <script src= "./view/assets/js/login.js" type="text/javascript"></script>
         <script src= "./view/assets/js/validation.js" type="text/javascript"></script>
+        <script src= "./view/assets/js/admin.js" type="text/javascript"></script>
+
 
 
 

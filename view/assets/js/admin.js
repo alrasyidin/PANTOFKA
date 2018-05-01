@@ -1,5 +1,5 @@
 
-function userIsAdminReq(tempObject) {
+function userIsAdminReq() {
     var request = new XMLHttpRequest();
     request.open("get", "handle_requests.php?target=user&action=userIsAdmin");
 
@@ -7,17 +7,18 @@ function userIsAdminReq(tempObject) {
 
         if (this.readyState == 4){
             if (this.status == 200){
-                alert(1);
-                tempObject = {'userIsAdmin' : 'yes'};
-                return tempObject.isAdmin;
-
-            }else {
-                tempObject.isAdmin = false;
+           var userIsAdmin = JSON.parse(this.responseText);
+               if (userIsAdmin){
+                   return true;
+               }
+               else {
+                   return false;
+               }
             }
-        };
+        }
 
 
-    }
+    };
     request.send();
 }
 
