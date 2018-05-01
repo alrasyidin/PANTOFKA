@@ -22,4 +22,3 @@ function userIsAdminReq() {
     request.send();
 }
 
-

@@ -65,7 +65,7 @@
                                removeFromCartButton.id = 'remove-from-cart-button-'+item.id+'-'+sizes[j];
                                removeFromCartButton.setAttribute('onclick' , 'removeItemSizeFromCart('+ item.product_id + ',' + sizes[j] + ')');
                                box.appendChild(removeFromCartButton);
-                               removeFromCartButton.innerHTML = 'Remove ' + sizes[j] + 'No. from cart';
+                               removeFromCartButton.innerHTML = sizes[j];
                            }
                        }
 

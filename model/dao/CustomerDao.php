@@ -79,7 +79,7 @@ class CustomerDao extends UserDao implements ICustomerDao {
 
     }
 
-    public static function getOrdersHistory($user_id){
+    public static function getOrdersData($user_id){
 
         $stmt = self::$pdo->prepare("SELECT order_id , total_price , date , product_name , size_number , quantity , size_id, product_id
                                               FROM final_project_pantofka.orders 
@@ -103,4 +103,30 @@ class CustomerDao extends UserDao implements ICustomerDao {
         }
         return $orders;
     }
+
+    public static function userIsCustomer($user_id){
+        $stmt = self::$pdo->prepare("SELECT count(*) as user_is_customer 
+                                            FROM final_project_pantofka.orders 
+                                            WHERE user_id");
+        $stmt->execute(array($user_id));
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return boolval($result["user_is_customer"]);
+    }
+
+    public static function getOrders($user_id){
+        $stmt = self::$pdo->prepare("SELECT order_id , total_price , date
+                                              FROM final_project_pantofka.orders
+                                              WHERE user_id = ? ORDER BY DATE DESC");
+        $stmt->execute(array($user_id));
+        $orders = array();
+        while ($result = $stmt->fetch(\PDO::FETCH_ASSOC)){
+            $orders[] = [
+                'orderId' => $result['order_id'] ,
+                'totalPrice' =>$result['total_price'] ,
+                'date' => $result['date'] ,
+            ];
+        }
+        return $orders;
+    }
+
 }

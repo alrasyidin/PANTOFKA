@@ -14,6 +14,7 @@ use model\dao\ProductsDao;
 use model\Product;
 use model\dao\SizeDao;
 use model\Size;
+use model\User;
 
 class AdminController extends AbstractController
 {
@@ -148,32 +149,34 @@ class AdminController extends AbstractController
 }
 
 
-public
-function editProduct(Product $product)
-{
 
-}
+    public function unsetProduct(){
+        if (isset($_SESSION['user'])){
+            /* @var $user_in_session User*/
+            $user_in_session = $_SESSION['user'];
+            if ($user_in_session->getisAdmin()){
+                if (isset($_GET['id'])) {
+                    $product_id = htmlentities($_GET['id']);
+                    if ($product_id < 1 || !is_numeric($product_id)) {
+                        die('Bad data passed to the controller');
+                    }
+                    try {
+                        if (AdminDao::productIsAvailable($product_id)) {
+                            AdminDao::unsetProduct($product_id);
+                            echo 'The product size quantities were set to zero';
+                        }else {
+                            echo 'There is nothing else to remove from here';
+                        }
+                    } catch (\PDOException $e) {
+                        die($e->getMessage());
+                    }
 
-public
-function unsetProduct()
-{
-    if (isset($_GET['id'])) {
-        $product_id = htmlentities($_GET['id']);
-        if ($product_id < 1 || !is_numeric($product_id)) {
-            die('Bad data passed to the controller');
-        }
-        try {
-            if (AdminDao::productIsAvailable($product_id)) {
-                AdminDao::unsetProduct($product_id);
-                echo 'The product size quantities were set to zero';
-            } else {
-                echo 'There is nothing else to remove from here';
+                }
+            }else{
+                die('This is admin feature!');
             }
-
-        } catch (\PDOException $e) {
-            die($e->getMessage());
+        }else{
+            die('This is admin feature!');
         }
-
     }
-}
 }

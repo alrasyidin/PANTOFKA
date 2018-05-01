@@ -27,7 +27,6 @@ ini_set('mbstring.internal_encoding','UTF-8');
 header('Content-Type: text/html; charset=UTF-8');
 
 session_start();
-var_dump($_SESSION['cart']);
 ?>
 
 <!DOCTYPE html>

@@ -50,7 +50,6 @@ class OrderController extends AbstractController {
                         }
                     }
                     $_SESSION['cart'] = array();
-                    $user_in_session->setIsCustomer(true);
                     header('HTTP/1.1 200');
                     die('Successful order');
                 }catch (\PDOException $e){
@@ -72,14 +71,32 @@ class OrderController extends AbstractController {
         }
     }
 
-    public function getOrderHistory(){
+    public function getOrdersData(){
         if (isset($_SESSION['user'])){
             /* @var $user_in_session User */
             $user_in_session = $_SESSION['user'];
-            if ($user_in_session->isCustomer()){
+            if (CustomerDao::userIsCustomer($user_in_session->getUserId())){
                 try{
-                     $orders = CustomerDao::getOrdersHistory($user_in_session->getUserId());
-                     echo json_encode($orders);
+                     $history_data = CustomerDao::getOrdersData($user_in_session->getUserId());
+                     echo json_encode($history_data);
+                }catch (\PDOException $e){
+                    echo $e->getMessage();
+                }
+            }else{
+                die('Nothing to display');
+            }
+
+        }
+    }
+
+    public function getOrders(){
+        if (isset($_SESSION['user'])){
+            /* @var $user_in_session User */
+            $user_in_session = $_SESSION['user'];
+            if (CustomerDao::userIsCustomer($user_in_session->getUserId())){
+                try{
+                    $orders = CustomerDao::getOrders($user_in_session->getUserId());
+                    echo json_encode($orders);
                 }catch (\PDOException $e){
                     echo $e->getMessage();
                 }
