@@ -1,13 +1,14 @@
 <section class="centered-section min-height-600">
-    <h6>Cart</h6>
+    <h3>Cart</h3>
     <hr>
         <button id="clear-cart-button"> Clear cart </button>
     <hr>
 
+    <div id="show-cart-div">
     <div id="display-cart-items"></div>
-
+    <hr>
     <div id="buy-cart-items"></div>
-
+    </div>
 
 </section>
 
@@ -43,8 +44,6 @@
                if(this.status == 200){
                    var cartItems = JSON.parse(this.responseText);
 
-
-
                    for (var i = 0; i < cartItems.length ; i++){
                        var item = cartItems[i];
                        var box = document.createElement('div');
@@ -59,15 +58,17 @@
                        box.appendChild(removeWholeItemButton);
 
                        var sizes = item.sizes;
-
-                       for (var j = 0; j < sizes.length ; j++){
-
-                           var removeFromCartButton = document.createElement("button");
-                           removeFromCartButton.id = 'remove-from-cart-button-'+item.id+'-'+sizes[j];
-                           removeFromCartButton.setAttribute('onclick' , 'removeItemSizeFromCart('+ item.product_id + ',' + sizes[j] + ')');
-                           box.appendChild(removeFromCartButton);
-                           removeFromCartButton.innerHTML = 'Remove ' + sizes[j] + 'No. from cart';
+                       if (sizes.length > 1){
+                           for (var j = 0; j < sizes.length ; j++){
+                               var removeFromCartButton = document.createElement("button");
+                               removeFromCartButton.className = 'remove-size-from-cart-button';
+                               removeFromCartButton.id = 'remove-from-cart-button-'+item.id+'-'+sizes[j];
+                               removeFromCartButton.setAttribute('onclick' , 'removeItemSizeFromCart('+ item.product_id + ',' + sizes[j] + ')');
+                               box.appendChild(removeFromCartButton);
+                               removeFromCartButton.innerHTML = 'Remove ' + sizes[j] + 'No. from cart';
+                           }
                        }
+
                        wrapper.appendChild(box);
                    }
 
@@ -114,9 +115,13 @@
        request.onreadystatechange = function (ev) {
 
            if (this.readyState == 4){
+               alert(this.responseText);
+
                if (this.status == 200){
-                   alert(this.responseText);
+                   var wrapper = document.getElementById('show-cart-div');
+                   wrapper.innerHTML = '<h3>Thank you for your order!<h3>'
                }else {
+                   console.log(this.responseText);
                }
            };
        }

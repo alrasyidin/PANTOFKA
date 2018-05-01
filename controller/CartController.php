@@ -187,4 +187,23 @@ class CartController extends AbstractController{
         }
     }
 
+    /** Format returned : cart[  product id ] = [  'size' => quantity  ] */
+    public static function simplifyCart(){
+        if (isset($_SESSION['cart'])){
+            $cart = $_SESSION['cart'];
+            $simplified_cart = array();
+            $size_dao = new SizeDao(); // TODO
+            /* @var $item Product*/
+            foreach ($cart as $item) {
+                $sizes =  array_count_values($item->getSizes());
+                foreach ($sizes as $size_no=>&$quantity){
+                    $size_no = $size_dao->getSizeId($size_no);
+                    $sizes[$size_no] = $quantity;
+                }
+                $simplified_cart[$item->getProductId()] = $sizes;
+            }
+            return $simplified_cart;
+        }
+    }
+
 }

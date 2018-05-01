@@ -12,5 +12,4 @@ use model\Order;
 
 interface ICustomerDao{
 
-    public function makeOrder(Order $data);
 }

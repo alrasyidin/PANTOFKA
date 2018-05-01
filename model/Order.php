@@ -9,6 +9,8 @@
 namespace model;
 
 
+use model\dao\SizeDao;
+
 class Order {
 
     private $id;
@@ -21,10 +23,11 @@ class Order {
     /* @throws \RuntimeException */
     public function __construct($customer_id, $items)
     {
-        $this->date = date('m/d/Y h:i:s a', time());
+        $this->id = null;
+        $this->date = date('Y-m-d', time());
         $this->setItems($items);
         $this->setCustomerId($customer_id);
-        $this->setTotalPrice($items);
+        $this->total_price = self::setTotalPrice($items);
     }
 
     /**
@@ -32,15 +35,34 @@ class Order {
      */
     private function setItems($items)
     {
+        if (is_array($items)){
         foreach ($items as $item){
             if (!($item instanceof Product)){
                 throw new \RuntimeException('Expected products, but something else was passed in cart items...');
             }
+        }$this->items = $items;
+        }else{
+            throw new \RuntimeException('Expected array of products, but something else was passed...');
+
         }
-        $this->items = $items;
     }
 
-    public function setTotalPrice($items)
+    public function getProductSizeQuantity(Product $product , $size){
+       $sizes = array_count_values($product->getSizes());
+       return $sizes[$size];
+    }
+
+    public static function getSizeId($size_no){
+        try{
+           $size_dao = new SizeDao();
+           $size_id = $size_dao->getSizeId($size_no);
+           return $size_id;
+        }catch (\PDOException $e){
+            echo $e->getMessage();
+        }
+    }
+
+    public static function setTotalPrice($items)
     {
         $total = 0;
         /* @var $item Product*/
@@ -49,8 +71,7 @@ class Order {
             $quantity = count($item->getSizes());
             $total += $price*$quantity;
         }
-        $this->total_price = $total;
-        return $this->total_price;
+        return $total;
     }
 
 
