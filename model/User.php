@@ -21,7 +21,7 @@ class User extends AbstractModel {
     protected $is_admin;
     protected $favorites;
     protected $cart;
-
+    protected $is_customer;
 
     public function __construct($json = null)
     {
@@ -38,6 +38,7 @@ class User extends AbstractModel {
         if ($this->first_name === 'guest'){
             $this->setUserId(0);
         }
+       $this->is_customer = false;
     }
 
     public function addToFav(Product $p){
@@ -55,6 +56,23 @@ class User extends AbstractModel {
     {
         $this->favorites = $favorites;
     }
+
+    /**
+     * @return bool
+     */
+    public function isCustomer()
+    {
+        return $this->is_customer;
+    }
+
+    /**
+     * @param bool $is_customer
+     */
+    public function setIsCustomer($is_customer)
+    {
+        $this->is_customer = $is_customer; // Validate with db check ??
+    }
+
 
 
 

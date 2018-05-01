@@ -22,7 +22,7 @@
             if(this.readyState == 4){
                 if(this.status == 200){
                    var favorites = JSON.parse(this.responseText);
-                   console.log(favorites);
+
                    for (var i = 0; i < favorites.length ; i++){
                        var item = favorites[i];
                        var box = document.createElement('div');
@@ -34,11 +34,13 @@
                        var removeFromFavoritesButton = document.createElement("button");
                        removeFromFavoritesButton.id = 'remove-from-favs-button';
 
-                       var sizeInput = document.createElement('input');
-                       sizeInput.type = 'number';
-                       sizeInput.placeholder = 'Choose a size';
-                       sizeInput.id = 'favorites-pick-size-for-product' + item.product_id;
-                       box.appendChild(sizeInput);
+                       var sizeSelect = document.createElement('select');
+                       var available_sizes = item.available_sizes;
+                       for (var j = 0 ; j < available_sizes.length ; j++){
+                           sizeSelect.options[sizeSelect.options.length] = new Option(available_sizes[j], available_sizes[j]);
+                       }
+                       sizeSelect.id = 'favorites-pick-size-for-product' + item.product_id;
+                       box.appendChild(sizeSelect);
 
                        addToCartButton.setAttribute('onclick' , 'addToCart('+ item.product_id + ')');
                        removeFromFavoritesButton.setAttribute('onclick' , 'removeItemFromFavorites('+ item.product_id + ')');

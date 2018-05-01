@@ -1,15 +1,13 @@
 function addToCart(id ) {
 
     var sizeSelect = document.getElementById( 'sizes-for-product' + id );
-    var sizeInputFromFav = document.getElementById( 'favorites-pick-size-for-product' + id );
+    var sizeSelectFav = document.getElementById( 'favorites-pick-size-for-product' + id );
 
     if (sizeSelect !== null){
         var size = sizeSelect.options[sizeSelect.selectedIndex].value;
-    } else if(sizeInputFromFav !== null){
-        var size = sizeInputFromFav.value;
-        alert(size)
+    } else if(sizeSelectFav !== null){
+        var size = sizeSelectFav.options[sizeSelectFav.selectedIndex].value;
     }else{
-
         alert('Problem in add to cart' );
     }
     var request = new XMLHttpRequest();

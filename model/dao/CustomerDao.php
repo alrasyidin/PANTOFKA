@@ -57,6 +57,7 @@ class CustomerDao extends UserDao implements ICustomerDao {
     }
 
     public static function decreaseQuantities($item_id , $size_id , $size_quantity){
+
             $stmt = self::$pdo->prepare("SELECT quantity FROM final_project_pantofka.products_has_sizes 
                                               WHERE product_id = ? AND size_id = ?");
 
@@ -78,4 +79,28 @@ class CustomerDao extends UserDao implements ICustomerDao {
 
     }
 
+    public static function getOrdersHistory($user_id){
+
+        $stmt = self::$pdo->prepare("SELECT order_id , total_price , date , product_name , size_number , quantity , size_id, product_id
+                                              FROM final_project_pantofka.orders 
+                                              LEFT JOIN final_project_pantofka.orders_has_products USING (order_id)
+                                              JOIN final_project_pantofka.sizes USING (size_id)
+                                              JOIN final_project_pantofka.products USING (product_id)
+                                              WHERE user_id = ? ORDER BY DATE DESC");
+        $stmt->execute(array($user_id));
+        $orders = array();
+        while ($result = $stmt->fetch(\PDO::FETCH_ASSOC)){
+                $orders[] = [
+                    'orderId' => $result['order_id'] ,
+                    'totalPrice' =>$result['total_price'] ,
+                    'date' => $result['date'] ,
+                    'productId' => $result['product_id'],
+                    'productName' => $result['product_name'],
+                    'sizeNumber' => $result['size_number'],
+                    'sizeId' => $result['size_id'],
+                    'quantity' => $result['quantity']
+                ];
+        }
+        return $orders;
+    }
 }

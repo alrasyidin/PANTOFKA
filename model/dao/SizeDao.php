@@ -28,7 +28,6 @@ class SizeDao extends AbstractDao implements ISizeDao
         return $size_id['size_id'];
     }
 
-
     public function saveSize($product_id, Size $size){
             $size_id = $this->getSizeId($size->getSizeNumber());
 
@@ -55,6 +54,20 @@ class SizeDao extends AbstractDao implements ISizeDao
         While ($query_result = $stmt->fetch(\PDO::FETCH_ASSOC)) {
             $size = new Size(json_encode($query_result));
             $sizes[]=$size;
+        }
+        return $sizes;
+    }
+
+    public static function getAvailableSizes($product_id){
+        $stmt = self::$pdo->prepare(
+            "SELECT size_number FROM final_project_pantofka.sizes as s
+                      JOIN products_has_sizes as ps ON s.size_id = ps.size_id
+                      JOIN products as p ON ps.product_id = p.product_id
+                      WHERE p.product_id = ? AND ps.quantity > 0");
+        $stmt->execute(array($product_id));
+        $sizes = array();
+        while ($result = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $sizes[] = $result['size_number'];
         }
         return $sizes;
     }

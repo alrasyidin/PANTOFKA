@@ -11,6 +11,7 @@ namespace controller;
 
 use model\dao\FavoritesDao;
 use model\dao\ProductsDao;
+use model\dao\SizeDao;
 use model\dao\UserDao;
 use model\Product;
 use model\User;
@@ -69,6 +70,9 @@ class FavoritesController extends AbstractController{
             $user_in_session = $_SESSION['user'];
             try{
                 $favorites = FavoritesDao::getFavorites($user_in_session->getUserId());
+                foreach ($favorites as &$favorite_item) {
+                   $favorite_item['available_sizes'] = SizeDao::getAvailableSizes($favorite_item['product_id']);
+                }
                 echo json_encode($favorites);
             }catch (\PDOException $e){
                 die($e->getTraceAsString() . '<hr>' . $e->getMessage());

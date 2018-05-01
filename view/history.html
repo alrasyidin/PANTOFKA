@@ -1,0 +1,37 @@
+<section class="centered-section min-height-600">
+    <h3>Order history</h3>
+
+    <div id="display-history"></div>
+</section>
+
+<script>
+    loadHistory();
+
+    // ===============================================================================================================
+
+    function loadHistory() {
+        var wrapper = document.getElementById("display-history");
+
+        var request = new XMLHttpRequest();
+        request.open("get", "handle_requests.php?target=order&action=getOrderHistory");
+        request.onreadystatechange = function (ev) {
+            if(this.readyState == 4){
+                if(this.status == 200){
+                    var history = JSON.parse(this.responseText);
+
+                    wrapper.innerHTML = this.responseText;
+
+
+
+                }
+            }
+        };
+        request.send();
+
+    }
+
+    // ===============================================================================================================
+
+
+
+</script>
