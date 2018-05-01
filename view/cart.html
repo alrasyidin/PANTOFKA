@@ -1,4 +1,125 @@
-<section>
+<section class="centered-section min-height-600">
+    <h6>Cart</h6>
+    <hr>
+        <button id="clear-cart-button"> Clear cart </button>
+    <hr>
 
-    cart
+    <div id="display-cart-items"></div>
+
+    <div id="buy-cart-items"></div>
+
+
 </section>
+
+<script>
+   var clearCartButton = document.getElementById('clear-cart-button');
+   clearCartButton.onclick = function () {
+       alert('clearing...');
+       var request = new XMLHttpRequest();
+       request.open("get", "handle_requests.php?target=cart&action=unsetCart");
+       request.onreadystatechange = function (ev) {
+           if(this.readyState == 4){
+               if(this.status == 200){
+                   alert(this.responseText);
+               }
+           }
+
+       };
+       request.send();
+
+   }
+
+   loadCart();
+
+   // ===============================================================================================================
+
+   function loadCart() {
+       var wrapper = document.getElementById("display-cart-items");
+
+       var request = new XMLHttpRequest();
+       request.open("get", "handle_requests.php?target=cart&action=getCartItems");
+       request.onreadystatechange = function (ev) {
+           if(this.readyState == 4){
+               if(this.status == 200){
+                   var cartItems = JSON.parse(this.responseText);
+
+
+
+                   for (var i = 0; i < cartItems.length ; i++){
+                       var item = cartItems[i];
+                       var box = document.createElement('div');
+                       box.innerHTML = JSON.stringify(item);
+                       var productName = document.createElement('h3');
+                       productName.innerHTML = item.product_name;
+                       box.appendChild(productName);
+
+                       var removeWholeItemButton = document.createElement('button');
+                       removeWholeItemButton.innerHTML = 'Remove item';
+                       removeWholeItemButton.setAttribute('onclick' , 'removeItemFromCart('+ item.product_id +')');
+                       box.appendChild(removeWholeItemButton);
+
+                       var sizes = item.sizes;
+
+                       for (var j = 0; j < sizes.length ; j++){
+
+                           var removeFromCartButton = document.createElement("button");
+                           removeFromCartButton.id = 'remove-from-cart-button-'+item.id+'-'+sizes[j];
+                           removeFromCartButton.setAttribute('onclick' , 'removeItemSizeFromCart('+ item.product_id + ',' + sizes[j] + ')');
+                           box.appendChild(removeFromCartButton);
+                           removeFromCartButton.innerHTML = 'Remove ' + sizes[j] + 'No. from cart';
+                       }
+                       wrapper.appendChild(box);
+                   }
+
+                   if (cartItems.length > 0){
+                       loadBuyCartDiv();
+                   }
+               }
+           }
+       };
+       request.send();
+
+   }
+
+   function loadBuyCartDiv() {
+       var wrapper = document.getElementById('buy-cart-items');
+
+       var request = new XMLHttpRequest();
+       request.open("get", "handle_requests.php?target=cart&action=getCartTotalPrice");
+       request.onreadystatechange = function (ev) {
+           if (this.readyState == 4){
+               if (this.status == 200){
+                    var total = document.createElement('h4');
+                    total.innerHTML = 'Total price: ' + this.responseText;
+                    wrapper.appendChild(total);
+
+                    var orderButton = document.createElement('button');
+                    orderButton.innerHTML = 'Order';
+                    orderButton.setAttribute('onclick' , 'orderCart()');
+                    wrapper.appendChild(orderButton);
+               }else {
+                   alert('something went wrong when loading order div');
+               }
+           };
+
+
+       }
+       request.send();
+   }
+
+   function orderCart() {
+       var request = new XMLHttpRequest();
+       request.open("get", "handle_requests.php?target=order&action=orderCart");
+
+       request.onreadystatechange = function (ev) {
+
+           if (this.readyState == 4){
+               if (this.status == 200){
+                   alert(this.responseText);
+               }else {
+               }
+           };
+       }
+       request.send();
+   }
+</script>

@@ -8,17 +8,42 @@
 
 namespace model;
 
+use model\AbstractModel;
 
-class Cart extends AbstractModel {
+class Cart implements \JsonSerializable {
 
-   private $cart = array();
+    // cart_id ?
+   private $cartItems;
+   private static $instance;
 
-   public function __construct($json = null){
-       parent::__construct($json);
-   }
-
-    public function getCart(){
-        return $this->cart;
+    private function __construct($cartItems = null)
+    {
+        $this->cartItems = array();
     }
+
+    public static function init() {
+        if(self::$instance == null) {
+            self::$instance = new Cart();
+        }
+        return self::$instance;
+    }
+
+    public function jsonSerialize()
+    {
+        return get_object_vars($this);
+    }
+
+
+    public function addItemToCart(Product $product)
+    {
+        $this->cartItems[] = $product;
+    }
+
+
+    public function getCartItems(){
+        return $this->cartItems;
+    }
+
+
 
 }

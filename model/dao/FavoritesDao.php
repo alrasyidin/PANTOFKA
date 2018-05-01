@@ -9,6 +9,8 @@
 namespace model\dao;
 
 
+use model\Product;
+
 class FavoritesDao extends AbstractDao implements IFavoritesDao {
 
     public  function __construct() {
@@ -31,8 +33,10 @@ class FavoritesDao extends AbstractDao implements IFavoritesDao {
         return boolval($r['found_match']);
      }
 
-    public static function removeFromFavorites(){
-
+    public static function removeFromFavorites($product_id , $user_id){
+        $query = self::$pdo->prepare(
+            "DELETE FROM users_has_favorites WHERE product_id=? AND user_id = ?");
+        $query->execute(array($product_id , $user_id));
     }
 
     public static function productIsAvailable($product_id , $size_id){
@@ -57,4 +61,32 @@ class FavoritesDao extends AbstractDao implements IFavoritesDao {
         }
     }
 
+    public static function getFavorites($user_id){
+        $query = self::$pdo->prepare(
+            "SELECT product_id FROM final_project_pantofka.users_has_favorites
+                      WHERE user_id = ? ");
+        $query->execute(array($user_id));
+        $favorites = array();
+        while ($product = $query->fetch(\PDO::FETCH_ASSOC)){
+            $id = $product['product_id'];
+            $favorites[] = self::getProductAsArray($id);
+        }
+        return $favorites;
+
+    }
+
+    public static function getProductAsArray($product_id){
+        $query = self::$pdo->prepare(
+            "SELECT * FROM final_project_pantofka.products
+                      WHERE product_id = ? ");
+        $query->execute(array($product_id));
+        $favorite_product = $query->fetch(\PDO::FETCH_ASSOC);
+        return $favorite_product;
+    }
+
+    public static function deleteFavorites($user_id){
+        $query = self::$pdo->prepare(
+            "DELETE FROM users_has_favorites WHERE user_id = ?");
+        $query->execute(array($user_id));
+    }
 }

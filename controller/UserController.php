@@ -30,7 +30,7 @@ class UserController extends AbstractController {
     }
 
     public static function logout(){
-        session_destroy();
+        unset($_SESSION['user']);
         header('HTTP/1.1 200 OK');
         header("location: index.php?page=login");
         die("Went fine!");
