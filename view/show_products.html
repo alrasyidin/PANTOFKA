@@ -7,11 +7,72 @@
 
     </select>
 
+    <section id="edit-product-modal" class="modal" >
+        <div class="modal-content">
+            <span id="exit" class="exit">x</span>
+
+            <div id="edit_product" class="centered-section">
+            <form action="handle_requests.php?target=admin&action=editProduct" method="post" enctype="multipart/form-data">
+                <br>
+                <!--Select product category:-->
+                <!--<select onselect="filterCategoriesForEdit()" id="change-categories" name="category">-->
+
+                <!--</select>-->
+                <!--<br>-->
+
+                <!--Select product style:-->
+                <!--<select id="change_style" name="style" >-->
+
+                <!--</select>-->
+                <!--<br>-->
+                Product image:
+                <div id="edit_product_img" align="center">
+                <img height="200px" width="auto" src="" alt="" id="product_img">
+                </div>
+
+                Product name:
+                <input type="text" name="product_name" placeholder="product name" required id="change_name"> <br>
+
+                Select product color:
+                <select id="select-color" name="color" required>
+                    <br>
+
+                </select>
+                <br>
+                Select product material:
+                <select id="select-material" name="material" required>
+
+                </select>
+
+
+                <br>
+                Info:  <input id="change_info" type="text" name="info">
+                <br>
+                Promo percentage:
+                <input id="change_promo" type="text" name="promo_percentage">
+                <br>
+                Input sizes:
+                <div id="input-sizes">
+
+                </div>
+
+                <input type="hidden" name="product_id">
+
+
+                Product price: <input type="number" id="change_price" name="product_price" placeholder="price" step="0.01" required> <br>
+                Product image: <input type="file" name="change_image" accept="image/*"><br>
+                <input type="submit" name="edit_product" value="Change product">
+            </form>
+        </div>
+        </div>
+    </section>
+
+
 
     <div id="product-modal" class="modal">
         <div class="product_info">
 
-            <span class="close">close</span>
+            <span id="close" class="close">close</span>
             <div class="img">
                 <img id="img" src="">
             </div>
@@ -65,7 +126,10 @@
 <script>
 
     loadCategories();
+    loadColors();
+    loadMaterials();
     filterProducts(1, 20, 'all');
+
 
 
 </script>

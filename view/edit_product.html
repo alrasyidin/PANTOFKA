@@ -1,21 +1,58 @@
-<section onload="generateData(productId)" class="centered-section">
-    <form action="handle_requests.php?target=admin&action=editProduct" method="post" enctype="multipart/form-data">
+<section class="centered-section">
+    <div id="add_product">
+        <form action="handle_requests.php?target=admin&action=editProduct" method="post" enctype="multipart/form-data">
+            <br>
+            Select product category:
+            <select onchange="filterCategories()" id="change_category" name="category">
 
-    </form>
-    
+            </select>
+            <br>
+
+            Select product style:
+            <select id="change_style" name="style" >
+
+            </select>
+            <br>
+
+            Product name:
+            <input type="text" name="product_name" placeholder="product name" required id="change_name"> <br>
+
+            Select product color:
+            <select id="change-color" name="product_color" required>
+                <br>
+
+            </select>
+            <br>
+            Select product material:
+            <select id="change-material" name="material" name="product_material">
+
+            </select>
+
+
+            <br>
+            Info:  <input id="change_info" type="text" name="info">
+            <br>
+            Promo percentage:
+            <input id="change_promo" type="text" name="promo_percentage">
+            <br>
+            Input sizes:
+            <div id="input-sizes">
+
+
+            </div>
+
+
+            Product price: <input type="number" id="change_price" name="product_price" placeholder="price" step="0.01" required> <br>
+            Product image: <input type="file" name="change_image" accept="image/*"><br>
+            <input type="submit" name="edit_product" value="Change product">
+        </form>
+    </div>
 </section>
 
 <script>
-    function generateData(productId) {
-        var request = new XMLHttpRequest();
-        request.open("get", "handle_requests.php?target=product&action=getProduct&id=" + productId);
-        request.onreadystatechange = function (ev) {
-            if (this.readyState == 4 && this.status == 200) {
-                var styles = JSON.parse(this.responseText);
-                alert(styles);
-            }
-        };
-        request.send();
+    loadParentCategories();
+    loadColors();
+    loadMaterials();
 
-    }
 </script>
+

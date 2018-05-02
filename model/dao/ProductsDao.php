@@ -87,6 +87,70 @@ class ProductsDao extends AbstractDao implements IProductsDao
 
     }
 
+
+public function changeProduct(Product $product){
+
+    // Getting ids for details of the product
+    $color_id = $this->getColorId($product->getColor());
+
+    $material_id = $this->getMaterialId($product->getMaterial());
+
+    $product_id = $product->getProductId();
+
+
+
+//            self::$pdo->beginTransaction();
+    $stmt = self::$pdo->prepare(
+        "UPDATE final_project_pantofka.products 
+                  SET product_name = ?, price = ?, info = ?, promo_percentage = ?,
+                  product_image_url = ?, color_id = ?, material_id = ? 
+                  WHERE product_id = ?");
+    $stmt->execute(array(
+        $product->getProductName(),
+        $product->getPrice(),
+        $product->getInfo(),
+        $product->getPromoPercentage(),
+        $product->getProductImgUrl(),
+        $color_id,
+        $material_id,
+        $product_id));
+
+
+    $sizes = $product->getSizes();
+
+    //foreach size of the new product we need to make insert into DB
+    /* @var $size Size */
+    foreach ($sizes as $size) {
+        // getting the size_id from DB
+        $stmt = self::$pdo->prepare(
+            "SELECT size_id
+                               FROM final_project_pantofka.sizes
+                               WHERE  size_number = ? ");
+        $stmt->execute(array($size->getSizeNumber()));
+        $size_id = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $size_id = $size_id["size_id"];
+
+        //getting the quantity of this size
+        $quantity = $size->getSizeQuantity();
+
+
+        //update table - products_has_sizes - quantity for each size of the product
+        $stmt = self::$pdo->prepare(
+            "UPDATE final_project_pantofka.products_has_sizes
+                        SET quantity = ?
+                        WHERE product_id = ?
+                        AND size_id = ?");
+        $stmt->execute(array($quantity, $product_id, $size_id));
+
+//        self::$pdo->commit();
+//    }catch (\PDOexeption $e)
+//{
+//self::$pdo->e->rollback();
+//throw $e;
+    }
+
+}
+
     public function productExists($product_name, $material, $category, $color){
 
         // Getting ids for details of the product

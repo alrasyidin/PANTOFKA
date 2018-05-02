@@ -80,6 +80,14 @@ class Product extends AbstractModel
     }
 
     /**
+     * @param mixed $product_id
+     */
+    public function setProductId($product_id)
+    {
+        $this->product_id = $product_id;
+    }
+
+    /**
      * @param array $ratings
      */
     public function setRatings($ratings)

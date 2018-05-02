@@ -18,6 +18,7 @@ request.send();
 
 function visualiseProducts(products) {
     var modal = document.getElementById('product-modal');
+    var editModal = document.getElementById("edit-product-modal");
 
     for (var i = 0; i < products.length; i++) {
 
@@ -59,7 +60,7 @@ function visualiseProducts(products) {
             fillModal(this.id);
 
             modal.style.display = "block";
-            var span = document.getElementsByClassName("close")[0];
+            var span = document.getElementById("close")[0];
 
 
 
@@ -139,8 +140,28 @@ function visualiseProducts(products) {
 
         // If admin !!!!!!!!!!!!
         var editProductButton = document.createElement("button");
-        editProductButton.id = 'edit-product-button';
-        editProductButton.setAttribute('onclick' , 'editProduct('+ product.product_id + ')');
+        editProductButton.id = product.product_id;
+        editProductButton.onclick = function() {
+            editProduct(this.id);
+
+            editModal.style.display = "block";
+            var spanExit = document.getElementsByClassName("exit")[0];
+
+
+
+            spanExit.onclick = function() {
+                editModal.style.display = "none";
+
+            }
+
+
+            window.onclick = function(event) {
+                if (event.target == editModal) {
+                    editModal.style.display = "none";
+                }
+            }
+        }
+
         divButtons.appendChild(editProductButton);
         editProductButton.innerHTML = "Edit product";
 
@@ -170,27 +191,18 @@ function filterCategories() {
 
 }
 
+function filterCategoriesForEdit() {
+    var categorySelect = document.getElementById("change-categories");
+    var category = categorySelect.options[categorySelect.selectedIndex].value;
+    getStylesForEdit(category);
+    loadInputSizesForEdit(category);
 
-
-
-function productInfoBox(product_id) {
-    var productRequest = new XMLHttpRequest();
-    productRequest.open("get", "handle_requests.php?target=product&action=getProductById&id=" + product_id);
-    productRequest.onreadystatechange = function (ev) {
-        if (this.readyState == 4 && this.status == 200) {
-            var response = this.responseText;
-            var product = JSON.parse(response);
-
-
-
-        }
-
-    }
-    productRequest.send();
 }
 
 
 function fillModal(product_id) {
+    var modal = document.getElementById('product-modal');
+    var editModal = document.getElementById("edit-product-modal");
     var productRequest = new XMLHttpRequest();
     productRequest.open("get", "handle_requests.php?target=product&action=getProductById&id=" + product_id);
     productRequest.onreadystatechange = function (ev) {
@@ -301,8 +313,29 @@ function fillModal(product_id) {
 
             // If admin !!!!!!!!!!!!
             var editProductButton = document.createElement("button");
-            editProductButton.id = 'edit-product-button';
-            editProductButton.setAttribute('onclick' , 'editProduct('+ product.product_id + ')');
+            editProductButton.id = product.product_id;
+            editProductButton.onclick = function() {
+                editProduct(this.id);
+                modal.style.display = "none";
+                editModal.style.display = "block";
+
+                var span = document.getElementsByClassName("exit")[0];
+
+
+
+                span.onclick = function() {
+                    editModal.style.display = "none";
+
+                }
+
+
+                window.onclick = function(event) {
+                    if (event.target == editModal) {
+                        editModal.style.display = "none";
+                    }
+                }
+            }
+
             divButtons.appendChild(editProductButton);
             editProductButton.innerHTML = "Edit product";
 
@@ -317,3 +350,4 @@ function fillModal(product_id) {
     }
     productRequest.send();
 }
+

@@ -104,12 +104,6 @@ class ProductController extends AbstractController
     }
 
 
-
-
-
-
-
-
     public static function numberOfProducts()
     {
         if ($_SERVER["REQUEST_METHOD"] == "GET") {
