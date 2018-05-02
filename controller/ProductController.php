@@ -12,6 +12,8 @@ use model\dao\ProductsDao;
 use model\Product;
 use model\dao\SizeDao;
 use model\Size;
+use model\dao\RatingDao;
+use model\Rating;
 
 class ProductController extends AbstractController
 {
@@ -59,12 +61,15 @@ class ProductController extends AbstractController
                 $dao = new ProductsDao();
                 $products = $dao->getProducts($_GET["pages"], $_GET["entries"], $_GET["category"]);
                 $daoSize = new SizeDao();
+                $daoRating = new RatingDao();
 
                 $allProducts = [];
                 /* @var $product Product */
                 foreach ($products as $product) {
                     $sizes = $daoSize->getSizesAndQuantities($product->getProductId());
+                    $ratings=$daoRating->getRatings($product->getProductId());
                     $product->setSizes($sizes);
+                    $product->setRatings($ratings);
                     $allProducts[] = $product;
                 }
 

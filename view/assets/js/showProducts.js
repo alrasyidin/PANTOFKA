@@ -41,6 +41,8 @@ function visualiseProducts(products) {
         productPrice.className = "price";
         var productSizes = document.createElement("div");
         productSizes.classList = "product-type";
+        var productRatings = document.createElement("div");
+        productRatings.classList = "product-type";
         var spanPrice = document.createElement("span");
         spanPrice.className = "price";
         var spanPriceOnSale = document.createElement("span");
@@ -52,6 +54,7 @@ function visualiseProducts(products) {
 
         showProduct.appendChild(productName);
         showProduct.appendChild(productImg);
+        showProduct.appendChild(productRatings);
         showProduct.appendChild(productPrice);
         showProduct.appendChild(productSizes);
         showProduct.appendChild(divButtons);
@@ -82,12 +85,32 @@ function visualiseProducts(products) {
 
         productName.innerHTML = product.product_name;
         img.src = product.product_image_url;
+        var ratingText = document.createElement('h6');
+        productRatings.appendChild(ratingText);
+        var ratings = product.ratings;
+        var maxRate = 10;
+        var minRate = 0;
+        if (ratings.length === 0){
+            ratingText.innerHTML = "Not rated";
+        }
+        else{
+            var ratingSum = 0;
+            for (var l = 0; l < ratings.length; l++) {
+                var rating = ratings[l];
+                ratingSum += rating.rating_value;
+            }
+            var avgRating = ratingSum/ratings.length;
+            ratingText.innerHTML = "Rating: " + avgRating + "/" + maxRate;
+
+        }
+
         var sizeText = document.createElement('h6');
         var selectSize = document.createElement("select");
         selectSize.id = 'sizes-for-product' + product.product_id;
         selectSize.className = "sizes";
         selectSize.style = "display: inline-block";
         var sizes = product.sizes;
+
         var flagSizes = false;
         for (var k = 0; k < sizes.length; k++) {
             var sizeN = sizes[k];

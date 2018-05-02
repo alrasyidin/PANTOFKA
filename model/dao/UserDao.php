@@ -119,6 +119,15 @@ class UserDao extends AbstractDao implements IUserDao {
         return boolval($count["user_exists"]);
     }
 
+    public function userExistsId($id){
+        $query = self::$pdo->prepare(
+            "SELECT count(*) as user_exists FROM final_project_pantofka.users 
+                      WHERE user_id = ? ");
+        $query->execute(array($id));
+        $count = $query->fetch(\PDO::FETCH_ASSOC);
+        return boolval($count["user_exists"]);
+    }
+
     public static function userIsValid($email , $password){
         $query = self::$pdo->prepare("SELECT count(*) as user_is_valid FROM final_project_pantofka.users  
                                                 WHERE email = ? && password = ? ");

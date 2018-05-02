@@ -151,6 +151,15 @@ public function changeProduct(Product $product){
 
 }
 
+    public function productExistsId($id){
+        $query = self::$pdo->prepare(
+            "SELECT count(*) as product_exists FROM final_project_pantofka.products
+                      WHERE product_id = ? ");
+        $query->execute(array($id));
+        $count = $query->fetch(\PDO::FETCH_ASSOC);
+        return boolval($count["product_exists"]);
+    }
+
     public function productExists($product_name, $material, $category, $color){
 
         // Getting ids for details of the product
