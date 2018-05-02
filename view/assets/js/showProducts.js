@@ -236,6 +236,29 @@ function fillModal(product_id) {
             var productName =  document.getElementById("product_name");
             productName.innerHTML = product.product_name;
 
+            var ratingDiv = document.getElementById("rating_text");
+            ratingDiv.innerHTML = "";
+            var ratingText = document.createElement('h6');
+            ratingDiv.appendChild(ratingText);
+            var ratings = product.ratings;
+            var maxRate = 10;
+            var minRate = 0;
+            if (ratings.length === 0){
+                ratingText.innerHTML = "Not rated";
+            }
+            else{
+                var ratingSum = 0;
+                for (var l = 0; l < ratings.length; l++) {
+                    var rating = ratings[l];
+                    ratingSum += rating.rating_value;
+                }
+                var avgRating = ratingSum/ratings.length;
+                ratingText.innerHTML = "Rating: " + avgRating + "/" + maxRate;
+
+            }
+
+
+
             var img = document.getElementById("img");
             img.src = product.product_image_url;
 

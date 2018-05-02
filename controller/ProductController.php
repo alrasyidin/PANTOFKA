@@ -39,9 +39,13 @@ class ProductController extends AbstractController
             try {
                 $daoSize = new SizeDao();
                 $dao = new ProductsDao();
+                $daoRating = new RatingDao();
+
                 $product = $dao->getProductById($_GET["id"]);
                 $sizes = $daoSize->getSizesAndQuantities($product->getProductId());
+                $ratings=$daoRating->getRatings($product->getProductId());
                 $product->setSizes($sizes);
+                $product->setRatings($ratings);
                 echo json_encode($product);
 
             } catch (\PDOException $e) {
