@@ -60,14 +60,14 @@ function visualiseProducts(products) {
             fillModal(this.id);
 
             modal.style.display = "block";
-            var span = document.getElementById("close")[0];
+            var span = document.getElementsByClassName("close")[0];
 
 
 
             span.onclick = function() {
                 modal.style.display = "none";
 
-            }
+            };
 
 
             window.onclick = function(event) {
@@ -77,7 +77,7 @@ function visualiseProducts(products) {
             }
 
 
-        }
+        };
 
 
         productName.innerHTML = product.product_name;
@@ -152,7 +152,7 @@ function visualiseProducts(products) {
             spanExit.onclick = function() {
                 editModal.style.display = "none";
 
-            }
+            };
 
 
             window.onclick = function(event) {
@@ -160,7 +160,7 @@ function visualiseProducts(products) {
                     editModal.style.display = "none";
                 }
             }
-        }
+        };
 
         divButtons.appendChild(editProductButton);
         editProductButton.innerHTML = "Edit product";
