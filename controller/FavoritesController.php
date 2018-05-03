@@ -138,6 +138,7 @@ class FavoritesController extends AbstractController{
                             unset($single_item);
                             $user_in_session->removeFavoriteItem($index);
                             echo  'Item was successfully removed from favorites ';
+                            break;
                         }else {
                             var_dump($single_item->getProductId());
                             var_dump($product_id);

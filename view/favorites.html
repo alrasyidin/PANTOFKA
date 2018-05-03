@@ -1,10 +1,11 @@
 <section class="min-height-600">
     <h3>Favorites</h3>
 
-    <div id="display-favorite-items"></div>
+    <div id="display-favorite-items"> </div>
 
-    <h6 id="clear-favorites-button-heading"> <h6>
+    <div id="clear-favorites-button-wrapper">    <h6 id="clear-favorites-button-heading"> </h6>
     <button id="clear-favorites-button"> Clear favorites </button>
+    </div>
 
 
 </section>
@@ -133,6 +134,8 @@
             if (this.readyState == 4) {
                 if (this.status == 200) {
                     alert(this.responseText);
+                    document.getElementById('display-favorite-items').innerHTML = '';
+                    document.getElementById('clear-favorites-button-wrapper').innerHTML = '';
                 }
             }
 
