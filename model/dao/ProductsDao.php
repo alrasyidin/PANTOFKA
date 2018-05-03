@@ -20,7 +20,6 @@ class ProductsDao extends AbstractDao implements IProductsDao
     }
 
 
-
     public function saveNewProduct(Product $product)
     {
 
@@ -28,7 +27,6 @@ class ProductsDao extends AbstractDao implements IProductsDao
         $color_id = $this->getColorId($product->getColor());
 
         $material_id = $this->getMaterialId($product->getMaterial());
-
 
 
 //            self::$pdo->beginTransaction();
@@ -88,7 +86,8 @@ class ProductsDao extends AbstractDao implements IProductsDao
     }
 
 
-    public function changeProduct(Product $product){
+    public function changeProduct(Product $product)
+    {
 
         // Getting ids for details of the product
         $color_id = $this->getColorId($product->getColor());
@@ -96,7 +95,6 @@ class ProductsDao extends AbstractDao implements IProductsDao
         $material_id = $this->getMaterialId($product->getMaterial());
 
         $product_id = $product->getProductId();
-
 
 
 //            self::$pdo->beginTransaction();
@@ -151,7 +149,8 @@ class ProductsDao extends AbstractDao implements IProductsDao
 
     }
 
-    public function productExistsId($id){
+    public function productExistsId($id)
+    {
         $query = self::$pdo->prepare(
             "SELECT count(*) as product_exists FROM final_project_pantofka.products
                       WHERE product_id = ? ");
@@ -160,7 +159,8 @@ class ProductsDao extends AbstractDao implements IProductsDao
         return boolval($count["product_exists"]);
     }
 
-    public function productExists($product_name, $material, $category, $color){
+    public function productExists($product_name, $material, $category, $color)
+    {
 
         // Getting ids for details of the product
         $color_id = $this->getColorId($color);
@@ -271,12 +271,20 @@ class ProductsDao extends AbstractDao implements IProductsDao
                       JOIN categories as st ON p.category_id = st.category_id
                       JOIN categories as cat ON st.parent_id = cat.category_id";
 
-            if ($category != "all") {
-                $params[] = $category;
-                $sql .= " WHERE cat.name = ?";
-            }
+            if ($category == "new") {
+                $sql .= "  WHERE p.promo_percentage = 0 ORDER BY p.product_id DESC LIMIT 10 ";
 
-            $sql .= " LIMIT $limit OFFSET $offset";
+            } elseif($category != "new") {
+
+                if ($category != "sale" && $category != "all") { // 0 because only products which are not on sale can be shown as new
+                    $params[] = $category;
+                    $sql .= " WHERE cat.name = ?";
+                } elseif ($category == "sale") {
+                    $sql .= " WHERE p.promo_percentage > 0 "; // 0 because every product which promo percentage is more then 0 is on SALE
+
+                }
+                $sql .= " LIMIT $limit OFFSET $offset";
+            }
 
             $stmt = self::$pdo->prepare($sql);
 
@@ -292,7 +300,6 @@ class ProductsDao extends AbstractDao implements IProductsDao
             throw $e;
         }
     }
-
 
 
     public
@@ -324,14 +331,12 @@ class ProductsDao extends AbstractDao implements IProductsDao
 
 
         $stmt = self::$pdo->prepare(
-            "SELECT p.product_id , p.product_name , p.price , p.info ,  p.product_image_url , 
-                            p.promo_percentage , p.color_id , p.category_id , p.material_id , clr.color,
-                            m.material , ctg.name as category
-                            FROM final_project_pantofka.users_has_favorites as uhf
-                            JOIN final_project_pantofka.products as p USING (product_id) 
-                            JOIN final_project_pantofka.materials as m USING (material_id)
-                            JOIN final_project_pantofka.colors as clr USING (color_id)
-                            JOIN final_project_pantofka.categories as ctg USING (category_id) 
+            "SELECT p.product_id, p.product_name, p.price, p.info, p.product_image_url, p.promo_percentage,
+                      c.color,  m.material 
+                      FROM final_project_pantofka.products as p
+                      JOIN colors as c ON p.color_id = c.color_id
+                      JOIN materials as m ON p.material_id = m.material_id
+                      JOIN categories as cat ON p.category_id = cat.category_id 
                       WHERE p.product_id = ?");
 
         $stmt->execute(array($product_id));
@@ -340,7 +345,6 @@ class ProductsDao extends AbstractDao implements IProductsDao
         return $product;
 
     }
-
 
 
     public
@@ -410,7 +414,6 @@ class ProductsDao extends AbstractDao implements IProductsDao
         }
         return $materials;
     }
-
 
 
 }
