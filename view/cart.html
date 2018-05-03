@@ -1,14 +1,16 @@
-<section class="centered-section min-height-600">
+<section class="min-height-600">
     <h3>Cart</h3>
-    <hr>
-        <button id="clear-cart-button"> Clear cart </button>
-    <hr>
 
     <div id="show-cart-div">
     <div id="display-cart-items"></div>
-    <hr>
+
     <div id="buy-cart-items"></div>
+
     </div>
+    <h6 id="clear-cart-button-heading"> <h6>
+    <button id="clear-cart-button"> Clear cart </button>
+
+
 
 </section>
 
@@ -44,33 +46,105 @@
                if(this.status == 200){
                    var cartItems = JSON.parse(this.responseText);
 
+                   var clearCartButton = document.getElementById("clear-cart-button");
+                   if (cartItems.length == 0){
+                       document.getElementById('clear-cart-button-heading').innerHTML = 'Nothing in here';
+                       clearCartButton.style.visibility = 'hidden';
+                   }else{
+                       document.getElementById('clear-cart-button-heading').innerHTML = '';
+                       clearCartButton.style.visibility = 'visible';
+                   }
+
+                   var cartTable = document.createElement('table');
+                   cartTable.style.border = '1px solid black';
+                   cartTable.style = 'width : 100%';
+
                    for (var i = 0; i < cartItems.length ; i++){
                        var item = cartItems[i];
-                       var box = document.createElement('div');
-                       box.innerHTML = JSON.stringify(item);
-                       var productName = document.createElement('h3');
-                       productName.innerHTML = item.product_name;
-                       box.appendChild(productName);
+                       console.log(item);
 
-                       var removeWholeItemButton = document.createElement('button');
-                       removeWholeItemButton.innerHTML = 'Remove item';
-                       removeWholeItemButton.setAttribute('onclick' , 'removeItemFromCart('+ item.product_id +')');
-                       box.appendChild(removeWholeItemButton);
+                       var itemRow = cartTable.insertRow(this.i);
+                        // ===================================================
+                       var productPictureCell = itemRow.insertCell(0);
+                       var productPicture = document.createElement('img');
+                       productPicture.src = item.product_image_url;
+                       var pictureBox = document.createElement('div');
+                       pictureBox.style.width = '7em';
+                       pictureBox.style.height = '7em';
+                       productPicture.style.height = '7em';
+                       productPicture.style.width = 'auto';
+                       pictureBox.appendChild(productPicture.valueOf());
+                       productPictureCell.appendChild(pictureBox);
+                        // ===================================================
 
-                       var sizes = item.sizes;
-                       if (sizes.length > 1){
-                           for (var j = 0; j < sizes.length ; j++){
-                               var removeFromCartButton = document.createElement("button");
-                               removeFromCartButton.className = 'remove-size-from-cart-button';
-                               removeFromCartButton.id = 'remove-from-cart-button-'+item.id+'-'+sizes[j];
-                               removeFromCartButton.setAttribute('onclick' , 'removeItemSizeFromCart('+ item.product_id + ',' + sizes[j] + ')');
-                               box.appendChild(removeFromCartButton);
-                               removeFromCartButton.innerHTML = sizes[j];
-                           }
+                       var productNameCell = itemRow.insertCell(1);
+                       productNameCell.innerHTML = item.product_name;
+                       // ===================================================
+
+                       if (item.promo_percentage.valueOf() > 0){
+                           var productPriceCell = itemRow.insertCell(2);
+                           var salePrice = item.price_on_promotion;
+                           productPriceCell.innerHTML = salePrice;
+                       }else{
+                           var productPriceCell = itemRow.insertCell(2);
+                           productPriceCell.innerHTML = item.price;
+
                        }
+                       //=======================================================
 
-                       wrapper.appendChild(box);
+                       var categoryCell = itemRow.insertCell(3);
+                       categoryCell.id = 'cart-item-category-'+item.category_id;
+                       categoryCell.innerHTML =item.category;
+                       //=======================================================
+                       var productMaterialCell = itemRow.insertCell(4);
+                       productMaterialCell.id = 'cart-item-material-'+item.material_id;
+                       productMaterialCell.innerHTML = item.material;
+                       //=======================================================
+
+                       var productColorCell = itemRow.insertCell(5);
+                       productColorCell.id = 'cart-item-color-'+item.color_id;
+                       productMaterialCell.innerHTML = item.color;
+                       //=======================================================
+
+                       var sizeSelectCell = itemRow.insertCell(6);
+                       var sizeSelect = document.createElement('select');
+                       var available_sizes = item.sizes;
+                       for (var j = 0 ; j < available_sizes.length ; j++){
+                           sizeSelect.options[sizeSelect.options.length] = new Option(available_sizes[j], available_sizes[j]);
+                       }
+                       sizeSelect.id = 'cart-item-pick-size-for-product' + item.product_id;
+                       sizeSelectCell.appendChild(sizeSelect);
+                       //=======================================================
+
+                       var removeItemSizeButtonCell = itemRow.insertCell(7);
+                       var removeItemSizeButton = document.createElement("button");
+                       removeItemSizeButton.innerHTML = 'Unset size';
+                       removeItemSizeButton.id = 'unset-size-from-cart-button';
+                       removeItemSizeButton.setAttribute('onclick' , 'removeItemSizeFromCart('+ item.product_id.toString() +')');
+                       removeItemSizeButtonCell.value = (removeItemSizeButton.valueOf().innerHTML);
+                       removeItemSizeButtonCell.appendChild(removeItemSizeButton);
+                       //=======================================================
+
+                       var removeItemButtonCell = itemRow.insertCell(8);
+                       var removeItemButton = document.createElement("button");
+                       removeItemButton.innerHTML = 'Remove item';
+                       removeItemButton.id = 'remove-from-cart-button';
+                       removeItemButton.setAttribute('onclick' , 'removeItemFromCart('+ item.product_id.toString() +')');
+                       removeItemButtonCell.value = (removeItemButton.valueOf().innerHTML);
+                       removeItemButtonCell.appendChild(removeItemButton);
+                       //=======================================================
+
+                       var addCartItemToFavoritesButtonCell = itemRow.insertCell(9);
+                       var addCartItemToFavoritesButton = document.createElement("button");
+                       addCartItemToFavoritesButton.innerHTML = 'Add to favorites';
+                       addCartItemToFavoritesButton.id = 'add-to-favorites-from-cart-button';
+                       addCartItemToFavoritesButton.setAttribute('onclick' , 'addToFavorites('+ item.product_id.toString() +')');
+                       addCartItemToFavoritesButtonCell.value = (addCartItemToFavoritesButton.valueOf().innerHTML);
+                       addCartItemToFavoritesButtonCell.appendChild(addCartItemToFavoritesButton);
+
+
                    }
+                   wrapper.appendChild(cartTable);
 
                    if (cartItems.length > 0){
                        loadBuyCartDiv();
@@ -127,4 +201,41 @@
        }
        request.send();
    }
+
+   function removeItemSizeFromCart(product_id){
+       var sizeSelectToRemove = document.getElementById('cart-item-pick-size-for-product' + product_id);
+       var size_no = sizeSelectToRemove.options[sizeSelectToRemove.selectedIndex].value;
+       var request = new XMLHttpRequest();
+       request.open("get", "handle_requests.php?target=cart&action=removeItemSize&productId=" + product_id + '&sizeNo=' +size_no );
+       request.onreadystatechange = function (ev) {
+           if(this.readyState == 4){
+               if(this.status == 200){
+                   alert(this.responseText);
+                   document.getElementById('buy-cart-items').innerHTML = '';
+                   document.getElementById('display-cart-items').innerHTML = '';
+                   loadCart();
+               }
+           }
+       };
+       request.send();
+   }
+
+   function removeItemFromCart(product_id ){
+       var request = new XMLHttpRequest();
+       request.open("get", "handle_requests.php?target=cart&action=removeItem&productId=" + product_id);
+       request.onreadystatechange = function (ev) {
+           if(this.readyState == 4){
+               if(this.status == 200){
+                   console.log(this.responseText);
+                   alert(this.responseText);
+                   document.getElementById('buy-cart-items').innerHTML = '';
+                   document.getElementById('display-cart-items').innerHTML = '';
+                   loadCart();
+               }
+           }
+       };
+       request.send();
+   }
+
+
 </script>

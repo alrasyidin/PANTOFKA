@@ -140,6 +140,22 @@
         request.send();
     }
 
+    function removeItemFromFavorites(id){
+        var request = new XMLHttpRequest();
+        request.open("get", "handle_requests.php?target=favorites&action=removeFromFavorites&id=" + id );
+        request.onreadystatechange = function (ev) {
+            if(this.readyState == 4){
+                if(this.status == 200){
+                    console.log(this.responseText);
+                    alert(this.responseText);
+                    document.getElementById('display-favorite-items').innerHTML = '';
+                    loadFavorites();
+                }
+            }
+        };
+        request.send();
+    }
+
 
 
 </script>
