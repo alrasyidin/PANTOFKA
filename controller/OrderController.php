@@ -79,7 +79,7 @@ class OrderController extends AbstractController {
             if (CustomerDao::userIsCustomer($user_in_session->getUserId())){
                 try{
                      $history_data = CustomerDao::getOrdersData($user_in_session->getUserId());
-                     echo json_encode($history_data);
+                    // echo json_encode($history_data);
                 }catch (\PDOException $e){
                     echo $e->getMessage();
                 }
@@ -97,8 +97,10 @@ class OrderController extends AbstractController {
             if (CustomerDao::userIsCustomer($user_in_session->getUserId())){
                 try{
                     $orders = CustomerDao::getOrders($user_in_session->getUserId());
-                    echo json_encode($orders);
+                    echo var_dump($orders);
                 }catch (\PDOException $e){
+                    echo $e->getMessage();
+                }catch (\RuntimeException $e){
                     echo $e->getMessage();
                 }
             }else{

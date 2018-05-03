@@ -67,7 +67,7 @@ class CustomerDao extends UserDao implements ICustomerDao {
             $quantity = $db_quantity - $size_quantity;
 
             if ($quantity < 0 && $db_quantity !== null){
-              throw new \RuntimeException('Abort order! Only ' . $db_quantity . 'x[size with id'.$size_id.'] pairs of item with id' . $item_id . ' are left');
+              throw new \RuntimeException('Abort order! Only ' . $db_quantity . 'x[size with id '.$size_id.'] pairs of item with id' . $item_id . ' are left');
             }
 
             $stmt = self::$pdo->prepare("
@@ -81,25 +81,17 @@ class CustomerDao extends UserDao implements ICustomerDao {
 
     public static function getOrdersData($user_id){
 
-        $stmt = self::$pdo->prepare("SELECT order_id , total_price , date , product_name , size_number , quantity , size_id, product_id
-                                              FROM final_project_pantofka.orders 
-                                              LEFT JOIN final_project_pantofka.orders_has_products USING (order_id)
-                                              JOIN final_project_pantofka.sizes USING (size_id)
-                                              JOIN final_project_pantofka.products USING (product_id)
-                                              WHERE user_id = ? ORDER BY DATE DESC");
+        $stmt = self::$pdo->prepare("SELECT o.order_id , o.total_price , o.date , p.product_name , 
+                                              s.size_number , ohp.quantity , ohp.size_id, ohp.product_id
+                                              FROM final_project_pantofka.orders as o
+                                              LEFT JOIN final_project_pantofka.orders_has_products as ohp USING (order_id)
+                                              JOIN final_project_pantofka.sizes as s USING (size_id)
+                                              JOIN final_project_pantofka.products as p USING (product_id)
+                                              WHERE o.user_id = ? ORDER BY DATE DESC");
         $stmt->execute(array($user_id));
         $orders = array();
         while ($result = $stmt->fetch(\PDO::FETCH_ASSOC)){
-                $orders[] = [
-                    'orderId' => $result['order_id'] ,
-                    'totalPrice' =>$result['total_price'] ,
-                    'date' => $result['date'] ,
-                    'productId' => $result['product_id'],
-                    'productName' => $result['product_name'],
-                    'sizeNumber' => $result['size_number'],
-                    'sizeId' => $result['size_id'],
-                    'quantity' => $result['quantity']
-                ];
+                $orders[] = new Order(json_encode($result));
         }
         return $orders;
     }
@@ -114,17 +106,27 @@ class CustomerDao extends UserDao implements ICustomerDao {
     }
 
     public static function getOrders($user_id){
-        $stmt = self::$pdo->prepare("   SELECT date , order_id ,total_price , 
-                                                group_concat(product_id) as all_purchased_products_csv,
-                                                group_concat(size_id) as all_purchased_sizes_csv
-                                                FROM orders_has_products
-                                                JOIN orders USING (order_id)
-                                                WHERE user_id = 25 ORDER BY date DESC;");
+        $stmt = self::$pdo->prepare("   SELECT o.date , o.order_id ,o.total_price , 
+                                                group_concat(p.product_name) as all_purchased_products_csv,
+                                                group_concat(s.size_number) as all_purchased_sizes_csv
+                                                FROM orders_has_products as ohp
+                                                JOIN orders as o USING (order_id)
+                                                JOIN sizes as s USING (size_id)
+                                                JOIN products as p USING (product_id)
+                                                WHERE user_id = ? ORDER BY date DESC;");
         $stmt->execute(array($user_id));
         $orders = array();
         while ($result = $stmt->fetch(\PDO::FETCH_ASSOC)){
             $products = str_getcsv ( $result['all_purchased_products_csv'] , ',' );
-            $orders[] = new Order(json_encode($result));
+            $sizes = str_getcsv ( $result['all_purchased_sizes_csv'] , ',' );
+            try{
+                $order = new Order(json_encode($result));
+                $order->setProductsHasSizes($products,$sizes);
+                $order->setOrderId($result['order_id']);
+            }catch (\RuntimeException $e){
+                throw $e;
+            }
+            $orders[] = $order;
         }
         return $orders;
     }
