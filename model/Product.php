@@ -124,6 +124,12 @@ class Product extends AbstractModel
         parent::__construct($json);
         $this->price_on_promotion = round(($this->price -($this->price * $this->promo_percentage)/100), 2);
         //$this->setSizes(ProductsDao::getSizes($this->id));
+
+        if (isset($this->price)){ // Petra butna tuk
+            $this->setPrice($this->price);
+
+        }
+
     }
 
     /**
@@ -224,7 +230,7 @@ class Product extends AbstractModel
             throw new \RuntimeException("Bad input for product price");
 
         }
-        $this->price = $price;
+        $this->price = intval($price);
     }
 
     /**

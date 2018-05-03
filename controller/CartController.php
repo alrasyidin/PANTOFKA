@@ -37,8 +37,12 @@ class CartController extends AbstractController{
         if (isset($_GET['id']) && isset($_GET['size'])){
             $product_id = htmlentities($_GET['id']);
             $size_no = htmlentities($_GET['size']);
+
+            if (empty($_SESSION['cart'])){
+                $_SESSION['cart'] = array();
+            }
             if ($product_id < 1 || !is_numeric($product_id) || $size_no < 25 || $size_no > 48 || !is_numeric($size_no)){
-               echo json_encode('Bad data was passed in controller - ' . var_dump($product_id) . ' or ' . var_dump($size_no));
+                echo json_encode('Bad data was passed in controller - ' . var_dump($product_id) . ' or ' . var_dump($size_no));
             }
             try{
                 $size_dao = new SizeDao();
@@ -60,9 +64,9 @@ class CartController extends AbstractController{
                             /* @var $user_in_session User */
                             $user_in_session->addToCart($new_cart_item);
                         }else{
-                           // $guest = new User(json_encode(array("first_name"=>'Guest')));
-                          //  $guest->addToCart($new_cart_item);
-                         //   $_SESSION['guest'] = $guest;
+                            // $guest = new User(json_encode(array("first_name"=>'Guest')));
+                            //  $guest->addToCart($new_cart_item);
+                            //   $_SESSION['guest'] = $guest;
                         }
                         $_SESSION['cart'][] = $new_cart_item;
                         echo 'Product was added in cart';
@@ -108,10 +112,10 @@ class CartController extends AbstractController{
     }
 
     public function getCartItems(){
-      if (isset($_SESSION['cart'])){
-        $cart = $_SESSION['cart'];
-        echo json_encode($cart);
-      }
+        if (isset($_SESSION['cart'])){
+            $cart = $_SESSION['cart'];
+            echo json_encode($cart);
+        }
     }
 
     public function removeItemSize()
@@ -155,22 +159,22 @@ class CartController extends AbstractController{
     }
 
     public function removeItem(){
-       if (isset($_GET['productId'])){
-           $product_id = htmlentities($_GET['productId']);
-           if ($product_id < 0 || !is_numeric($product_id)){
-               die('bad data passed to controller');
-           }
+        if (isset($_GET['productId'])){
+            $product_id = htmlentities($_GET['productId']);
+            if ($product_id < 0 || !is_numeric($product_id)){
+                die('bad data passed to controller');
+            }
 
-           $cart = &$_SESSION['cart'];
-           /* @var $cart_item Product */
-           foreach ($cart as $index=>&$cart_item) {
-               if ($cart_item->getProductId() === $product_id){
-                   unset($cart[$index]);
-                   $cart = array_values($cart);
-                   die('success!');
-               }
-           }
-       }
+            $cart = &$_SESSION['cart'];
+            /* @var $cart_item Product */
+            foreach ($cart as $index=>&$cart_item) {
+                if ($cart_item->getProductId() === $product_id){
+                    unset($cart[$index]);
+                    $cart = array_values($cart);
+                    die('success!');
+                }
+            }
+        }
     }
 
     public function getCartTotalPrice(){

@@ -50,13 +50,15 @@ class FavoritesController extends AbstractController{
             /* @var $user_in_session User*/
             $user_in_session = &$_SESSION['user'];
             $user_id = $user_in_session->getUserId();
+
             try{
                 if (FavoritesDao::productIsAlreadyInFavorites($product_id , $user_id)){
-                    // Which one? user_in_session->getFav() ...  has faster speed, but lower security.
                     die('already added');
                 }
-                FavoritesDao::addToFavorites($product_id , $user_id);
-                $user_in_session->addToFav(new Product(json_encode(FavoritesDao::getProductAsArray($product_id))));
+
+                    /* @var $favorite_item Product */
+                $favorite_item = FavoritesDao::addToFavorites($product_id , $user_id);
+                $user_in_session->addToFav($favorite_item);
                 die('Success!!! Product was added to favs. Check your DB, session and fav page');
             }catch (\RuntimeException $e){
                 die($e->getTraceAsString() . '\n' . $e->getMessage());
@@ -69,9 +71,11 @@ class FavoritesController extends AbstractController{
             /* @var $user_in_session User*/
             $user_in_session = $_SESSION['user'];
             try{
+                //$favorites = $user_in_session->getFavorites();
                 $favorites = FavoritesDao::getFavorites($user_in_session->getUserId());
+                /* @var $favorite_item Product*/
                 foreach ($favorites as &$favorite_item) {
-                   $favorite_item['available_sizes'] = SizeDao::getAvailableSizes($favorite_item['product_id']);
+                    $favorite_item->setSizes(SizeDao::getAvailableSizes($favorite_item->getProductId()));
                 }
                 echo json_encode($favorites);
             }catch (\PDOException $e){
@@ -87,14 +91,17 @@ class FavoritesController extends AbstractController{
             /* @var $user_in_session User*/
             $user_in_session = &$_SESSION['user'];
             try{
+
                 if (empty($user_in_session->getFavorites())){
-                    die('Nothing to remove.');
-                }elseif (empty(FavoritesDao::getFavorites($user_in_session->getUserId()))){ // 2nd level of security
-                    die('Nothing to remove. How did you manage to get in here anyway?!?!?');
+                   die('Nothing to remove.');
+                }
+                if (empty(FavoritesDao::getFavorites($user_in_session->getUserId()))){ // 2nd level of security
+                    die('Nothing to remove. 2; check row 100');
                 }
 
-                FavoritesDao::deleteFavorites($user_in_session->getUserId()); // THERE IS NO COMING BACK!
+                FavoritesDao::deleteFavorites($user_in_session->getUserId());
                 $user_in_session->unsetFavorites();
+
                 echo 'you no longer have any favorite item in our DB.';
             }catch (\PDOException $e){
                 die($e->getTraceAsString() . '<hr>' . $e->getMessage());
@@ -112,25 +119,42 @@ class FavoritesController extends AbstractController{
 
                 /* @var $user_in_session User */
                 $user_in_session = &$_SESSION['user'];
+
                 try {
                     $favorites = $user_in_session->getFavorites();
+
+                    if (empty($favorites)){
+                        echo 'nothing to remove ';
+                        die();
+                    }
                     $item_to_be_removed = null;
-                    foreach ($favorites as $index => &$single_item) {
+                    /* @var $single_item Product */
+                    foreach ($favorites as $index=>&$single_item) {
                         /* @var $single_item Product */
-                        if ($single_item->getProductId() === $product_id) {
+                        if ($single_item->getProductId() == $product_id) {
+
                             $user_id = $user_in_session->getUserId();
                             FavoritesDao::removeFromFavorites($product_id, $user_id);
                             unset($single_item);
                             $user_in_session->removeFavoriteItem($index);
-                            die('Item was successfully removed from favorites  ');
+                            echo  'Item was successfully removed from favorites ';
+                        }else {
+                            var_dump($single_item->getProductId());
+                            var_dump($product_id);
+                            echo 'mismatch in ids';
                         }
                     }
                 } catch (\PDOException $e) {
-                    die($e->getTraceAsString() . '<hr>' . $e->getMessage());
+                    echo $e->getTraceAsString() . '<hr>' . $e->getMessage();
+                }catch (\RuntimeException $e){
+                    echo $e->getTraceAsString() . '<hr>' . $e->getMessage();
+
                 }
             } else {
-                die('401');
+                echo '401';
             }
+        }else{
+            echo 'there is no user';
         }
     }
 }

@@ -322,12 +322,14 @@ public function changeProduct(Product $product){
 
 
         $stmt = self::$pdo->prepare(
-            "SELECT p.product_id, p.product_name, p.price, p.info, p.product_image_url, p.promo_percentage,
-                      c.color,  m.material 
-                      FROM final_project_pantofka.products as p
-                      JOIN colors as c ON p.color_id = c.color_id
-                      JOIN materials as m ON p.material_id = m.material_id
-                      JOIN categories as cat ON p.category_id = cat.category_id 
+            "SELECT p.product_id , p.product_name , p.price , p.info ,  p.product_image_url , 
+                            p.promo_percentage , p.color_id , p.category_id , p.material_id , clr.color,
+                            m.material , ctg.name as category
+                            FROM final_project_pantofka.users_has_favorites as uhf
+                            JOIN final_project_pantofka.products as p USING (product_id) 
+                            JOIN final_project_pantofka.materials as m USING (material_id)
+                            JOIN final_project_pantofka.colors as clr USING (color_id)
+                            JOIN final_project_pantofka.categories as ctg USING (category_id) 
                       WHERE p.product_id = ?");
 
         $stmt->execute(array($product_id));

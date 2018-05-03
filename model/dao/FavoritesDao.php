@@ -22,6 +22,9 @@ class FavoritesDao extends AbstractDao implements IFavoritesDao {
         $query = self::$pdo->prepare(
             "INSERT INTO final_project_pantofka.users_has_favorites ( product_id , user_id) VALUES (? , ?);");
         $query->execute(array($product_id , $user_id));
+
+        $product_dao = new ProductsDao();
+        return $product_dao->getProductById($product_id);
     }
 
     public static function productIsAlreadyInFavorites($product_id , $user_id){
@@ -31,7 +34,7 @@ class FavoritesDao extends AbstractDao implements IFavoritesDao {
         $query->execute(array($product_id , $user_id));
         $r = $query->fetch(\PDO::FETCH_ASSOC);
         return boolval($r['found_match']);
-     }
+    }
 
     public static function removeFromFavorites($product_id , $user_id){
         $query = self::$pdo->prepare(
@@ -63,25 +66,22 @@ class FavoritesDao extends AbstractDao implements IFavoritesDao {
 
     public static function getFavorites($user_id){
         $query = self::$pdo->prepare(
-            "SELECT product_id FROM final_project_pantofka.users_has_favorites
-                      WHERE user_id = ? ");
+            "SELECT p.product_id , p.product_name , p.price , p.info ,  p.product_image_url , 
+                            p.promo_percentage , p.color_id , p.category_id , p.material_id , clr.color,
+                            m.material , ctg.name as category
+                            FROM final_project_pantofka.users_has_favorites as uhf
+                            JOIN final_project_pantofka.products as p USING (product_id) 
+                            JOIN final_project_pantofka.materials as m USING (material_id)
+                            JOIN final_project_pantofka.colors as clr USING (color_id)
+                            JOIN final_project_pantofka.categories as ctg USING (category_id) 
+                            WHERE uhf.user_id = ?");
         $query->execute(array($user_id));
         $favorites = array();
         while ($product = $query->fetch(\PDO::FETCH_ASSOC)){
-            $id = $product['product_id'];
-            $favorites[] = self::getProductAsArray($id);
+            $favorites[] = new Product(json_encode($product));
         }
         return $favorites;
 
-    }
-
-    public static function getProductAsArray($product_id){
-        $query = self::$pdo->prepare(
-            "SELECT * FROM final_project_pantofka.products
-                      WHERE product_id = ? ");
-        $query->execute(array($product_id));
-        $favorite_product = $query->fetch(\PDO::FETCH_ASSOC);
-        return $favorite_product;
     }
 
     public static function deleteFavorites($user_id){

@@ -20,7 +20,6 @@ class User extends AbstractModel {
     protected $gender;
     protected $is_admin;
     protected $favorites;
-    protected $cart;
     protected $is_customer;
 
     public function __construct($json = null)
@@ -100,10 +99,9 @@ class User extends AbstractModel {
 
     public function unsetFavorites(){
         $favorites = $this->getFavorites();
-        if (isset($favorites)){
-            $favorites = null;
-            $this->favorites = $favorites;
-        }
+        $favorites = array();
+        $this->setFavorites($favorites);
+
     }
 
     public function removeCartItem($item_no){

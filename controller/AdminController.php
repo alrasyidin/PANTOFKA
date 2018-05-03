@@ -84,8 +84,8 @@ class AdminController extends AbstractController
 
                     }
 
-                    $tmp_name = $_FILES["change_image"]["tmp_name"];
-                    $orig_name = $_FILES["change_image"]["name"];
+                    $tmp_name = $_FILES["product_img_name"]["tmp_name"];
+                    $orig_name = $_FILES["product_img_name"]["name"];
 
                     if (is_uploaded_file($tmp_name)) {
                         $product_img_name = "$product_name-" . date("Ymdhisa") . ".png";
