@@ -116,38 +116,38 @@ public function changeProduct(Product $product){
         $product_id));
 
 
-    $sizes = $product->getSizes();
+//    $sizes = $product->getSizes();
 
     //foreach size of the new product we need to make insert into DB
     /* @var $size Size */
-    foreach ($sizes as $size) {
+//    foreach ($sizes as $size) {
         // getting the size_id from DB
-        $stmt = self::$pdo->prepare(
-            "SELECT size_id
-                               FROM final_project_pantofka.sizes
-                               WHERE  size_number = ? ");
-        $stmt->execute(array($size->getSizeNumber()));
-        $size_id = $stmt->fetch(\PDO::FETCH_ASSOC);
-        $size_id = $size_id["size_id"];
+//        $stmt = self::$pdo->prepare(
+//            "SELECT size_id
+//                               FROM final_project_pantofka.sizes
+//                               WHERE  size_number = ? ");
+//        $stmt->execute(array($size->getSizeNumber()));
+//        $size_id = $stmt->fetch(\PDO::FETCH_ASSOC);
+//        $size_id = $size_id["size_id"];
 
         //getting the quantity of this size
-        $quantity = $size->getSizeQuantity();
+//        $quantity = $size->getSizeQuantity();
 
 
         //update table - products_has_sizes - quantity for each size of the product
-        $stmt = self::$pdo->prepare(
-            "UPDATE final_project_pantofka.products_has_sizes
-                        SET quantity = ?
-                        WHERE product_id = ?
-                        AND size_id = ?");
-        $stmt->execute(array($quantity, $product_id, $size_id));
+//        $stmt = self::$pdo->prepare(
+//            "UPDATE final_project_pantofka.products_has_sizes
+//                        SET quantity = ?
+//                        WHERE product_id = ?
+//                        AND size_id = ?");
+//        $stmt->execute(array($quantity, $product_id, $size_id));
 
 //        self::$pdo->commit();
 //    }catch (\PDOexeption $e)
 //{
 //self::$pdo->e->rollback();
 //throw $e;
-    }
+//    }
 
 }
 

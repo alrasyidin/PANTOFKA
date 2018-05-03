@@ -20,6 +20,7 @@ class Rating extends AbstractModel
     public function __construct($json = null)
     {
         parent::__construct($json);
+        $this->rating_value = intval($this->rating_value);
     }
 
     /**

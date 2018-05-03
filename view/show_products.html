@@ -12,7 +12,7 @@
             <span id="exit" class="exit">x</span>
 
             <div id="edit_product" class="centered-section">
-            <form action="handle_requests.php?target=admin&action=editProduct" method="post" enctype="multipart/form-data">
+            <form action="#" method="post" enctype="multipart/form-data">
                 <br>
                 <!--Select product category:-->
                 <!--<select onselect="filterCategoriesForEdit()" id="change-categories" name="category">-->
@@ -61,7 +61,7 @@
 
                 Product price: <input type="number" id="change_price" name="product_price" placeholder="price" step="0.01" required> <br>
                 Product image: <input type="file" name="change_image" accept="image/*"><br>
-                <input type="submit" name="edit_product" value="Change product">
+                <input id="change_product" type="submit" name="edit_product" value="Change product">
             </form>
         </div>
         </div>

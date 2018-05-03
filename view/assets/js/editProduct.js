@@ -48,8 +48,67 @@ function editProduct(product_id) {
             var productId = document.getElementById("product_id");
             productId.value = product.product_id;
 
+            var changeProductButton = document.getElementById("change_button");
+            changeProductButton.setAttribute('onclick' , 'generateNewProduct()')
+
 
         }
     }
     productRequest.send();
+}
+
+function generateNewProduct() {
+    var productImg = document.getElementById("product_img");
+    var productImageUrl = productImg.src;
+
+    var productName = document.getElementById("change_name");
+   var productNewName= productName.value;
+
+    var promoPercentage = document.getElementById("change_promo");
+    var promoNewPercentage = promoPercentage.value;
+
+    var productPrice = document.getElementById("change_price");
+    var productNewPrice = productPrice.value;
+
+    var productInfo = document.getElementById("change_info");
+    var productNewInfo = productInfo.value;
+
+    var productColor = document.getElementById("change_color");
+    var newColor = productColor.options[productColor.selectedIndex].value;
+
+
+    var material = document.getElementById("change_material");
+var newMaterial = material.options[material.selectedIndex].value;
+
+    var sizes = product.sizes;
+    var newSizes = product.sizes;
+    for (var b = 0; b < sizes.length; b++) {
+        var newSize = sizes[b];
+        newSize.size_number = size.size_number;
+        var inputSize = document.getElementById(newSize.size_number);
+        newSizes.size_quantity = inputQuantity.value;
+    }
+
+
+    var productId = product.product_id;
+
+
+
+
+    var changedProduct = {
+        product_id : productId,
+        product_name : productNewName,
+        price : productNewPrice,
+        promo_percentage : promoNewPercentage,
+        color : newColor,
+        material : newMaterial,
+        sizes : newSizes
+
+    };
+
+    var request = new XMLHttpRequest();
+    request.open("post", "handle_requests.php?target=admin&action=editProduct");
+    request.send(JSON.stringify(changedProduct));
+
+
 }

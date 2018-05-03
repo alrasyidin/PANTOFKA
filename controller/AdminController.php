@@ -84,8 +84,8 @@ class AdminController extends AbstractController
 
                     }
 
-                    $tmp_name = $_FILES["product_img_name"]["tmp_name"];
-                    $orig_name = $_FILES["product_img_name"]["name"];
+                    $tmp_name = $_FILES["change_image"]["tmp_name"];
+                    $orig_name = $_FILES["change_image"]["name"];
 
                     if (is_uploaded_file($tmp_name)) {
                         $product_img_name = "$product_name-" . date("Ymdhisa") . ".png";
@@ -158,8 +158,9 @@ class AdminController extends AbstractController
 
     public static function editProduct()
     {
-        if (isset($_POST["edit_product"])) {
-            if (isset($_SESSION['user'])) {
+        $request_data = file_get_contents("php://input");
+var_dump($request_data);
+        if (isset($_SESSION['user'])) {
                 /* @var $user_in_session User */
                 $user_in_session = $_SESSION['user'];
                 if ($user_in_session->getisAdmin()) {
@@ -262,7 +263,7 @@ class AdminController extends AbstractController
 
 //Product is saved
                                 header("location: index.php?page=show_products");
-
+                           
                         } catch (\PDOException $e) {
                             var_dump($e);
                         }
@@ -270,7 +271,7 @@ class AdminController extends AbstractController
                 }
             }
         }
-    }
+
 
 
     public function unsetProduct()

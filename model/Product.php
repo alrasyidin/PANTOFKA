@@ -26,9 +26,26 @@ class Product extends AbstractModel
     protected $material;
     protected $category;
     protected $style;
+    protected $show_to_admin;
 
     protected $sizes = []; // Array of sizes
     protected $ratings = [];
+
+    /**
+     * @return mixed
+     */
+    public function getShowToAdmin()
+    {
+        return $this->show_to_admin;
+    }
+
+    /**
+     * @param mixed $show_to_admin
+     */
+    public function setShowToAdmin($show_to_admin)
+    {
+        $this->show_to_admin = $show_to_admin;
+    }
 
     /**
      * @return float

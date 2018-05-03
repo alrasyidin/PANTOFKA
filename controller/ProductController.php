@@ -9,11 +9,13 @@
 namespace controller;
 
 use model\dao\ProductsDao;
+use model\dao\UserDao;
 use model\Product;
 use model\dao\SizeDao;
 use model\Size;
 use model\dao\RatingDao;
 use model\Rating;
+use model\User;
 
 class ProductController extends AbstractController
 {
@@ -40,12 +42,22 @@ class ProductController extends AbstractController
                 $daoSize = new SizeDao();
                 $dao = new ProductsDao();
                 $daoRating = new RatingDao();
+                if (isset($_SESSION["user"])){
+                    /* @var $user User*/
+                    $user = $_SESSION["user"];
+                    $user_is_admin = $user->getisAdmin();
+                }
+                else{
+                    $user_is_admin = false;
+                }
 
                 $product = $dao->getProductById($_GET["id"]);
                 $sizes = $daoSize->getSizesAndQuantities($product->getProductId());
                 $ratings=$daoRating->getRatings($product->getProductId());
                 $product->setSizes($sizes);
                 $product->setRatings($ratings);
+                $product ->setShowToAdmin($user_is_admin);
+
                 echo json_encode($product);
 
             } catch (\PDOException $e) {
@@ -67,6 +79,15 @@ class ProductController extends AbstractController
                 $daoSize = new SizeDao();
                 $daoRating = new RatingDao();
 
+                // check if user is admin to be added another admin buttons to the view
+                if (isset($_SESSION["user"])){
+                    /* @var $user User*/
+                    $user = $_SESSION["user"];
+                    $user_is_admin = $user->getisAdmin();
+                }
+                else{
+                    $user_is_admin = false;
+                }
                 $allProducts = [];
                 /* @var $product Product */
                 foreach ($products as $product) {
@@ -74,6 +95,7 @@ class ProductController extends AbstractController
                     $ratings=$daoRating->getRatings($product->getProductId());
                     $product->setSizes($sizes);
                     $product->setRatings($ratings);
+                    $product ->setShowToAdmin($user_is_admin);
                     $allProducts[] = $product;
                 }
 
