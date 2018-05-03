@@ -1,13 +1,12 @@
 <nav id="navbar">
     <div id="nav">
         <a href="javascript:void(0)" onclick="showMain()">Home</a>
-
         <a href="javascript:void(0)" onclick="showProductsPage('men')">Men</a>
         <a href="javascript:void(0)" onclick="showProductsPage('women')">Women</a>
         <a href="javascript:void(0)" onclick="showProductsPage('boys')">Boys</a>
         <a href="javascript:void(0)" onclick="showProductsPage('girls')">Girls</a>
-        <a href="javascript:void(0)">New</a>
-        <a href="javascript:void(0)">SALE</a>
+        <a href="javascript:void(0)" onclick="showProductsPage('new')">New</a>
+        <a href="javascript:void(0)" onclick="showProductsPage('sale')">SALE</a>
     </div>
 </nav>
 
@@ -43,16 +42,11 @@
 
 
 </main>
+
 <div  id="products-page" style="display: none">
     <div class="products_page" >
 
 
-        Categories
-        <select onchange="filter()" style="width: 150px" id="categories">
-            <option value="all">All</option>
-
-
-        </select>
 
         <section id="edit-product-modal" class="edit-modal">
             <div class="edit-modal-content">
@@ -167,10 +161,12 @@
 
         </div>
 
-        <div id="page-links" class="page-links">
 
-        </div>
 
+
+    </div>
+
+    <div id="page-links" class="page-links">
 
     </div>
 
@@ -187,7 +183,6 @@
 
             showProducts.style.display = "block";
             filterProducts(1, 20, category);
-            loadCategories();
             loadColors();
             loadMaterials();
 
