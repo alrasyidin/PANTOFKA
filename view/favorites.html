@@ -1,11 +1,12 @@
-<section class="centered-section min-height-600">
+<section class="min-height-600">
     <h3>Favorites</h3>
 
-    <hr>
-        <button id="clear-favorites-button"> Clear favorites </button>
-    <hr>
-
     <div id="display-favorite-items"></div>
+
+    <h6 id="clear-favorites-button-heading"> <h6>
+    <button id="clear-favorites-button"> Clear favorites </button>
+
+
 </section>
 
 <script>
@@ -23,36 +24,97 @@
                 if(this.status == 200){
                    var favorites = JSON.parse(this.responseText);
 
+                   var clearFavoritesButton = document.getElementById("clear-favorites-button");
+                   if (favorites.length == 0){
+                       document.getElementById('clear-favorites-button-heading').innerHTML = 'Nothing in here';
+                       clearFavoritesButton.style.visibility = 'hidden';
+                   }else{
+                       document.getElementById('clear-favorites-button-heading').innerHTML = '';
+                       clearFavoritesButton.style.visibility = 'visible';
+                   }
+
+                   var favoritesTable = document.createElement('table');
+                    favoritesTable.style = 'width : 100%';
+
                    for (var i = 0; i < favorites.length ; i++){
                        var item = favorites[i];
-                       var box = document.createElement('div');
-                       box.innerHTML = JSON.stringify(item);
 
-                       var addToCartButton = document.createElement("button");
-                       addToCartButton.id = 'add-to-cart-from-favs-button';
+                       var itemRow = favoritesTable.insertRow(this.i);
 
-                       var removeFromFavoritesButton = document.createElement("button");
-                       removeFromFavoritesButton.id = 'remove-from-favs-button';
+                       var productPictureCell = itemRow.insertCell(0);
+                       var productPicture = document.createElement('img');
+                       productPicture.src = item.product_image_url;
 
+                       var pictureBox = document.createElement('div');
+                       pictureBox.style.width = '7em';
+                       pictureBox.style.height = '7em';
+
+                       productPicture.style.height = '7em';
+                       productPicture.style.width = 'auto';
+
+                       pictureBox.appendChild(productPicture.valueOf());
+                       productPictureCell.appendChild(pictureBox);
+
+
+
+                       var productNameCell = itemRow.insertCell(1);
+                       productNameCell.innerHTML = item.product_name;
+
+                       if (item.promo_percentage.valueOf() > 0){
+                         var productPriceCell = itemRow.insertCell(2);
+                         var salePrice = item.price_on_promotion;
+                            productPriceCell.innerHTML = salePrice;
+                     }else{
+                           var productPriceCell = itemRow.insertCell(2);
+                           productPriceCell.innerHTML = item.price;
+
+                      }
+
+
+                       var categoryCell = itemRow.insertCell(3);
+                       categoryCell.id = 'favorites-table-item-category-'+item.category_id;
+                       categoryCell.innerHTML =item.category;
+
+
+                       var productMaterialCell = itemRow.insertCell(4);
+                       productMaterialCell.id = 'favorites-table-item-material-'+item.material_id;
+                       productMaterialCell.innerHTML = item.material;
+
+                       var productColorCell = itemRow.insertCell(5);
+                       productColorCell.id = 'favorites-table-item-color-'+item.color_id;
+                       productMaterialCell.innerHTML = item.color;
+
+                       var sizeSelectCell = itemRow.insertCell(6);
                        var sizeSelect = document.createElement('select');
-                       var available_sizes = item.available_sizes;
+                       var available_sizes = item.sizes;
+
                        for (var j = 0 ; j < available_sizes.length ; j++){
                            sizeSelect.options[sizeSelect.options.length] = new Option(available_sizes[j], available_sizes[j]);
                        }
                        sizeSelect.id = 'favorites-pick-size-for-product' + item.product_id;
-                       box.appendChild(sizeSelect);
+                       sizeSelectCell.appendChild(sizeSelect);
 
-                       addToCartButton.setAttribute('onclick' , 'addToCart('+ item.product_id + ')');
-                       removeFromFavoritesButton.setAttribute('onclick' , 'removeItemFromFavorites('+ item.product_id + ')');
 
-                       box.appendChild(addToCartButton);
-                       box.appendChild(removeFromFavoritesButton);
+                       var addToCartButtonCell = itemRow.insertCell(7);
+                       var addToCartButton = document.createElement("button");
+                       addToCartButton.innerHTML = 'Add to cart';
+                       addToCartButton.id = 'add-to-cart-from-favs-button';
+                       addToCartButton.setAttribute('onclick' , 'addToCart('+ item.product_id.toString() + ')');
+                       addToCartButtonCell.value = (addToCartButton.valueOf().innerHTML);
+                       addToCartButtonCell.appendChild(addToCartButton);
 
-                       addToCartButton.innerHTML = "Add to cart";
+                       var removeFromFavoritesButtonCell = itemRow.insertCell(8);
+                       var removeFromFavoritesButton = document.createElement("button");
                        removeFromFavoritesButton.innerHTML = 'Remove from favorites';
+                       removeFromFavoritesButton.setAttribute('onclick' , 'removeItemFromFavorites('+ item.product_id.toString() + ')');
+                       removeFromFavoritesButton.id = 'remove-from-favs-button';
+                       removeFromFavoritesButtonCell.value = (removeFromFavoritesButton.valueOf().innerHTML);
+                       removeFromFavoritesButtonCell.appendChild(removeFromFavoritesButton);
 
-                       wrapper.appendChild(box);
+
+
                    }
+                   wrapper.appendChild(favoritesTable);
                 }
             }
         };

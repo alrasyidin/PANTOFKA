@@ -33,93 +33,93 @@ class ProductsDao extends AbstractDao implements IProductsDao
 
 //            self::$pdo->beginTransaction();
 
-            $category_id = $this->getCategoryAndStyleId($product->getStyle(), $product->getCategory());
+        $category_id = $this->getCategoryAndStyleId($product->getStyle(), $product->getCategory());
 
-            $stmt = self::$pdo->prepare(
-                "INSERT INTO final_project_pantofka.products (product_name, price, info, promo_percentage,
+        $stmt = self::$pdo->prepare(
+            "INSERT INTO final_project_pantofka.products (product_name, price, info, promo_percentage,
                         product_image_url, color_id, material_id, category_id) 
                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-            $stmt->execute(array(
-                $product->getProductName(),
-                $product->getPrice(),
-                $product->getInfo(),
-                $product->getPromoPercentage(),
-                $product->getProductImgUrl(),
-                $color_id,
-                $material_id,
-                $category_id,
-            ));
+        $stmt->execute(array(
+            $product->getProductName(),
+            $product->getPrice(),
+            $product->getInfo(),
+            $product->getPromoPercentage(),
+            $product->getProductImgUrl(),
+            $color_id,
+            $material_id,
+            $category_id,
+        ));
 
 
-            // We have to get the last insert product_id because we need to save sizes for the product
-            $product_id = self::$pdo->lastInsertId("product_id");
+        // We have to get the last insert product_id because we need to save sizes for the product
+        $product_id = self::$pdo->lastInsertId("product_id");
 
-            $sizes = $product->getSizes();
+        $sizes = $product->getSizes();
 
-            //foreach size of the new product we need to make insert into DB
-            /* @var $size Size */
-            foreach ($sizes as $size) {
-                // getting the size_id from DB
-                $stmt = self::$pdo->prepare(
-                    "SELECT size_id
+        //foreach size of the new product we need to make insert into DB
+        /* @var $size Size */
+        foreach ($sizes as $size) {
+            // getting the size_id from DB
+            $stmt = self::$pdo->prepare(
+                "SELECT size_id
                                FROM final_project_pantofka.sizes
                                WHERE  size_number = ? ");
-                $stmt->execute(array($size->getSizeNumber()));
-                $size_id = $stmt->fetch(\PDO::FETCH_ASSOC);
-                $size_id = $size_id["size_id"];
+            $stmt->execute(array($size->getSizeNumber()));
+            $size_id = $stmt->fetch(\PDO::FETCH_ASSOC);
+            $size_id = $size_id["size_id"];
 
-                //getting the quantity of this size
-                $quantity = $size->getSizeQuantity();
+            //getting the quantity of this size
+            $quantity = $size->getSizeQuantity();
 
 
-                //insert into tabel - products_has_sizes product_id, size_id and the quantity
-                $stmt = self::$pdo->prepare(
-                    "INSERT INTO final_project_pantofka.products_has_sizes (product_id, size_id, quantity) 
+            //insert into tabel - products_has_sizes product_id, size_id and the quantity
+            $stmt = self::$pdo->prepare(
+                "INSERT INTO final_project_pantofka.products_has_sizes (product_id, size_id, quantity) 
                                VALUES (?, ?, ?)");
-                $stmt->execute(array($product_id, $size_id, $quantity));
+            $stmt->execute(array($product_id, $size_id, $quantity));
 
 //        self::$pdo->commit();
 //    }catch (\PDOexeption $e)
 //{
 //self::$pdo->e->rollback();
 //throw $e;
-            }
+        }
 
     }
 
 
-public function changeProduct(Product $product){
+    public function changeProduct(Product $product){
 
-    // Getting ids for details of the product
-    $color_id = $this->getColorId($product->getColor());
+        // Getting ids for details of the product
+        $color_id = $this->getColorId($product->getColor());
 
-    $material_id = $this->getMaterialId($product->getMaterial());
+        $material_id = $this->getMaterialId($product->getMaterial());
 
-    $product_id = $product->getProductId();
+        $product_id = $product->getProductId();
 
 
 
 //            self::$pdo->beginTransaction();
-    $stmt = self::$pdo->prepare(
-        "UPDATE final_project_pantofka.products 
+        $stmt = self::$pdo->prepare(
+            "UPDATE final_project_pantofka.products 
                   SET product_name = ?, price = ?, info = ?, promo_percentage = ?,
                   product_image_url = ?, color_id = ?, material_id = ? 
                   WHERE product_id = ?");
-    $stmt->execute(array(
-        $product->getProductName(),
-        $product->getPrice(),
-        $product->getInfo(),
-        $product->getPromoPercentage(),
-        $product->getProductImgUrl(),
-        $color_id,
-        $material_id,
-        $product_id));
+        $stmt->execute(array(
+            $product->getProductName(),
+            $product->getPrice(),
+            $product->getInfo(),
+            $product->getPromoPercentage(),
+            $product->getProductImgUrl(),
+            $color_id,
+            $material_id,
+            $product_id));
 
 
 //    $sizes = $product->getSizes();
 
-    //foreach size of the new product we need to make insert into DB
-    /* @var $size Size */
+        //foreach size of the new product we need to make insert into DB
+        /* @var $size Size */
 //    foreach ($sizes as $size) {
         // getting the size_id from DB
 //        $stmt = self::$pdo->prepare(
@@ -149,7 +149,7 @@ public function changeProduct(Product $product){
 //throw $e;
 //    }
 
-}
+    }
 
     public function productExistsId($id){
         $query = self::$pdo->prepare(
@@ -180,7 +180,7 @@ public function changeProduct(Product $product){
                        AND p.material_id = ?");
         $query->execute(array($product_name, $category_id, $color_id, $material_id));
         $count = $query->fetch(\PDO::FETCH_ASSOC);
-       return boolval($count["product_exists"]);
+        return boolval($count["product_exists"]);
     }
 
     public function getCategoryAndStyleId($style, $category)
@@ -324,12 +324,14 @@ public function changeProduct(Product $product){
 
 
         $stmt = self::$pdo->prepare(
-            "SELECT p.product_id, p.product_name, p.price, p.info, p.product_image_url, p.promo_percentage,
-                      c.color,  m.material 
-                      FROM final_project_pantofka.products as p
-                      JOIN colors as c ON p.color_id = c.color_id
-                      JOIN materials as m ON p.material_id = m.material_id
-                      JOIN categories as cat ON p.category_id = cat.category_id 
+            "SELECT p.product_id , p.product_name , p.price , p.info ,  p.product_image_url , 
+                            p.promo_percentage , p.color_id , p.category_id , p.material_id , clr.color,
+                            m.material , ctg.name as category
+                            FROM final_project_pantofka.users_has_favorites as uhf
+                            JOIN final_project_pantofka.products as p USING (product_id) 
+                            JOIN final_project_pantofka.materials as m USING (material_id)
+                            JOIN final_project_pantofka.colors as clr USING (color_id)
+                            JOIN final_project_pantofka.categories as ctg USING (category_id) 
                       WHERE p.product_id = ?");
 
         $stmt->execute(array($product_id));
