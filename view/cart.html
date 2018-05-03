@@ -5,11 +5,10 @@
     <div id="display-cart-items"></div>
 
     <div id="buy-cart-items"></div>
+        <button id="clear-cart-button"> Clear cart </button>
 
     </div>
-    <h6 id="clear-cart-button-heading"> <h6>
-    <button id="clear-cart-button"> Clear cart </button>
-
+    <h6 id="clear-cart-button-heading"> </h6>
 
 
 </section>
@@ -24,6 +23,8 @@
            if(this.readyState == 4){
                if(this.status == 200){
                    alert(this.responseText);
+                   document.getElementById('show-cart-div').innerHTML = '';
+                   document.getElementById('clear-cart-button-heading').innerHTML = 'Nothing in here';
                }
            }
 
