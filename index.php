@@ -59,6 +59,8 @@ session_start();
         <link rel="stylesheet" href="view/assets/css/normalize.css">
         <link rel="stylesheet" href="view/assets/css/skeleton.css">
         <link rel="stylesheet" href="view/assets/css/custom.css">
+        <link rel="stylesheet" href="view/assets/css/navBar.css">
+
 
 
         <!-- JS
@@ -83,11 +85,11 @@ session_start();
 
 
     </head>
-    <body>
+    <body >
 
     <!-- Primary Page Layout
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <div class="container">
+    <div class="container" >
                 <?php
 
                 // TODO this must be one file 'navigation.html'.

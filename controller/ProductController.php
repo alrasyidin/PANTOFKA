@@ -28,6 +28,8 @@ class ProductController extends AbstractController
     {
 
     }
+
+
     public static function getInstance()
     {
         if (self::$instance === null) {
@@ -35,6 +37,8 @@ class ProductController extends AbstractController
         }
         return self::$instance;
     }
+
+
     public static function getProductById()
     {
         if ($_SERVER["REQUEST_METHOD"] == "GET") {
@@ -65,7 +69,6 @@ class ProductController extends AbstractController
             }
         }
     }
-
 
 
     public static function getProducts()

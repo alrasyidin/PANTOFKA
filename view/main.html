@@ -1,32 +1,224 @@
-<main>
-    <a id="banner" href="index.php?page=women">
+<nav id="navbar">
+    <div id="nav">
+        <a href="javascript:void(0)" onclick="showMain()">Home</a>
+
+        <a href="javascript:void(0)" onclick="showProductsPage('men')">Men</a>
+        <a href="javascript:void(0)" onclick="showProductsPage('women')">Women</a>
+        <a href="javascript:void(0)" onclick="showProductsPage('boys')">Boys</a>
+        <a href="javascript:void(0)" onclick="showProductsPage('girls')">Girls</a>
+        <a href="javascript:void(0)">New</a>
+        <a href="javascript:void(0)">SALE</a>
+    </div>
+</nav>
+
+<main id="main" style="display:block">
+
+    <a id="banner"  href="javascript:void(0)" onclick="showProductsPage('women')">
         <img class="banners" src="view/assets/banners/women_banner.jpg" alt="">
     </a>
 
-    <a id="banner" href="index.php?page=men">
+    <a id="banner" href="javascript:void(0)" onclick="showProductsPage('men')">
         <img class="banners" src="view/assets/banners/man_banner.png" alt="">
     </a>
 
 
-    <a id="banner" href="index.php?page=new">
+    <a id="banner"  href="javascript:void(0)" onclick="showProductsPage('new')">
         <img class="banners" src="view/assets/banners/new_banner.gif" alt="">
     </a>
 
 
-    <a id="banner" href="index.php?page=sale">
+    <a id="banner" href="javascript:void(0)" onclick="showProductsPage('sale')">
         <img class="banners" src="view/assets/banners/sale_banner2.gif" alt="">
     </a>
 
 
-    <a id="banner" href="index.php?page=girls">
+    <a id="banner"  href="javascript:void(0)" onclick="showProductsPage('girls')">
         <img class="banners" src="view/assets/banners/girls_banner.jpg" alt="">
     </a>
 
 
-    <a id="banner" href="index.php?page=boys">
+    <a id="banner"  href="javascript:void(0)" onclick="showProductsPage('boys')">
         <img class="banners" src="view/assets/banners/boys_banner.jpg" alt="">
     </a>
 
 
 </main>
+<div  id="products-page" style="display: none">
+    <div class="products_page" >
 
+
+        Categories
+        <select onchange="filter()" style="width: 150px" id="categories">
+            <option value="all">All</option>
+
+
+        </select>
+
+        <section id="edit-product-modal" class="edit-modal">
+            <div class="edit-modal-content">
+                <span id="exit" class="exit">x</span>
+
+                <div id="edit_product" class="centered-section">
+                    <form action="#" method="post" enctype="multipart/form-data">
+                        <br>
+                        <!--Select product category:-->
+                        <!--<select onselect="filterCategoriesForEdit()" id="change-categories" name="category">-->
+
+                        <!--</select>-->
+                        <!--<br>-->
+
+                        <!--Select product style:-->
+                        <!--<select id="change_style" name="style" >-->
+
+                        <!--</select>-->
+                        <!--<br>-->
+                        Product image:
+                        <div id="edit_product_img" align="center">
+                            <img height="200px" width="auto" src="" alt="" id="product_img">
+                        </div>
+
+                        Product name:
+                        <input type="text" name="product_name" placeholder="product name" required id="change_name"> <br>
+
+                        Select product color:
+                        <select id="select-color" name="color" required>
+                            <br>
+
+                        </select>
+                        <br>
+                        Select product material:
+                        <select id="select-material" name="material" required>
+
+                        </select>
+
+
+                        <br>
+                        Info: <input id="change_info" type="text" name="info">
+                        <br>
+                        Promo percentage:
+                        <input id="change_promo" type="text" name="promo_percentage">
+                        <br>
+                        Input sizes:
+                        <div id="input-sizes">
+
+                        </div>
+
+                        <input type="hidden" name="product_id">
+
+
+                        Product price: <input type="number" id="change_price" name="product_price" placeholder="price"
+                                              step="0.01" required> <br>
+                        Product image: <input type="file" name="change_image" accept="image/*"><br>
+                        <input id="change_product" type="submit" name="edit_product" value="Change product">
+                    </form>
+                </div>
+            </div>
+        </section>
+
+
+        <div id="product-modal" class="modal">
+            <div class="product_info">
+
+                <span class="close">close</span>
+                <div class="img">
+                    <img id="img" src="">
+                </div>
+
+                <div id="show_product_info" class="info_block">
+                    <div class="name">
+                        <h3 id="product_name"></h3><br>
+                    </div>
+                    <div id="rating_text" class="info">
+                    </div>
+                    <div class="info">
+                        <h5>Product style: <span id="product_style"></span></h5>
+                    </div>
+                    <div class="info">
+                        <h5>Product color: <span id="product_color"></span></h5>
+                    </div>
+                    <div class="info">
+                        <h5>Product material: <span id="material"></span></h5>
+                        <br>
+                    </div>
+                    <div class="info">
+                        <h5>Product info: <span id="info"></span></h5>
+                        <br>
+                    </div>
+                    <div id="prices" class="prices">
+
+
+                    </div>
+
+                    <div id="sizes" class="info">
+
+                    </div>
+
+                    <div id="buttons">
+
+                    </div>
+
+                    <br>
+
+                </div>
+            </div>
+        </div>
+
+        <div id="visualisation" class="show_products">
+
+        </div>
+
+        <div id="page-links" class="page-links">
+
+        </div>
+
+
+    </div>
+
+</div>
+
+<script>
+    function showProductsPage(category) {
+        var main = document.getElementById("main");
+
+        var showProducts = document.getElementById("products-page");
+
+
+            main.style.display = "none";
+
+            showProducts.style.display = "block";
+            filterProducts(1, 20, category);
+            loadCategories();
+            loadColors();
+            loadMaterials();
+
+
+
+
+    }
+
+    function showMain() {
+        var showProducts = document.getElementById("products-page");
+
+        var main = document.getElementById("main");
+        if (main.style.display === "none") {
+            showProducts.style.display = "none";
+            main.style.display = "block";
+
+        }
+    }
+
+    window.onscroll = function () {
+        myFunction()
+    };
+
+    var navbar = document.getElementById("navbar");
+    var sticky = navbar.offsetTop;
+
+    function myFunction() {
+        if (window.pageYOffset >= sticky) {
+            navbar.classList.add("sticky")
+        } else {
+            navbar.classList.remove("sticky");
+        }
+    }
+</script>

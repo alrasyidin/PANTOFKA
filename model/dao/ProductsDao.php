@@ -300,12 +300,14 @@ public function changeProduct(Product $product){
     {
 
         $params = array();
-        $sql = "SELECT count(*) as number_of_products FROM final_project_pantofka.products as p
-                JOIN final_project_pantofka.categories as cat 
-                ON p.category_id = cat.category_id";
+        $sql = "SELECT count(*) as number_of_products FROM products as p
+                JOIN categories as cat 
+                ON p.category_id = cat.category_id
+                JOIN categories as c 
+                ON cat.parent_id = c.category_id";
         if ($category != "all") {
             $params[] = $category;
-            $sql .= " WHERE cat.name = ?";
+            $sql .= "  WHERE c.name = ?";
         }
 
         $stmt = self::$pdo->prepare($sql);
@@ -337,24 +339,6 @@ public function changeProduct(Product $product){
 
     }
 
-
-    public
-    function getAllProducts()
-    {
-        $stmt = self::$pdo->prepare(
-            "SELECT p.product_id, p.product_name, p.price, p.info, p.product_image_url, p.promo_percentage,
-                      c.color,  m.material 
-                      FROM final_project_pantofka.products as p
-                      JOIN colors as c ON p.color_id = c.color_id
-                      JOIN materials as m ON p.material_id = m.material_id
-                      JOIN categories as cat ON p.category_id = cat.category_id  ");
-        $stmt->execute();
-        $products = [];
-        while ($product = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $products[] = new Product(json_encode($product));
-        }
-        return $products;
-    }
 
 
     public

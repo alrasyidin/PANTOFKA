@@ -1,0 +1,44 @@
+#nav{
+    margin-left: 10%;
+    width: 100%;
+
+}
+#navbar {
+    overflow: hidden;
+    background-color: #d8d8d8;
+    width: 100%;
+}
+
+#nav a {
+    float: left;
+    display: block;
+    color: #8b8b8b;
+    text-align: center;
+    padding: 0.2em;
+    text-decoration: none;
+    font-size: 1.5em;
+    background-color:#d8d8d8 ;
+    width: 10%;
+}
+
+#nav a:hover {
+    color: #000000;
+}
+
+#nav a.active {
+    color: #6f6f6f;
+}
+
+.content {
+    padding: 16px;
+}
+
+.sticky {
+    position: fixed;
+    top: 0;
+}
+
+.sticky + .content {
+    padding-top: 60px;
+
+}
