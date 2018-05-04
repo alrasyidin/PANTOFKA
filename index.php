@@ -105,14 +105,8 @@ session_start();
 
                 // ==================================== Handle controller requests =========================================
 
-              if ($page === "edit_product"){
-                  require_once "./view/edit_product.php";
-              }
-              else{
-                  require_once "./view/main.html";
 
-//                  require_once "./handle_requests.php";
-              }
+                  require_once "./handle_requests.php";
 
                 // =========================================================================================================
                  ?>
