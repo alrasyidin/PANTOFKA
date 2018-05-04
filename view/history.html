@@ -10,6 +10,117 @@
 <script>
     loadHistory();
 
-    loadOrders();
+    // loadOrders();
+
+
+    function loadHistory() {
+        var wrapper = document.getElementById("display-history");
+
+        var request = new XMLHttpRequest();
+        request.open("get", "handle_requests.php?target=order&action=getOrders");
+        request.onreadystatechange = function (ev) {
+            if(this.readyState == 4) {
+                if (this.status == 200) {
+                    var ordersHistory = JSON.parse(this.responseText);
+
+                    var ordersHistoryTable = document.createElement('table');
+                    ordersHistoryTable.style = 'width : 100%';
+
+                    for (var i = 0; i < ordersHistory.length; i++) {
+                        var order = ordersHistory[i];
+                        var orderRow = ordersHistoryTable.insertRow(this.i);
+                        //=================================================
+                        var orderDateCell = orderRow.insertCell(0);
+                        orderDateCell.innerHTML = order.date;
+                        //=================================================
+                        var orderTotalPriceCell = orderRow.insertCell(1);
+                        console.log(order);
+                        orderTotalPriceCell.innerHTML = order.total_price;
+                        //=================================================
+                        var orderInfoButtonCell = orderRow.insertCell(2);
+                        var orderInfoButtonCellButton = document.createElement("button");
+                        orderInfoButtonCellButton.innerHTML = 'Order info';
+                        orderInfoButtonCellButton.id = 'add-to-favorites-from-cart-button';
+                       orderInfoButtonCellButton.setAttribute('onclick' , 'loadOrderInfo('+ order.order_id +')');
+                       orderInfoButtonCell.value = (orderInfoButtonCellButton.valueOf().innerHTML);
+                        orderInfoButtonCell.appendChild(orderInfoButtonCellButton);
+
+                        var infoDiv = document.createElement('div');
+                        infoDiv.id = 'info-for-order';
+                        wrapper.appendChild(infoDiv);
+
+                    }
+                    wrapper.appendChild(ordersHistoryTable);
+
+                }
+
+            }
+            };
+        request.send();
+
+    }
+
+    function loadOrderInfo(id) {
+        var infoDiv = document.getElementById('info-for-order');
+        infoDiv.innerHTML = "";
+
+        var request = new XMLHttpRequest();
+        request.open("get", "handle_requests.php?target=order&action=getOrderData&order_id="+id);
+        request.onreadystatechange = function (ev) {
+            if(this.readyState == 4){
+                if(this.status == 200){
+                    var orderInfo = JSON.parse(this.responseText);
+
+                    var orderInfoTable = document.createElement('table');
+                    orderInfoTable.style = 'width : 100%';
+                    orderInfoTable.style.border = '1px solid grey';
+                    orderInfoTable.style.margin = '3px';
+                    
+
+                    for (var i = 0; i < orderInfo.length; i++) {
+                        var order = orderInfo[i];
+                        var orderRow = orderInfoTable.insertRow(this.i);
+                        //=================================================
+                        var orderInfoCell = orderRow.insertCell(0);
+                        orderInfoCell.innerHTML = order.date;
+
+                        var productNameCell = orderRow.insertCell(1);
+                        productNameCell.innerHTML = order.product_name;
+
+                        var sizeNumberCell = orderRow.insertCell(2);
+                        sizeNumberCell.innerHTML = order.quantity +'x<h5>'+ order.size_number + '</h5>size';
+                    }
+                    infoDiv.appendChild(orderInfoTable);
+
+                }
+            }
+        };
+        request.send();
+    }
+
+
+
+
+
+   function loadOrders() {
+       var wrapper = document.getElementById("display-history");
+
+       var request = new XMLHttpRequest();
+       request.open("get", "handle_requests.php?target=order&action=getOrdersData");
+       request.onreadystatechange = function (ev) {
+           if(this.readyState == 4){
+               if(this.status == 200){
+                   var history = JSON.parse(this.responseText);
+                   var heading = document.createElement('h1');
+                   heading.innerHTML = 'Orders data';
+                   wrapper.appendChild(heading);
+                   wrapper.innerHTML = this.responseText;
+
+               }
+           }
+       };
+       request.send();
+    }
+
 
 </script>

@@ -79,19 +79,32 @@ class CustomerDao extends UserDao implements ICustomerDao {
 
     }
 
-    public static function getOrdersData($user_id){
+    public static function getOrderData($order_id){
 
-        $stmt = self::$pdo->prepare("SELECT o.order_id , o.total_price , o.date , p.product_name , 
+        $stmt = self::$pdo->prepare("SELECT  o.total_price , o.date , p.product_name , 
                                               s.size_number , ohp.quantity , ohp.size_id, ohp.product_id
                                               FROM final_project_pantofka.orders as o
                                               LEFT JOIN final_project_pantofka.orders_has_products as ohp USING (order_id)
                                               JOIN final_project_pantofka.sizes as s USING (size_id)
                                               JOIN final_project_pantofka.products as p USING (product_id)
-                                              WHERE o.user_id = ? ORDER BY DATE DESC");
+                                              WHERE o.order_id = ? ORDER BY DATE DESC");
+        $stmt->execute(array($order_id));
+        $orders = array();
+        while ($result = $stmt->fetch(\PDO::FETCH_ASSOC)){
+                $orders[] = $result;
+        }
+        return $orders;
+    }
+
+    public static function getOrders($user_id){
+
+        $stmt = self::$pdo->prepare("SELECT order_id , total_price , date 
+                                              FROM final_project_pantofka.orders
+                                              WHERE user_id = ? ORDER BY DATE DESC");
         $stmt->execute(array($user_id));
         $orders = array();
         while ($result = $stmt->fetch(\PDO::FETCH_ASSOC)){
-                $orders[] = new Order(json_encode($result));
+            $orders[] = $result;
         }
         return $orders;
     }
@@ -105,7 +118,7 @@ class CustomerDao extends UserDao implements ICustomerDao {
         return boolval($result["user_is_customer"]);
     }
 
-    public static function getOrders($user_id){
+    public static function getOrdersCsv($user_id){
         $stmt = self::$pdo->prepare("   SELECT o.date , o.order_id ,o.total_price , 
                                                 group_concat(p.product_name) as all_purchased_products_csv,
                                                 group_concat(s.size_number) as all_purchased_sizes_csv
@@ -117,16 +130,9 @@ class CustomerDao extends UserDao implements ICustomerDao {
         $stmt->execute(array($user_id));
         $orders = array();
         while ($result = $stmt->fetch(\PDO::FETCH_ASSOC)){
-            $products = str_getcsv ( $result['all_purchased_products_csv'] , ',' );
-            $sizes = str_getcsv ( $result['all_purchased_sizes_csv'] , ',' );
-            try{
-                $order = new Order(json_encode($result));
-                $order->setProductsHasSizes($products,$sizes);
-                $order->setOrderId($result['order_id']);
-            }catch (\RuntimeException $e){
-                throw $e;
-            }
-            $orders[] = $order;
+            $products = array( str_getcsv ( $result['all_purchased_products_csv'] , ',' ));
+            $sizes = array(str_getcsv ( $result['all_purchased_sizes_csv'] , ',' ));
+            $orders[] =[$result];
         }
         return $orders;
     }

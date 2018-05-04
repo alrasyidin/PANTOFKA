@@ -72,39 +72,35 @@ class OrderController extends AbstractController {
         }
     }
 
-    public function getOrdersData(){
-        if (isset($_SESSION['user'])){
-            /* @var $user_in_session User */
-            $user_in_session = $_SESSION['user'];
-            if (CustomerDao::userIsCustomer($user_in_session->getUserId())){
+    public function getOrderData(){
+        if (isset($_GET['order_id'])){
+            $order_id = htmlentities($_GET['order_id']);
                 try{
-                     $history_data = CustomerDao::getOrdersData($user_in_session->getUserId());
-                    // echo json_encode($history_data);
+                     $order_data = CustomerDao::getOrderData($order_id);
+                    echo json_encode($order_data);
                 }catch (\PDOException $e){
                     echo $e->getMessage();
                 }
-            }else{
-                die('Nothing to display');
             }
 
         }
-    }
+
 
     public function getOrders(){
         if (isset($_SESSION['user'])){
             /* @var $user_in_session User */
             $user_in_session = $_SESSION['user'];
-            if (CustomerDao::userIsCustomer($user_in_session->getUserId())){
-                try{
-                    $orders = CustomerDao::getOrders($user_in_session->getUserId());
-                    echo var_dump($orders);
-                }catch (\PDOException $e){
-                    echo $e->getMessage();
-                }catch (\RuntimeException $e){
-                    echo $e->getMessage();
-                }
+            try{
+                if (CustomerDao::userIsCustomer($user_in_session->getUserId())){
+                $orders = CustomerDao::getOrders($user_in_session->getUserId());
+                echo json_encode($orders);
             }else{
                 die('Nothing to display');
+            }
+            }catch (\PDOException $e){
+                echo $e->getMessage();
+            }catch (\RuntimeException $e){
+                echo $e->getMessage();
             }
 
         }

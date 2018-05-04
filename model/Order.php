@@ -147,10 +147,9 @@ class Order extends AbstractModel {
             for ($i = 0 ; $i < count($products) ; $i++){
                 $product_name = $products[$i];
                 $size_name = $sizes[$i];
-
-                $products_has_sizes[$product_name] = $size_name;
+                $products_has_sizes[] = [$product_name ,$size_name];
+                throw new \RuntimeException(var_dump($products_has_sizes));
             }
-            $this->products_has_sizes = $products_has_sizes;
         }else{
             throw new \RuntimeException('Bad data is passed by either products or sizes array');
         }
