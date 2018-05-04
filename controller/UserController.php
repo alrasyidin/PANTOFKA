@@ -128,23 +128,6 @@ class UserController extends AbstractController {
     }
 
 
-    public static function getLoggedUserAsJson(){
-        /* @var $user User*/
-        $user = $_SESSION["user"];
-        echo json_encode($user);
-    }
-
-    public static function userIsAdmin(){
-        /* @var $user User*/
-        $user = $_SESSION["user"];
-        $userIsAdmin = $user->getisAdmin();
-        if ($userIsAdmin === 1) {
-            echo true;
-        }else{
-            echo false;
-        }
-    }
-
     public function edit(){
         $tab = htmlentities($_GET["tab"]);
         if($tab === "info"){

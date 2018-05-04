@@ -138,9 +138,8 @@ class AdminController extends AbstractController
                                 $new_product->setSizes($sizes_and_numbers);
 
                                 $dao->saveNewProduct($new_product);
-
 //Product is saved
-                                header("location: index.php?page=show_products");
+                                header("location: index.php?page=main");
                             } else {
                                 //Product is not saved
                                 header("location: index.php?page=add_product");
@@ -156,11 +155,11 @@ class AdminController extends AbstractController
     }
 
 
-    public static function editProduct()
+    public static function changeProduct()
     {
-        $request_data = file_get_contents("php://input");
-var_dump($request_data);
-        if (isset($_SESSION['user'])) {
+        if (isset($_POST["change_product"])) {
+
+            if (isset($_SESSION['user'])) {
                 /* @var $user_in_session User */
                 $user_in_session = $_SESSION['user'];
                 if ($user_in_session->getisAdmin()) {
@@ -171,14 +170,14 @@ var_dump($request_data);
                     $product_to_edit = $dao->getProductById($product_id);
 
                     $category = $product_to_edit->getCategory();
-                    $style = $product_to_edit->getStyle();
+                    $style = htmlentities($_POST["product_style"]);
                     $product_name = htmlentities($_POST["product_name"]);
-                    $color = htmlentities($_POST["color"]);
-                    $material = htmlentities($_POST["material"]);
+                    $color = htmlentities($_POST["product_color"]);
+                    $material = htmlentities($_POST["product_material"]);
                     $promo_percentage = htmlentities($_POST["promo_percentage"]);
-                    $picture_url = $product_to_edit->getProductImgUrl();
+                    $picture_url = $product_to_edit->getProductImageUrl();
                     $product_price = htmlentities($_POST["product_price"]);
-                    $info = htmlentities($_POST["info"]);
+                    $info = htmlentities($_POST["product_info"]);
 
                     $sizes = [];
                     $min_size = 0;
@@ -208,8 +207,7 @@ var_dump($request_data);
 
                     }
 
-                    $tmp_name = $_FILES["product_img_name"]["tmp_name"];
-                    $orig_name = $_FILES["product_img_name"]["name"];
+                    $tmp_name = $_FILES["product_image_url"]["tmp_name"];
 
                     if (is_uploaded_file($tmp_name)) {
                         $product_img_name = "$product_name-" . date("Ymdhisa") . ".png";
@@ -238,71 +236,73 @@ var_dump($request_data);
                         try {
                             $dao = new ProductsDao();
 
-                                $product = [];
-                                $product["product_name"] = $product_name;
-                                $product["promo_percentage"] = $promo_percentage;
-                                $product["price"] = $product_price;
-                                $product["product_image_url"] = $picture_url;
-                                $product["info"] = $info;
-                                $product["color"] = $color;
-                                $product["material"] = $material;
-                                $product["category"] = $category;
-                                $product["style"] = $style;
+                            $product = [];
+                            $product["product_id"] = $product_id;
+                            $product["product_name"] = $product_name;
+                            $product["promo_percentage"] = $promo_percentage;
+                            $product["price"] = $product_price;
+                            $product["product_image_url"] = $picture_url;
+                            $product["info"] = $info;
+                            $product["color"] = $color;
+                            $product["material"] = $material;
+                            $product["category"] = $category;
+                            $product["style"] = $style;
 
 
-                                $product = json_encode($product);
-                                $new_product = new Product($product);
-                                $sizes_and_numbers = [];
-                                foreach ($sizes as $size) {
-                                    $new_size = new Size(json_encode($size));
-                                    $sizes_and_numbers[] = $new_size;
-                                }
-                                $new_product->setSizes($sizes_and_numbers);
-
-                                $dao->changeProduct($new_product);
-
+                            $product = json_encode($product);
+                            $new_product = new Product($product);
+                            $sizes_and_numbers = [];
+                            foreach ($sizes as $size) {
+                                $size= json_encode($size);
+                                $new_size = new Size($size);
+                                $sizes_and_numbers[] = $new_size;
+                            }
+                            $new_product->setSizes($sizes_and_numbers);
+                            $dao->changeProduct($new_product);
 //Product is saved
-                                header("location: index.php?page=show_products");
-                           
+                            header("location: index.php?page=main");
+
                         } catch (\PDOException $e) {
                             var_dump($e);
                         }
+
                     }
                 }
             }
         }
+    }
 
 
-
-    public function unsetProduct()
-    {
-        if (isset($_SESSION['user'])) {
-            /* @var $user_in_session User */
-            $user_in_session = $_SESSION['user'];
-            if ($user_in_session->getisAdmin()) {
-                if (isset($_GET['id'])) {
-                    $product_id = htmlentities($_GET['id']);
-                    if ($product_id < 1 || !is_numeric($product_id)) {
-                        die('Bad data passed to the controller');
-                    }
-                    try {
-                        if (AdminDao::productIsAvailable($product_id)) {
-                            AdminDao::unsetProduct($product_id);
-                            echo 'The product size quantities were set to zero';
-                        } else {
-                            echo 'There is nothing else to remove from here';
+        public
+        function unsetProduct()
+        {
+            if (isset($_SESSION['user'])) {
+                /* @var $user_in_session User */
+                $user_in_session = $_SESSION['user'];
+                if ($user_in_session->getisAdmin()) {
+                    if (isset($_GET['id'])) {
+                        $product_id = htmlentities($_GET['id']);
+                        if ($product_id < 1 || !is_numeric($product_id)) {
+                            die('Bad data passed to the controller');
                         }
-                    } catch (\PDOException $e) {
-                        die($e->getMessage());
-                    }
+                        try {
+                            if (AdminDao::productIsAvailable($product_id)) {
+                                AdminDao::unsetProduct($product_id);
+                                echo 'The product size quantities were set to zero';
+                            } else {
+                                echo 'There is nothing else to remove from here';
+                            }
+                        } catch (\PDOException $e) {
+                            die($e->getMessage());
+                        }
 
+                    }
+                } else {
+                    die('This is admin feature!');
                 }
             } else {
                 die('This is admin feature!');
             }
-        } else {
-            die('This is admin feature!');
         }
-    }
 
-}
+    }

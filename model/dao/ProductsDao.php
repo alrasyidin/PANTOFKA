@@ -42,7 +42,7 @@ class ProductsDao extends AbstractDao implements IProductsDao
             $product->getPrice(),
             $product->getInfo(),
             $product->getPromoPercentage(),
-            $product->getProductImgUrl(),
+            $product->getProductImageUrl(),
             $color_id,
             $material_id,
             $category_id,
@@ -108,37 +108,40 @@ class ProductsDao extends AbstractDao implements IProductsDao
             $product->getPrice(),
             $product->getInfo(),
             $product->getPromoPercentage(),
-            $product->getProductImgUrl(),
+            $product->getProductImageUrl(),
             $color_id,
             $material_id,
             $product_id));
 
 
-//    $sizes = $product->getSizes();
+    $sizes = $product->getSizes();
+    var_dump($sizes);
 
         //foreach size of the new product we need to make insert into DB
         /* @var $size Size */
-//    foreach ($sizes as $size) {
+    foreach ($sizes as $size) {
         // getting the size_id from DB
-//        $stmt = self::$pdo->prepare(
-//            "SELECT size_id
-//                               FROM final_project_pantofka.sizes
-//                               WHERE  size_number = ? ");
-//        $stmt->execute(array($size->getSizeNumber()));
-//        $size_id = $stmt->fetch(\PDO::FETCH_ASSOC);
-//        $size_id = $size_id["size_id"];
+        $number = $size->getSizeNumber();
+        $stmt = self::$pdo->prepare(
+            "SELECT size_id
+                               FROM final_project_pantofka.sizes
+                               WHERE  size_number = ? ");
+        $stmt->execute(array($number));
+        $size_id = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $size_id = $size_id["size_id"];
 
         //getting the quantity of this size
-//        $quantity = $size->getSizeQuantity();
+        $quantity = $size->getSizeQuantity();
 
 
         //update table - products_has_sizes - quantity for each size of the product
-//        $stmt = self::$pdo->prepare(
-//            "UPDATE final_project_pantofka.products_has_sizes
-//                        SET quantity = ?
-//                        WHERE product_id = ?
-//                        AND size_id = ?");
-//        $stmt->execute(array($quantity, $product_id, $size_id));
+        $stmt = self::$pdo->prepare(
+            "UPDATE final_project_pantofka.products_has_sizes
+                        SET quantity = ?
+                        WHERE product_id = ?
+                        AND size_id = ?");
+        $stmt->execute(array($quantity, $product_id, $size_id));
+    }
 
 //        self::$pdo->commit();
 //    }catch (\PDOexeption $e)
@@ -332,11 +335,13 @@ class ProductsDao extends AbstractDao implements IProductsDao
 
         $stmt = self::$pdo->prepare(
             "SELECT p.product_id, p.product_name, p.price, p.info, p.product_image_url, p.promo_percentage,
-                      c.color,  m.material 
+                      c.color,  m.material, parent.name as category
                       FROM final_project_pantofka.products as p
                       JOIN colors as c ON p.color_id = c.color_id
                       JOIN materials as m ON p.material_id = m.material_id
                       JOIN categories as cat ON p.category_id = cat.category_id 
+                      JOIN categories as parent ON cat.parent_id = parent.category_id 
+
                       WHERE p.product_id = ?");
 
         $stmt->execute(array($product_id));

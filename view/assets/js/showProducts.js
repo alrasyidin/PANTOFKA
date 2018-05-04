@@ -5,7 +5,11 @@ function filterProducts(pages, entries, category) {
         if (this.readyState == 4 && this.status == 200) {
             var response = this.responseText;
             var products = JSON.parse(response);
+            var title = document.getElementById('page-title');
+
             document.getElementById('visualisation').innerHTML = "";
+            title.innerHTML = "";
+            title.innerHTML = category;
             visualiseProducts(products);
 
         }
@@ -17,7 +21,7 @@ function filterProducts(pages, entries, category) {
 
 function visualiseProducts(products) {
     var modal = document.getElementById('product-modal');
-    var editModal = document.getElementById("edit-product-modal");
+
 
     for (var i = 0; i < products.length; i++) {
 
@@ -169,29 +173,20 @@ function visualiseProducts(products) {
 
         // If admin !!!!!!!!!!!!
         if (product.show_to_admin == true) {
+            var link = document.createElement("a");
+            link.href = "index.php?page=edit_product&id=" + product.product_id;
+            link.style = "background: none;\n" +
+                "    color: inherit;\n" +
+                "    width: 100%;\n" +
+                "    border: none;\n" +
+                "    padding: 0;\n" +
+                "    font: inherit;\n" +
+                "    cursor: pointer;\n" +
+                "    outline: inherit;";
             var editProductButton = document.createElement("button");
+            link.appendChild(editProductButton);
             editProductButton.id = product.product_id;
-            editProductButton.onclick = function () {
-                editProduct(this.id);
-
-                editModal.style.display = "block";
-                var spanExit = document.getElementsByClassName("exit")[0];
-
-
-                spanExit.onclick = function () {
-                    editModal.style.display = "none";
-
-                };
-
-
-                window.onclick = function (event) {
-                    if (event.target == editModal) {
-                        editModal.style.display = "none";
-                    }
-                }
-            };
-
-            divButtons.appendChild(editProductButton);
+            divButtons.appendChild(link);
             editProductButton.innerHTML = "Edit product";
 
             var deleteProductButton = document.createElement("button");
@@ -361,31 +356,22 @@ function fillModal(product_id) {
 
             if (product.show_to_admin == true) {
                 // If admin !!!!!!!!!!!!
+                var link = document.createElement("a");
+                link.href = "index.php?page=edit_product&id=" + product.product_id;
+                link.style = "background: none;\n" +
+                    "    color: inherit;\n" +
+                    "    width: 100%;\n" +
+                    "    border: none;\n" +
+                    "    padding: 0;\n" +
+                    "    font: inherit;\n" +
+                    "    cursor: pointer;\n" +
+                    "    outline: inherit;";
                 var editProductButton = document.createElement("button");
+                link.appendChild(editProductButton);
                 editProductButton.id = product.product_id;
-                editProductButton.onclick = function () {
-                    editProduct(this.id);
-                    modal.style.display = "none";
-                    editModal.style.display = "block";
-
-                    var span = document.getElementsByClassName("exit")[0];
-
-
-                    span.onclick = function () {
-                        editModal.style.display = "none";
-
-                    }
-
-
-                    window.onclick = function (event) {
-                        if (event.target == editModal) {
-                            editModal.style.display = "none";
-                        }
-                    }
-                }
-
-                divButtons.appendChild(editProductButton);
+                divButtons.appendChild(link);
                 editProductButton.innerHTML = "Edit product";
+
 
                 var deleteProductButton = document.createElement("button");
                 deleteProductButton.id = 'delete-product-button';

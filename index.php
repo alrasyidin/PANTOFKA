@@ -91,7 +91,10 @@ session_start();
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
     <div class="container" >
                 <?php
-
+                $page="";
+                if (isset($_GET["page"])){
+                    $page = $_GET["page"];
+                }
                 // TODO this must be one file 'navigation.html'.
                 if(isset($_SESSION["user"])){
                     require_once "./view/user_navigation.html";
@@ -102,7 +105,12 @@ session_start();
 
                 // ==================================== Handle controller requests =========================================
 
-                require_once "./handle_requests.php";
+              if ($page === "edit_product"){
+                  require_once "./view/edit_product.php";
+              }
+              else{
+                  require_once "./handle_requests.php";
+              }
 
                 // =========================================================================================================
                  ?>

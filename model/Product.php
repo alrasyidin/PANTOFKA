@@ -140,6 +140,14 @@ class Product extends AbstractModel
         return $this->product_id;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getProductImageUrl()
+    {
+        return $this->product_image_url;
+    }
+
 
 
     /**
@@ -177,13 +185,7 @@ class Product extends AbstractModel
         return $this->info;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getProductImgUrl()
-    {
-        return $this->product_image_url;
-    }
+
 
     /**
      * @return mixed
@@ -314,15 +316,6 @@ class Product extends AbstractModel
 
         $this->category = $category;
     }
-
-
-
-
-
-
-
-
-
 
 
 }

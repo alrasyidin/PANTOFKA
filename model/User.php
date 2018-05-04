@@ -18,6 +18,14 @@ class User extends AbstractModel {
     protected $first_name;
     protected $last_name;
     protected $gender;
+
+    /**
+     * @param mixed $is_admin
+     */
+    public function setIsAdmin($is_admin)
+    {
+        $this->is_admin = $is_admin;
+    }
     protected $is_admin;
     protected $favorites;
     protected $is_customer;

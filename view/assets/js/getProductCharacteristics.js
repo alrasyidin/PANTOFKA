@@ -21,7 +21,7 @@ function loadCategoriesForEdit() {
     request.onreadystatechange = function (ev) {
         if (this.readyState == 4 && this.status == 200) {
             var allCategories = JSON.parse(this.responseText);
-            var select = document.getElementById("change-categories");
+            var select = document.getElementById("change-category");
             for (var i = 0; i < allCategories.length; i++) {
                 var category = allCategories[i];
                 select.options[select.options.length] = new Option(category, category);

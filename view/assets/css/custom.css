@@ -101,3 +101,8 @@
     text-decoration: none;
     cursor: pointer;
 }
+
+#page-title {
+    text-align: center;
+    color: #ff000b;
+}
