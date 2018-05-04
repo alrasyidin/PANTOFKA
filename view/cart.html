@@ -139,7 +139,7 @@
                        var addCartItemToFavoritesButton = document.createElement("button");
                        addCartItemToFavoritesButton.innerHTML = 'Add to favorites';
                        addCartItemToFavoritesButton.id = 'add-to-favorites-from-cart-button';
-                       addCartItemToFavoritesButton.setAttribute('onclick' , 'addToFavorites('+ item.product_id.toString() +')');
+                       addCartItemToFavoritesButton.setAttribute('onclick' , 'addToFav('+ item.product_id.toString() +')');
                        addCartItemToFavoritesButtonCell.value = (addCartItemToFavoritesButton.valueOf().innerHTML);
                        addCartItemToFavoritesButtonCell.appendChild(addCartItemToFavoritesButton);
 
@@ -194,7 +194,8 @@
 
                if (this.status == 200){
                    var wrapper = document.getElementById('show-cart-div');
-                   wrapper.innerHTML = '<h3>Thank you for your order!<h3>'
+                   //wrapper.innerHTML = '<h3>Thank you for your order!<h3>'
+                   wrapper.innerHTML = this.responseText;
                }else {
                    console.log(this.responseText);
                }

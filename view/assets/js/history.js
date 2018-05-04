@@ -28,7 +28,7 @@ function loadOrders() {
     request.onreadystatechange = function (ev) {
         if(this.readyState == 4){
             if(this.status == 200){
-                var history = JSON.parse(this.responseText);
+               // var history = JSON.parse(this.responseText);
                 var heading = document.createElement('h1');
                 heading.innerHTML = 'History';
                 wrapper.appendChild(heading);

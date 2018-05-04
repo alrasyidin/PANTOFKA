@@ -22,9 +22,17 @@ class FavoritesDao extends AbstractDao implements IFavoritesDao {
         $query = self::$pdo->prepare(
             "INSERT INTO final_project_pantofka.users_has_favorites ( product_id , user_id) VALUES (? , ?);");
         $query->execute(array($product_id , $user_id));
-
-        $product_dao = new ProductsDao();
-        return $product_dao->getProductById($product_id);
+        $query = self::$pdo->prepare(
+            "SELECT p.product_id, p.product_name, p.price, p.info, p.product_image_url, p.promo_percentage,
+                      c.color,  m.material 
+                      FROM final_project_pantofka.products as p
+                      JOIN colors as c ON p.color_id = c.color_id
+                      JOIN materials as m ON p.material_id = m.material_id
+                      JOIN categories as cat ON p.category_id = cat.category_id 
+                      WHERE p.product_id = ?");
+        $query->execute(array($product_id));
+        $favorite_item = $query->fetch(\PDO::FETCH_ASSOC);
+        return new Product(json_encode($favorite_item));
     }
 
     public static function productIsAlreadyInFavorites($product_id , $user_id){

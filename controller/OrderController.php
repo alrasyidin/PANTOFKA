@@ -38,10 +38,12 @@ class OrderController extends AbstractController {
                 /* @var $user_in_session User */
                 $user_in_session = &$_SESSION['user'];
                 $user_id = $user_in_session->getUserId();
-                $cart = $_SESSION['cart'];
+                $products = &$_SESSION['cart'];
                 $simplified_cart_data = CartController::simplifyCart();
-                $order = new Order($user_id , $cart);
-
+                $order = new Order();
+                $order->setUserId($user_id);
+                $order->setProducts($products);
+                $order->setTotalPrice();
                 try{
                     CustomerDao::makeOrder($order);
                     foreach ($simplified_cart_data as $item_id => $size_info ) {
@@ -57,7 +59,6 @@ class OrderController extends AbstractController {
                     echo "DB failed: " . $e->getMessage() . ' \n ' . $e->getTraceAsString();
                 }catch (\RuntimeException $e){
                     header('HTTP/1.1 400');
-
                     echo $e->getMessage() ; // probably there are no quantities left for the given size
                     die();
                 }
@@ -78,7 +79,7 @@ class OrderController extends AbstractController {
             if (CustomerDao::userIsCustomer($user_in_session->getUserId())){
                 try{
                      $history_data = CustomerDao::getOrdersData($user_in_session->getUserId());
-                     echo json_encode($history_data);
+                    // echo json_encode($history_data);
                 }catch (\PDOException $e){
                     echo $e->getMessage();
                 }
@@ -96,8 +97,10 @@ class OrderController extends AbstractController {
             if (CustomerDao::userIsCustomer($user_in_session->getUserId())){
                 try{
                     $orders = CustomerDao::getOrders($user_in_session->getUserId());
-                    echo json_encode($orders);
+                    echo var_dump($orders);
                 }catch (\PDOException $e){
+                    echo $e->getMessage();
+                }catch (\RuntimeException $e){
                     echo $e->getMessage();
                 }
             }else{
