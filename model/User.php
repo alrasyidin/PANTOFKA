@@ -59,7 +59,7 @@ class User extends AbstractModel {
     /**
      * @param mixed $favorites
      */
-    private function setFavorites(&$favorites)
+    private function setFavorites($favorites)
     {
         $this->favorites = $favorites;
     }

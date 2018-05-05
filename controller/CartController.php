@@ -9,12 +9,16 @@
 namespace controller;
 
 
+use model\Cart;
 use model\dao\FavoritesDao;
 use model\dao\SizeDao;
 use model\Product;
 use model\User;
 
 class CartController extends AbstractController{
+
+    const MIN_SIZE_NUMBER = 25;
+    const MAX_SIZE_NUMBER = 48;
 
     private static $instance;
 
@@ -32,65 +36,71 @@ class CartController extends AbstractController{
         return self::$instance;
     }
 
+
     public function addToCart(){
 
-        if (isset($_GET['id']) && isset($_GET['size'])){
-            $product_id = htmlentities($_GET['id']);
-            $size_no = htmlentities($_GET['size']);
+        if (isset($_GET['product_id']) && isset($_GET['size_no'])) {
+            $product_id = htmlentities($_GET['product_id']);
+            $size_no = htmlentities($_GET['size_no']);
 
-            if (empty($_SESSION['cart'])){
-                $_SESSION['cart'] = array();
+            if (empty($_SESSION['cart'])) {
+                // If this is the first time the user with that session approach the cart we will need an instance of it
+                // Cart is a singleton class
+                // That's because we associate it with the users session
+                $_SESSION['cart'] = Cart::init();
             }
-            if ($product_id < 1 || !is_numeric($product_id) || $size_no < 25 || $size_no > 48 || !is_numeric($size_no)){
-                echo json_encode('Bad data was passed in controller - ' . var_dump($product_id) . ' or ' . var_dump($size_no));
+
+            // Basic validation
+            if ($product_id < 1 || !is_numeric($product_id) || !is_numeric($size_no) ||
+                $size_no < self::MIN_SIZE_NUMBER || $size_no > self::MAX_SIZE_NUMBER) {
+                echo json_encode('Bad data was passed to the controller! ');
             }
-            try{
+            try {
                 $size_dao = new SizeDao();
-                $size_id = $size_dao->getSizeId($size_no); // TODO make everything static in DAO's ~!
-                if(FavoritesDao::productIsAvailable($product_id , $size_id)){
-                    if (self::productAlreadyInCart($product_id)){
+                $size_id = $size_dao->getSizeId($size_no);
+
+                if (FavoritesDao::productIsAvailable($product_id, $size_id)) {
+                    if (self::productAlreadyInCart($product_id)) {
                         /* @var $product Product */
                         $product = self::productAlreadyInCart($product_id);
                         $sizes = $product->getSizes();
                         $sizes[] = $size_no;
+                        sort($sizes);
                         $product->setSizes($sizes);
-                        echo 'Another size was added in cart';
-                    }else{
-                        $cart_item = FavoritesDao::productIsAvailable($product_id , $size_id);
+                        header('HTTP/1.1 200 OK');
+                        die('Another size was added in cart');
+                    } else {
+                        $cart_item = FavoritesDao::productIsAvailable($product_id, $size_id);
                         $new_cart_item = new Product(json_encode($cart_item));
                         $new_cart_item->setSizes(array($size_no));
-                        if (isset($_SESSION['user'])){
-                            $user_in_session = &$_SESSION['user'];
-                            /* @var $user_in_session User */
-                            $user_in_session->addToCart($new_cart_item);
-                        }else{
-                            // $guest = new User(json_encode(array("first_name"=>'Guest')));
-                            //  $guest->addToCart($new_cart_item);
-                            //   $_SESSION['guest'] = $guest;
-                        }
-                        $_SESSION['cart'][] = $new_cart_item;
-                        echo 'Product was added in cart';
+                        /* @var $cart Cart */
+                        $cart = &$_SESSION['cart'];
+                        $cart->addItemToCart($new_cart_item);
+                        header('HTTP/1.1 200 OK');
+                        die('Product was added in cart');
                     }
-                    header('HTTP/1.1 200 OK');
-                    die();
                 }
-            }catch (\PDOException $e){
+            } catch (\PDOException $e) {
                 die($e->getTraceAsString() . '\n' . $e->getMessage());
-            }catch (\RuntimeException $e){
+            } catch (\RuntimeException $e) {
                 die($e->getTraceAsString() . '\n' . $e->getMessage());
 
             }
         }
     }
 
-    public static function productAlreadyInCart($product_id){
-        /* @var $cart \ArrayIterator*/
+    public function productAlreadyInCart($product_id){
+        if (!isset($_SESSION['cart'])){
+            return false;
+        }
+        /* @var $cart Cart*/
         $cart = &$_SESSION['cart'];
-        if (!empty($cart)){
+        $cart_items = $cart->getCartItems();
+        if (!empty($cart_items)){
             /* @var $item Product */
-            foreach ($cart as &$item){
+            foreach ($cart_items as $index=>&$item){
                 if ($item->getProductId() == $product_id){
-                    return $item;
+                    return $cart_items[$index];
                 }
             }
         }
@@ -99,79 +109,91 @@ class CartController extends AbstractController{
 
     public function unsetCart(){
         if (isset($_SESSION['cart'])){
-            $cart_in_session = &$_SESSION['cart'];
-            if (isset($_SESSION['user'])){
-                /* @var $user_in_session User */
-                $user_in_session = $_SESSION['user'];
-                $user_in_session->unsetCart();
-                echo 'Logged user no longer has cart items in session!';
-            }
-            $cart_in_session = array();
+            /* @var $cart Cart*/
+            $cart = &$_SESSION['cart'];
+            $cart = Cart::init();
             echo 'Cart was unset!';
         }
     }
 
     public function getCartItems(){
         if (isset($_SESSION['cart'])){
-            $cart = $_SESSION['cart'];
-            echo json_encode($cart);
+            /* @var $cart Cart*/
+            $cart = &$_SESSION['cart'];
+            $items = $cart->getCartItems();
+            /* @var $item Product*/
+            foreach ($items as $index=>&$item){
+                json_encode($item->getSizes());
+            }
+            echo json_encode($items);
         }
     }
 
-    public function removeItemSize()
-    {
-        if (isset($_GET['productId']) && isset($_GET['sizeNo'])) {
-            $product_id = htmlentities($_GET['productId']);
-            $product_size = htmlentities($_GET['sizeNo']);
-            if ($product_id < 0 || !is_numeric($product_id) || $product_size < 25 || $product_size > 48 || !is_numeric($product_size)) {
+    public function removeItemSize(){
+        if (isset($_GET['product_id']) && isset($_GET['size_no'])) {
+            $product_id = htmlentities($_GET['product_id']);
+            $product_size = htmlentities($_GET['size_no']);
+
+            if ($product_id < 0 || !is_numeric($product_id) || $product_size < self::MIN_SIZE_NUMBER ||
+                $product_size > self::MAX_SIZE_NUMBER || !is_numeric($product_size)) {
                 die('bad data passed to controller');
             }
+            /* @var $cart Cart*/
             $cart = &$_SESSION['cart'];
+            $items = $cart->getCartItems();
             /* @var $item Product */
-            foreach ($cart as $item_index=>&$item) {
-
+            foreach ($items as $item_index=>&$item) {
                 if ($item->getProductId() == $product_id) {
                     $sizes = $item->getSizes();
                     foreach ($sizes as $size_index => &$size) {
                         if ($size == $product_size) {
                             unset($sizes[$size_index]);
-                            $sizes = array_values($sizes);
+                            sort($sizes);
                             $item->setSizes($sizes);
                             if (count($sizes) === 0){
-                                unset($cart[$item_index]);
-                                if (isset($_SESSION['user'])){
-                                    $user_in_session = &$_SESSION['user'];
-                                    /* @var $user_in_session User */
-                                    $user_in_session->removeCartItem($item_index);
+                                unset($items[$item_index]);
+                                if (count($items) == 0){
+                                    Cart::init();
+                                    die('Last item was removed!');
+
                                 }
-                                $cart = array_values($cart);
-                                die('last size was removed');
+                                try{
+                                    $cart->setCartItems($items);
+                                    die('Last size was removed!');
+                                }catch (\RuntimeException $e){
+                                    die($e->getMessage());
+                                }
                                 break;
                             }
                             break;
                         }
                     }
-                    $cart[$item_index] = $item;
-                    echo var_dump($item->getSizes());
+                    $items[$item_index] = $item;
+                    die('Size No.'. $size .' of product "'. $item->getProductName()  .'" was successfully removed from the cart!');
                 }
             }
         }
     }
 
     public function removeItem(){
-        if (isset($_GET['productId'])){
-            $product_id = htmlentities($_GET['productId']);
+        if (isset($_GET['product_id'])){
+            $product_id = htmlentities($_GET['product_id']);
             if ($product_id < 0 || !is_numeric($product_id)){
-                die('bad data passed to controller');
+                die('Bad data was passed to the controller!!');
             }
-
+            /* @var $cart Cart*/
             $cart = &$_SESSION['cart'];
+            $items = $cart->getCartItems();
             /* @var $cart_item Product */
-            foreach ($cart as $index=>&$cart_item) {
-                if ($cart_item->getProductId() === $product_id){
-                    unset($cart[$index]);
-                    $cart = array_values($cart);
-                    die('success!');
+            foreach ($items as $index=>&$cart_item) {
+                if ($cart_item->getProductId() == $product_id){
+                    unset($items[$index]);
+                    try{
+                        $cart->setCartItems($items);
+                        die('Product named "'.$cart_item->getProductName().'" was removed successfully from the cart! "');
+                    }catch (\RuntimeException $e){
+                        die($e->getMessage());
+                    }
                 }
             }
         }
@@ -179,10 +201,12 @@ class CartController extends AbstractController{
 
     public function getCartTotalPrice(){
         if (isset($_SESSION['cart'])){
-            $cart = $_SESSION['cart'];
+            /* @var $cart Cart*/
+            $cart = &$_SESSION['cart'];
+            $items = $cart->getCartItems();
             $total = 0;
             /* @var $item Product*/
-            foreach ($cart as $item_index=>$item){
+            foreach ($items as $index=>$item){
                 $price = $item->getPriceOnPromotion();
                 $quantity = count($item->getSizes());
                 $total += $price*$quantity;
@@ -194,11 +218,13 @@ class CartController extends AbstractController{
     /** Format returned : cart[  product id ] = [  'size' => quantity  ] */
     public static function simplifyCart(){
         if (isset($_SESSION['cart'])){
-            $cart = $_SESSION['cart'];
+            /* @var $cart Cart*/
+            $cart = &$_SESSION['cart'];
+            $items = $cart->getCartItems();
             $simplified_cart = array();
-            $size_dao = new SizeDao(); // TODO
+            $size_dao = new SizeDao();
             /* @var $item Product*/
-            foreach ($cart as $item) {
+            foreach ($items as $index=>$item) {
                 $sizes =  array_count_values($item->getSizes());
                 foreach ($sizes as $size_no=>&$quantity){
                     $size_no = $size_dao->getSizeId($size_no);

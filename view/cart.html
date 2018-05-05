@@ -45,8 +45,8 @@
        request.onreadystatechange = function (ev) {
            if(this.readyState == 4){
                if(this.status == 200){
-                   var cartItems = JSON.parse(this.responseText);
-
+                   var cartItems = JSON.parse(this.response);
+                   console.log(cartItems);
                    var clearCartButton = document.getElementById("clear-cart-button");
                    if (cartItems.length == 0){
                        document.getElementById('clear-cart-button-heading').innerHTML = 'Nothing in here';
@@ -61,7 +61,6 @@
 
                    for (var i = 0; i < cartItems.length ; i++){
                        var item = cartItems[i];
-                       console.log(item);
 
                        var itemRow = cartTable.insertRow(this.i);
                         // ===================================================
@@ -81,34 +80,32 @@
                        productNameCell.innerHTML = item.product_name;
                        // ===================================================
 
-                       if (item.promo_percentage.valueOf() > 0){
+                       if (item.promo_percentage > 0){
                            var productPriceCell = itemRow.insertCell(2);
                            var salePrice = item.price_on_promotion;
-                           productPriceCell.innerHTML = salePrice;
+                           productPriceCell.innerHTML = salePrice + "lv.";
                        }else{
                            var productPriceCell = itemRow.insertCell(2);
-                           productPriceCell.innerHTML = item.price;
+                           productPriceCell.innerHTML = item.price + "lv.";
 
                        }
                        //=======================================================
 
                        var categoryCell = itemRow.insertCell(3);
-                       categoryCell.id = 'cart-item-category-'+item.category_id;
                        categoryCell.innerHTML =item.category;
                        //=======================================================
                        var productMaterialCell = itemRow.insertCell(4);
-                       productMaterialCell.id = 'cart-item-material-'+item.material_id;
                        productMaterialCell.innerHTML = item.material;
                        //=======================================================
 
                        var productColorCell = itemRow.insertCell(5);
-                       productColorCell.id = 'cart-item-color-'+item.color_id;
-                       productMaterialCell.innerHTML = item.color;
+                       productColorCell.innerHTML = item.color;
                        //=======================================================
 
                        var sizeSelectCell = itemRow.insertCell(6);
                        var sizeSelect = document.createElement('select');
                        var available_sizes = item.sizes;
+
                        for (var j = 0 ; j < available_sizes.length ; j++){
                            sizeSelect.options[sizeSelect.options.length] = new Option(available_sizes[j], available_sizes[j]);
                        }
@@ -207,7 +204,7 @@
        var sizeSelectToRemove = document.getElementById('cart-item-pick-size-for-product' + product_id);
        var size_no = sizeSelectToRemove.options[sizeSelectToRemove.selectedIndex].value;
        var request = new XMLHttpRequest();
-       request.open("get", "handle_requests.php?target=cart&action=removeItemSize&productId=" + product_id + '&sizeNo=' +size_no );
+       request.open("get", "handle_requests.php?target=cart&action=removeItemSize&product_id=" + product_id + '&size_no=' +size_no );
        request.onreadystatechange = function (ev) {
            if(this.readyState == 4){
                if(this.status == 200){
@@ -223,7 +220,7 @@
 
    function removeItemFromCart(product_id ){
        var request = new XMLHttpRequest();
-       request.open("get", "handle_requests.php?target=cart&action=removeItem&productId=" + product_id);
+       request.open("get", "handle_requests.php?target=cart&action=removeItem&product_id=" + product_id);
        request.onreadystatechange = function (ev) {
            if(this.readyState == 4){
                if(this.status == 200){

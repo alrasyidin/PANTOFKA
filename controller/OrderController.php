@@ -9,6 +9,7 @@
 namespace controller;
 
 
+use model\Cart;
 use model\dao\CustomerDao;
 use model\dao\ProductsDao;
 use model\Order;
@@ -38,9 +39,11 @@ class OrderController extends AbstractController {
                 /* @var $user_in_session User */
                 $user_in_session = &$_SESSION['user'];
                 $user_id = $user_in_session->getUserId();
-                $products = &$_SESSION['cart'];
+                /* @var $cart Cart*/
+                $cart = &$_SESSION['cart'];
                 $simplified_cart_data = CartController::simplifyCart();
                 $order = new Order();
+                $products = $cart->getCartItems();
                 $order->setUserId($user_id);
                 $order->setProducts($products);
                 $order->setTotalPrice();

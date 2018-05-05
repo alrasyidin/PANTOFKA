@@ -1,9 +1,7 @@
-<main id="main" style="display:block">
-
-<section class="centered-section min-height-600">
+<section class="centered-section min-height-400 top-30">
     <div class="form" id="login-form" >
 
-        <form  onsubmit="return validateLoginFormOnSubmit(this.form)"  action="./handle_requests.php?target=user&action=login" method="post" >
+        <form onsubmit="return validateLoginFormOnSubmit(this)"  action="./handle_requests.php?target=user&action=login" method="post" >
             <div id="login-error" class="error"></div>
 
             <input type="email" name="email" placeholder="Email" required> <br>
@@ -16,4 +14,3 @@
         </form>
     </div>
 </section>
-</main>

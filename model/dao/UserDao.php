@@ -145,4 +145,13 @@ class UserDao extends AbstractDao implements IUserDao {
         return $result["gender_id"];
     }
 
+    public static function emailIsTakenByAnotherUser($email_wanted , $user_id){
+        $query = self::$pdo->prepare(
+            "SELECT count(*) as email_is_taken FROM final_project_pantofka.users 
+                      WHERE email = ? AND  user_id != ? ");
+        $query->execute(array( $email_wanted , $user_id));
+        $result = $query->fetch(\PDO::FETCH_ASSOC);
+        return boolval($result["email_is_taken"]);
+    }
+
 }

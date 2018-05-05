@@ -42,7 +42,9 @@ session_start();
 if (isset($_SESSION['user'])){
     /* @var $user_in_session \model\User*/
     $user_in_session = &$_SESSION['user'];
+    var_dump($user_in_session->getFavorites());
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -128,7 +130,7 @@ if (isset($_SESSION['user'])){
 
     // ==================================== Front controller =========================================
     ?>
-    <div id="main">
+    <div id="main" style="display:block">
 
     <?php
 
@@ -182,6 +184,7 @@ if (isset($_SESSION['user'])){
 </div>
 
 <!-- End Document–––––––––––––––––––––––––––––––––––––-->
+<script src="./view/assets/js/validation.js" type="text/javascript"></script>
 <script src="./view/assets/js/productsNavigation.js" type="text/javascript"></script>
 <script src="./view/assets/js/editProfile.js" type="text/javascript"></script>
 <script src="./view/assets/js/favoritesAndCartFunctions.js" type="text/javascript"></script>

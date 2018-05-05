@@ -10,15 +10,14 @@ namespace model;
 
 use model\AbstractModel;
 
-class Cart implements \JsonSerializable {
+class Cart{
 
-    // cart_id ?
-   private $cartItems;
+   private $cart_items;
    private static $instance;
 
-    private function __construct($cartItems = null)
+    private function __construct()
     {
-        $this->cartItems = array();
+        $this->cart_items = array();
     }
 
     public static function init() {
@@ -28,22 +27,28 @@ class Cart implements \JsonSerializable {
         return self::$instance;
     }
 
-    public function jsonSerialize()
+    public function addItemToCart(Product &$product)
     {
-        return get_object_vars($this);
+        $this->cart_items[] = $product;
     }
 
 
-    public function addItemToCart(Product $product)
+    public function setCartItems($cart_items)
     {
-        $this->cartItems[] = $product;
-    }
+        $this->cart_items = array();
+        if (!empty($cart_items)){
+            foreach($cart_items as $index=>&$cart_item) {
+                if (!($cart_item instanceof Product)){
+                    throw new \RuntimeException('Expected array of products but got something else!');
+                }
+                $this->addItemToCart($cart_item);
+            }
+        }
 
+    }
 
     public function getCartItems(){
-        return $this->cartItems;
+        return $this->cart_items;
     }
-
-
 
 }

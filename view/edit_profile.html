@@ -1,4 +1,4 @@
-<section class="centered-section min-height-600">
+<section id="edit-profile-section" class="centered-section min-height-600">
     <div class="centered-section">
         <button class="inline_block" onclick="showEditProfileSection(true , false); loadSessionUserDataInEditForm();" >General info</button>
         <button class="inline_block" onclick="showEditProfileSection(false , true)">Security</button>
@@ -53,6 +53,8 @@
 
 
 <script  type="text/javascript">
+    showEditProfileSection(true , false);
+    loadSessionUserDataInEditForm();
     function showEditProfileSection(showInfo , showSecurity) {
         var resultDiv = document.getElementById('edit-form-result');
         var infoSection = document.getElementById('edit-info-div');

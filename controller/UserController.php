@@ -160,22 +160,28 @@ class UserController extends AbstractController {
             // Get the resource with new data send from ajax request
             $new_data = file_get_contents("php://input");
             // create user object with it
-            $user = new User(json_decode(json_encode($new_data)));
+            $changed_user = new User(json_decode(json_encode($new_data)));
+
             // Take user from session
-            $user_in_session = $_SESSION['user'];
+            /* @var $user_in_session User*/
+            $user_in_session = &$_SESSION['user'];
             // and take its Id
             $user_id = $user_in_session->getUserId();
 
+            if (UserDao::emailIsTakenByAnotherUser( $changed_user->getEmail() , $user_id)){
+                die('This email is already taken! Choose another one :) ');
+            }
+
             // Edit user by given User object and id from session
-            UserDao::editUser($user ,$user_id);
+            UserDao::editUser($changed_user ,$user_id);
             // Unset object saved in session
             unset($_SESSION['user']);
             // Remove password data from new User
-            $user->__unset($user->getPassword());
+            $changed_user->__unset($changed_user->getPassword());
             // Set id
-            $user->setUserId($user_id);
+            $changed_user->setUserId($user_id);
             // Save changed user in session
-            $_SESSION['user'] = $user ;
+            $_SESSION['user'] = $changed_user ;
             header('HTTP/1.1 200 OK');
             echo "Changes were saved";
         }catch (\RuntimeException $e){

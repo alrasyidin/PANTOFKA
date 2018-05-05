@@ -18,9 +18,6 @@ abstract class AbstractController{
         if($controller_name === 'AdminController'){
             return AdminController::getInstance();
 
-        }elseif($controller_name === 'BaseController'){
-            return BaseController::getInstance();
-
         }elseif($controller_name === 'CartController'){
             return CartController::getInstance();
 

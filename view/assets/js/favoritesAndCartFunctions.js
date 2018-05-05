@@ -2,7 +2,7 @@
 function addToFav(id ) {
 
     var request = new XMLHttpRequest();
-    request.open("get", "handle_requests.php?target=favorites&action=addToFavorites&id=" + id );
+    request.open("get", "handle_requests.php?target=favorites&action=addToFavorites&product_id=" + id );
     request.onreadystatechange = function (ev) {
         if(this.readyState == 4){
             if(this.status == 200){
@@ -29,7 +29,7 @@ function addToCart(id ) {
         alert('Problem in add to cart' );
     }
     var request = new XMLHttpRequest();
-    request.open("get", "handle_requests.php?target=cart&action=addToCart&id=" + id + '&size=' + size);
+    request.open("get", "handle_requests.php?target=cart&action=addToCart&product_id=" + id + '&size_no=' + size);
     request.onreadystatechange = function (ev) {
         if(this.readyState == 4){
             if(this.status == 200){
