@@ -338,7 +338,7 @@ text-align: center;
     border: 0;
 }
 .form .button:hover{
-    background: rgba(255, 42, 46, 0.53);
+    background: rgba(200, 202, 198, 0.53);
     color: #000000;
 }
 

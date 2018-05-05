@@ -89,6 +89,7 @@ function visualiseProducts(products) {
         img.src = product.product_image_url;
         var ratingText = document.createElement('h6');
         productRatings.appendChild(ratingText);
+        ratingText.style = "text-align: center";
         var ratings = product.ratings;
         var maxRate = 10;
         var minRate = 0;
@@ -104,7 +105,7 @@ function visualiseProducts(products) {
             for (var l = 0; l < ratings.length; l++) {
 
                 var rating = ratings[l];
-                ratingSum = ratingSum + rating.rating_value;
+                ratingSum += rating.rating_value;
             }
             avgRating = (ratingSum) / (ratings.length);
             avgRating =  Math.round( avgRating * 10) / 10;
@@ -130,14 +131,20 @@ function visualiseProducts(products) {
             }
         }
         if (flagSizes === false) {
-            sizeText.innerHTML = "Out of stock!"
-        }
-        else {
-            sizeText.innerHTML = "Sizes: ";
+            var placeHoldingButton = document.createElement('button');
+            placeHoldingButton.style = "visibility: hidden";
+            productSizes.appendChild(placeHoldingButton);
+            sizeText.innerHTML = "Out of stock!";
+            sizeText.style = "text-align: center; color: red";
+            productSizes.appendChild(sizeText);
+
 
         }
-        productSizes.appendChild(sizeText);
-        productSizes.appendChild(selectSize);
+        else {
+            sizeText.innerHTML = "Select size: ";
+            productSizes.appendChild(sizeText);
+            productSizes.appendChild(selectSize);
+        }
 
 
         for (var j = 0; j < sizes.length; j++) {
@@ -162,6 +169,9 @@ function visualiseProducts(products) {
         var addToCartButton = document.createElement("button");
         addToCartButton.id = 'add-to-cart-button';
         addToCartButton.setAttribute('onclick', 'addToCart(' + product.product_id + ')');
+        if (flagSizes === false) {
+            addToCartButton.style = "visibility: hidden";
+        }
         divButtons.appendChild(addToCartButton);
         addToCartButton.innerHTML = "Add to cart";
 
@@ -298,10 +308,8 @@ function fillModal(product_id) {
             var sizeText = document.createElement('h6');
             var selectSize = document.createElement("select");
             selectSize.id = 'sizes-for-product' + product.product_id;
-            selectSize.style = "display: inline-block";
 
             productSizes.appendChild(sizeText);
-            productSizes.appendChild(selectSize);
 
             var sizesOfProduct = product.sizes;
             var flagSizes = false;
@@ -313,14 +321,20 @@ function fillModal(product_id) {
                 }
             }
             if (flagSizes === false) {
-                sizeText.innerHTML = "Out of stock!"
+                var placeHoldingButton = document.createElement('button');
+                placeHoldingButton.style = "visibility: hidden";
+                productSizes.appendChild(placeHoldingButton);
+                sizeText.innerHTML = "Out of stock!";
+                sizeText.style = "text-align: center; color: red";
+
+                productSizes.appendChild(sizeText);
             }
             else {
-                sizeText.innerHTML = "Sizes: ";
-
+                sizeText.innerHTML = "Select size: ";
+                productSizes.appendChild(sizeText);
+                productSizes.appendChild(selectSize);
             }
-            productSizes.appendChild(sizeText);
-            productSizes.appendChild(selectSize);
+
 
 
             for (var j = 0; j < sizesOfProduct.length; j++) {
@@ -345,6 +359,9 @@ function fillModal(product_id) {
             var addToCartButton = document.createElement("button");
             addToCartButton.id = 'add-to-cart-button';
             addToCartButton.setAttribute('onclick', 'addToCart(' + product.product_id + ')');
+            if (flagSizes === false) {
+                addToCartButton.style = "visibility: hidden";
+            }
             divButtons.appendChild(addToCartButton);
             addToCartButton.innerHTML = "Add to cart";
 

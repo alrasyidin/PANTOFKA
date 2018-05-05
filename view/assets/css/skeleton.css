@@ -216,7 +216,7 @@ input[type="reset"]:focus,
 input[type="button"]:focus {
   color: rgba(255, 0, 12, 0.87);
   border-color: rgba(204, 203, 204, 0.51);
-  background-color: rgba(255, 0, 12, 0.04);
+  background-color: rgba(216, 216, 216, 0.36);
   outline: 0; }
 .button.button-primary,
 button.button-primary,
