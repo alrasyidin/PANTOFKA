@@ -32,8 +32,10 @@ class ProductsDao extends AbstractDao implements IProductsDao
 //            self::$pdo->beginTransaction();
 
         $category_id = $this->getCategoryAndStyleId($product->getStyle(), $product->getCategory());
+try{
+    self::$pdo->beginTransaction();
 
-        $stmt = self::$pdo->prepare(
+    $stmt = self::$pdo->prepare(
             "INSERT INTO final_project_pantofka.products (product_name, price, info, promo_percentage,
                         product_image_url, color_id, material_id, category_id) 
                        VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
@@ -75,12 +77,13 @@ class ProductsDao extends AbstractDao implements IProductsDao
                 "INSERT INTO final_project_pantofka.products_has_sizes (product_id, size_id, quantity) 
                                VALUES (?, ?, ?)");
             $stmt->execute(array($product_id, $size_id, $quantity));
+        }
 
-//        self::$pdo->commit();
-//    }catch (\PDOexeption $e)
-//{
-//self::$pdo->e->rollback();
-//throw $e;
+        self::$pdo->commit();
+    }catch (\PDOException$e)
+{
+self::$pdo->rollback();
+throw $e;
         }
 
     }
@@ -96,8 +99,8 @@ class ProductsDao extends AbstractDao implements IProductsDao
 
         $product_id = $product->getProductId();
 
-
-//            self::$pdo->beginTransaction();
+try{
+            self::$pdo->beginTransaction();
         $stmt = self::$pdo->prepare(
             "UPDATE final_project_pantofka.products 
                   SET product_name = ?, price = ?, info = ?, promo_percentage = ?,
@@ -142,13 +145,12 @@ class ProductsDao extends AbstractDao implements IProductsDao
                         AND size_id = ?");
         $stmt->execute(array($quantity, $product_id, $size_id));
     }
-
-//        self::$pdo->commit();
-//    }catch (\PDOexeption $e)
-//{
-//self::$pdo->e->rollback();
-//throw $e;
-//    }
+    self::$pdo->commit();
+}catch (\PDOException$e)
+{
+    self::$pdo->rollback();
+    throw $e;
+}
 
     }
 

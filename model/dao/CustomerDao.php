@@ -25,7 +25,8 @@ class CustomerDao extends UserDao implements ICustomerDao {
             $order->setOrderId($order_id);
 
         $stmt = self::$pdo->prepare(
-            "INSERT INTO final_project_pantofka.orders_has_products ( product_id , order_id , quantity , size_id ) 
+            "INSERT INTO final_project_pantofka.orders_has_products 
+                                    ( product_id , order_id , quantity , size_id ) 
                                  VALUES (?, ?, ? , ? ) ");
         /* @var $product_to_buy Product*/
         $size_dao = new SizeDao();

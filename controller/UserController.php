@@ -36,6 +36,24 @@ class UserController extends AbstractController {
         die("Went fine!");
     }
 
+
+    public static function getLoggedUserAsJson(){
+        /* @var $user User*/
+        $user = $_SESSION["user"];
+        echo json_encode($user);
+    }
+
+    public static function userIsAdmin(){
+        /* @var $user User*/
+        $user = $_SESSION["user"];
+        $userIsAdmin = $user->getisAdmin();
+        if ($userIsAdmin) {
+            echo "1";
+        }else{
+            echo "0";
+        }
+    }
+
     public static function login(){
         if (isset($_SESSION["user"])) {
             header('HTTP/1.1 401 Unauthorized');

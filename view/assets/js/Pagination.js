@@ -14,9 +14,9 @@ function loadPageLinks(entries, category) {
                 button.className = "page-button";
                 button.innerHTML = i + 1;
                 button.addEventListener("click", function () {
-
-                    var categorySelect = document.getElementById("categories");
-                    var category = categorySelect.options[categorySelect.selectedIndex].value;
+                    //
+                    // var categorySelect = document.getElementById("categories");
+                    // var category = categorySelect.options[categorySelect.selectedIndex].value;
 
                     filterProducts(this.innerHTML, entries, category);
                 });
