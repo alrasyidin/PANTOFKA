@@ -24,8 +24,11 @@ if (!isset($_SESSION)){
 model\dao\AbstractDao::init();
 $file_not_found = false;
 
-$controller_name = isset($_GET['target']) ? htmlentities($_GET['target']) : 'base';
-$method_name = isset($_GET['action']) ? htmlentities($_GET['action']) : 'index';
+if ( isset($_GET['target']) && isset($_GET['action'])){
+    $controller_name = htmlentities($_GET['target']) ;
+    $method_name = htmlentities($_GET['action']) ;
+
+
 $controller_class_name = "controller\\" . ucfirst($controller_name) . "Controller";
 if (class_exists($controller_class_name)) {
     $class = controller\AbstractController::createController($controller_name . 'Controller');
@@ -51,5 +54,8 @@ if (class_exists($controller_class_name)) {
 if ($file_not_found) {
     //return header 404
     echo 'target or action invalid: target = ' . $controller_name . ' and action = ' .$method_name;
+}
+}else{
+    header('location: index.php?page=main');
 }
 

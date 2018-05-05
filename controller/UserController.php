@@ -214,4 +214,12 @@ class UserController extends AbstractController {
         }
     }
 
+    public static function getLoggedUser(){
+        if (isset($_SESSION['user'])){
+            /* @var $user_in_session User*/
+            $user_in_session = &$_SESSION['user'];
+            return $user_in_session;
+        }
+    }
+
 }

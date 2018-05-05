@@ -26,7 +26,23 @@ spl_autoload_register(
 ini_set('mbstring.internal_encoding', 'UTF-8');
 header('Content-Type: text/html; charset=UTF-8');
 
+const UNAUTHORIZED_PAGE_NAME = 'unauthorized';
+const NOT_FOUND_PAGE_NAME = 'not_found';
+const FAILED_LOGIN_PAGE_NAME = 'failed_login';
+const LOGIN_PAGE_NAME = 'login';
+const REGISTER_PAGE_NAME = 'register';
+const CART_PAGE_NAME = 'cart';
+const FAVORITES_PAGE_NAME = 'favorites';
+const MAIN_PAGE_NAME = 'main';
+const ADD_PRODUCT_PAGE_NAME = 'add_product';
+const EDIT_PRODUCT_PAGE_NAME = 'edit_product';
+
 session_start();
+
+if (isset($_SESSION['user'])){
+    /* @var $user_in_session \model\User*/
+    $user_in_session = &$_SESSION['user'];
+}
 ?>
 
 <!DOCTYPE html>
@@ -95,15 +111,12 @@ session_start();
     if (isset($_GET["page"])) {
         $page = $_GET["page"];
     }
-    // TODO this must be one file 'navigation.html'.
-    if (isset($_SESSION["user"])) {
-        /* @var $user_in_session \model\User */
-        $user_in_session = &$_SESSION["user"];
+
+    if (isset($user_in_session)) {
         if ($user_in_session->getisAdmin()) {
             require_once "./view/admin_navigation.html";
 
         } else {
-
             require_once "./view/user_navigation.html";
         }
     }
@@ -112,23 +125,64 @@ session_start();
     }
     require_once "./view/header.html";
 
-    // ==================================== Handle controller requests =========================================
 
-
-    if ($page === "edit_product") {
-        require_once "./view/edit_product.php";
-    } else {
-        require_once "./handle_requests.php";
-    }
-    // =========================================================================================================
+    // ==================================== Front controller =========================================
     ?>
+    <div id="main">
 
     <?php
+
+    if(isset($_GET['page'])) {
+        $page_name = $_GET['page'];
+
+        if ($page_name === LOGIN_PAGE_NAME || $page_name === REGISTER_PAGE_NAME) {
+            if (isset($_SESSION['user'])) {
+                $page_name = UNAUTHORIZED_PAGE_NAME;
+            }
+        }
+
+        if ($page_name !== LOGIN_PAGE_NAME && $page_name !== REGISTER_PAGE_NAME &&
+            $page_name !== CART_PAGE_NAME && $page_name !== FAILED_LOGIN_PAGE_NAME &&
+            $page_name !== MAIN_PAGE_NAME && $page_name !== EDIT_PRODUCT_PAGE_NAME &&
+            $page_name !== ADD_PRODUCT_PAGE_NAME && $page_name !== null) {
+            if (!isset($user_in_session)) {
+                $page_name = UNAUTHORIZED_PAGE_NAME;
+
+            }else{
+                if (($page_name === ADD_PRODUCT_PAGE_NAME || $page_name === EDIT_PRODUCT_PAGE_NAME)
+                    && $user_in_session->getisAdmin() !== 1){
+                    $page_name = UNAUTHORIZED_PAGE_NAME;
+                }
+            }
+
+        }
+    }else{
+        $page_name = MAIN_PAGE_NAME;
+    }
+    $page_path = __DIR__ . "\\view\\" . $page_name . ".html";
+    if ($page_name === EDIT_PRODUCT_PAGE_NAME){
+        $page_path = __DIR__ . "\\view\\" . $page_name . ".php";
+    }
+
+    if (file_exists($page_path)) {
+        require_once $page_path;
+    } else {
+        require_once __DIR__ . "\\view\\" . NOT_FOUND_PAGE_NAME . ".html";
+    }
+
+
+    // =========================================================================================================
+    ?>
+    </div>
+    <?php
+
+    require_once "./view/display_products.html";
     require_once "./view/footer.html";
     ?>
 </div>
 
 <!-- End Document–––––––––––––––––––––––––––––––––––––-->
+<script src="./view/assets/js/productsNavigation.js" type="text/javascript"></script>
 <script src="./view/assets/js/editProfile.js" type="text/javascript"></script>
 <script src="./view/assets/js/favoritesAndCartFunctions.js" type="text/javascript"></script>
 
