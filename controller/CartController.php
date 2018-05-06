@@ -97,6 +97,9 @@ class CartController extends AbstractController{
         /* @var $cart Cart*/
         $cart = &$_SESSION['cart'];
         $cart_items = $cart->getCartItems();
+        if (empty($_SESSION['cart'])){
+            return false;
+        }
         if (!empty($cart_items)){
             /* @var $item Product */
             foreach ($cart_items as $index=>&$item){
