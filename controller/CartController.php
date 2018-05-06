@@ -96,9 +96,6 @@ class CartController extends AbstractController{
 
         /* @var $cart Cart*/
         $cart = &$_SESSION['cart'];
-        if (empty($_SESSION['cart'])){
-            return false;
-        }
         $cart_items = $cart->getCartItems();
         if (!empty($cart_items)){
             /* @var $item Product */
@@ -157,7 +154,7 @@ class CartController extends AbstractController{
                             if (count($sizes) === 0){
                                 unset($items[$item_index]);
                                 if (count($items) === 0){
-                                    Cart::init();
+                                    $cart = Cart::init();
                                     die('Last item was removed!');
                                 }
                                 try{

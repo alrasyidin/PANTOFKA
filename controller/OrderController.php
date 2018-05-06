@@ -41,22 +41,26 @@ class OrderController extends AbstractController {
                 $user_id = $user_in_session->getUserId();
                 /* @var $cart Cart*/
                 $cart = &$_SESSION['cart'];
-                $simplified_cart_data = CartController::simplifyCart();
-                $order = new Order();
-                $products = $cart->getCartItems();
-                $order->setUserId($user_id);
-                $order->setProducts($products);
-                $order->setTotalPrice();
+                $simplified_cart_data = CartController::simplifyCart(); // A light format of cart data
+                $data = array();
+                $data['user_id'] = $user_id;
                 try{
-                    CustomerDao::makeOrder($order);
+                    $order = new Order();
+                    $products = $cart->getCartItems();
+                    $order->setUserId($user_id); // Setters can throw Runtime exception while validating
+                    $order->setProducts($products);
+                    $order->setTotalPrice();
+                    CustomerDao::makeOrder($order); // Can throw PDO exc also
                     foreach ($simplified_cart_data as $item_id => $size_info ) {
                         foreach ($size_info as $size_id => $size_quantity) {
-                            CustomerDao::decreaseQuantities($item_id, $size_id , $size_quantity); // TODO move it to Product dao without making conflicts :D
+                            CustomerDao::decreaseQuantities($item_id, $size_id , $size_quantity);
                         }
                     }
-                    $_SESSION['cart'] = array();
+                    /* @var $cart Cart*/
+                    $cart = &$_SESSION['cart'];
+                    $cart = Cart::init();
                     header('HTTP/1.1 200');
-                    die('Successful order');
+                    die('Successful order. For more info check out History page. Cart is now empty.');
                 }catch (\PDOException $e){
                     header('HTTP/1.1 500');
                     echo "DB failed: " . $e->getMessage() . ' \n ' . $e->getTraceAsString();
@@ -92,7 +96,7 @@ class OrderController extends AbstractController {
     public function getOrders(){
         if (isset($_SESSION['user'])){
             /* @var $user_in_session User */
-            $user_in_session = $_SESSION['user'];
+            $user_in_session = &$_SESSION['user'];
             try{
                 if (CustomerDao::userIsCustomer($user_in_session->getUserId())){
                 $orders = CustomerDao::getOrders($user_in_session->getUserId());

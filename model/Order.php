@@ -11,7 +11,7 @@ namespace model;
 
 use model\dao\SizeDao;
 
-class Order extends AbstractModel {
+class Order {
 
     private $order_id;
     private $user_id;
@@ -21,10 +21,8 @@ class Order extends AbstractModel {
     private $products_has_sizes = array();
 
     /* @throws \RuntimeException */
-    public function __construct($json = null)
+    public function __construct()
     {
-        parent::__construct($json);
-
         if (!isset($this->date)){
             $this->date = date('Y-m-d', time());
         }
@@ -41,7 +39,7 @@ class Order extends AbstractModel {
         if (is_array($items)){
             foreach ($items as $index=>&$item){
                 if (!($item instanceof Product)){
-                    throw new \RuntimeException('Expected products, but something else was passed in cart items...');
+                    throw new \RuntimeException('Expected products, but something else was passed by in items...');
                 }else{
                     $this->products[$index] = $item;
                 }
@@ -148,16 +146,12 @@ class Order extends AbstractModel {
                 $product_name = $products[$i];
                 $size_name = $sizes[$i];
                 $products_has_sizes[] = [$product_name ,$size_name];
-                throw new \RuntimeException(var_dump($products_has_sizes));
             }
         }else{
             throw new \RuntimeException('Bad data is passed by either products or sizes array');
         }
 
     }
-
-
-
 
 
     /**
@@ -197,6 +191,9 @@ class Order extends AbstractModel {
      */
     public function setOrderId($order_id)
     {
+        if ($order_id < 1 || !is_numeric($order_id)){
+            throw new \RuntimeException('Bad data passed for order id');
+        }
         $this->order_id = $order_id;
     }
 

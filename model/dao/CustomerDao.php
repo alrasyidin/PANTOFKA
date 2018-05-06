@@ -30,7 +30,8 @@ class CustomerDao extends UserDao implements ICustomerDao {
                                  VALUES (?, ?, ? , ? ) ");
         /* @var $product_to_buy Product*/
         $size_dao = new SizeDao();
-        foreach ($order->getProducts() as $product_to_buy){
+        $products = $order->getProducts();
+        foreach ($products as $product_to_buy){
             $sizes = array_unique($product_to_buy->getSizes());
             foreach ($sizes as $index=>$size) {
                 $size_id = $size_dao->getSizeId($size);
@@ -48,6 +49,7 @@ class CustomerDao extends UserDao implements ICustomerDao {
             self::$pdo->rollBack();
             throw $e;
         }catch (\RuntimeException $e){
+            self::$pdo->rollBack();
             throw $e;
         }
     }
