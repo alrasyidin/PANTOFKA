@@ -78,17 +78,18 @@
             if(this.readyState == 4){
                 if(this.status == 200){
                     var orderInfo = JSON.parse(this.responseText);
-                    
+                    var orderInfoTable = document.createElement('table');
+                    orderInfoTable.style = 'width : 100%';
+                    orderInfoTable.style.border = '1px solid grey';
+                    orderInfoTable.style.margin = '3px';
+
                     for (var i = 0; i < orderInfo.length; i++) {
-                        var orderInfoTable = document.createElement('table');
-                        orderInfoTable.style = 'width : 100%';
-                        orderInfoTable.style.border = '1px solid grey';
-                        orderInfoTable.style.margin = '3px';
+
 
                         var order = orderInfo[i];
-                        orderInfoTable.id = "table-" + order.product_id;
 
-                        var orderRow = orderInfoTable.insertRow(0);
+                        var orderRow = orderInfoTable.insertRow(i);
+                        orderInfoTable.appendChild(orderRow);
                         //=================================================
                         var orderInfoCell = orderRow.insertCell(0);
                         orderInfoCell.innerHTML = order.date;
@@ -107,6 +108,25 @@
                         var giveRatingCell = orderRow.insertCell(4);
                        giveRatingCell.id="rating-cell-" + order.product_id;
 
+                        var minRate = 1;
+                        var maxRate = 10;
+
+                        var ratingText = document.createElement('h6');
+                        ratingText.id = 'rating-text-' + order.product_id;
+                        giveRatingCell.appendChild(ratingText);
+
+                        var selectRating = document.createElement("select");
+                        selectRating.id= "selected-rating-" + order.product_id;
+                        giveRatingCell.appendChild(selectRating);
+
+                        for (var j = minRate; j <= maxRate; j++) {
+                            var rate = j;
+                            selectRating.options[selectRating.options.length] = new Option(rate, rate);
+                        }
+
+                        var giveARatingButton = document.createElement('button');
+                        giveARatingButton.id = 'give-rating-'+ order.product_id;
+                        giveRatingCell.appendChild(giveARatingButton);
 
                         loadProductRateFromUser(order.product_id);
 
@@ -164,44 +184,22 @@ function closeOrderInfo(id) {
                 if(this.status == 200){
                     var ratingOfProduct = JSON.parse(this.responseText);
                     console.log(ratingOfProduct);
-                    var RatingCell = document.getElementById("rating-cell-" + product_id);
+                    var ratingCell = document.getElementById('rating-cell-' +product_id);
+                    var ratingText = document.getElementById('rating-text-' + product_id);
 
-                    var minRate = 1;
-                    var maxRate = 10;
-
-                    var ratingText = document.createElement('h6');
-                    RatingCell.appendChild(ratingText);
-
-                    var selectRating = document.createElement("select");
-                    selectRating.id= "selected-rating-" + product_id;
-                    RatingCell.appendChild(selectRating);
-
-                    for (var j = minRate; j <= maxRate; j++) {
-                        var rate = j;
-                        selectRating.options[selectRating.options.length] = new Option(rate, rate);
-                    }
-
-                    var giveARatingButton = document.createElement('button');
-                    giveARatingButton.innerHTML = "Rate";
-                    var changeRatingButton = document.createElement('button');
-                    changeRatingButton.innerHTML = "Change rate";
-
+                    var giveARatingButton = document.getElementById('give-rating-' + product_id);
 
                     if (ratingOfProduct.rating_value === 0){
                         ratingText.innerHTML = "Please rate!";
-                        RatingCell.appendChild(giveARatingButton);
                         giveARatingButton.setAttribute('onclick' , 'giveRating('+ product_id + ')')
+                        giveARatingButton.innerHTML = "Rate!"
 
                     }
                     else{
                         ratingText.innerHTML = "You rated with: " + ratingOfProduct.rating_value;
-                        RatingCell.appendChild(changeRatingButton);
-                        changeRatingButton.setAttribute('onclick' , 'changeRating('+ product_id +')')
-
+                        giveARatingButton.setAttribute('onclick' , 'changeRating('+ product_id + ')')
+                        giveARatingButton.innerHTML = "Change rate!"
                     }
-
-
-
 
 
                 }
@@ -218,6 +216,7 @@ function closeOrderInfo(id) {
         request.open("get", "handle_requests.php?target=rating&action=giveRating&pId="+product_id+ "&rate="+rating_value);
 
         request.send();
+        loadProductRateFromUser(product_id);
     }
 
     function changeRating(product_id) {
@@ -228,10 +227,9 @@ function closeOrderInfo(id) {
         request.open("get", "handle_requests.php?target=rating&action=changeRating&pId="+product_id+ "&rate="+rating_value);
 
         request.send();
+        loadProductRateFromUser(product_id);
     }
-    function giveSelectedRate() {
-        
-    }
+
 
 
 </script>
