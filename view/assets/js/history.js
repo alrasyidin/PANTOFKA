@@ -1,5 +1,4 @@
 
-
 function loadOrders() {
     var wrapper = document.getElementById("display-orders");
 
@@ -16,6 +15,6 @@ function loadOrders() {
 
             }
 
-    };
+    }
     request.send();
-}
+}}

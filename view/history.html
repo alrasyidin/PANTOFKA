@@ -1,9 +1,13 @@
 <section class="centered-section min-height-600">
     <h3>Order history</h3>
 
-    <div id="display-history"></div>
+    <div id="display-history">
+
+    </div>
     <hr>
-    <div id="display-orders"></div>
+    <div id="display-orders">
+
+    </div>
 
 </section>
 
@@ -23,12 +27,13 @@
                 if (this.status == 200) {
                     var ordersHistory = JSON.parse(this.responseText);
 
-                    var ordersHistoryTable = document.createElement('table');
-                    ordersHistoryTable.style = 'width : 100%';
+
 
                     for (var i = 0; i < ordersHistory.length; i++) {
+                        var ordersHistoryTable = document.createElement('table');
+                        ordersHistoryTable.style = 'width : 100%';
                         var order = ordersHistory[i];
-                        var orderRow = ordersHistoryTable.insertRow(this.i);
+                        var orderRow = ordersHistoryTable.insertRow(0);
                         //=================================================
                         var orderDateCell = orderRow.insertCell(0);
                         orderDateCell.innerHTML = order.date;
@@ -41,16 +46,19 @@
                         var orderInfoButtonCellButton = document.createElement("button");
                         orderInfoButtonCellButton.innerHTML = 'Order info';
                         orderInfoButtonCellButton.id = 'add-to-favorites-from-cart-button';
-                       orderInfoButtonCellButton.setAttribute('onclick' , 'loadOrderInfo('+ order.order_id +')');
                        orderInfoButtonCell.value = (orderInfoButtonCellButton.valueOf().innerHTML);
                         orderInfoButtonCell.appendChild(orderInfoButtonCellButton);
 
                         var infoDiv = document.createElement('div');
-                        infoDiv.id = 'info-for-order';
+                        infoDiv.id =  order.order_id;
+                        orderInfoButtonCellButton.setAttribute('onclick' , 'loadOrderInfo('+ order.order_id +')');
+
+
+                        wrapper.appendChild(ordersHistoryTable);
                         wrapper.appendChild(infoDiv);
 
                     }
-                    wrapper.appendChild(ordersHistoryTable);
+
 
                 }
 
@@ -61,7 +69,7 @@
     }
 
     function loadOrderInfo(id) {
-        var infoDiv = document.getElementById('info-for-order');
+        var infoDiv = document.getElementById(id);
         infoDiv.innerHTML = "";
 
         var request = new XMLHttpRequest();
@@ -70,27 +78,47 @@
             if(this.readyState == 4){
                 if(this.status == 200){
                     var orderInfo = JSON.parse(this.responseText);
-
-                    var orderInfoTable = document.createElement('table');
-                    orderInfoTable.style = 'width : 100%';
-                    orderInfoTable.style.border = '1px solid grey';
-                    orderInfoTable.style.margin = '3px';
                     
-
                     for (var i = 0; i < orderInfo.length; i++) {
+                        var orderInfoTable = document.createElement('table');
+                        orderInfoTable.style = 'width : 100%';
+                        orderInfoTable.style.border = '1px solid grey';
+                        orderInfoTable.style.margin = '3px';
+
                         var order = orderInfo[i];
-                        var orderRow = orderInfoTable.insertRow(this.i);
+                        orderInfoTable.id = "table-" + order.product_id;
+
+                        var orderRow = orderInfoTable.insertRow(0);
                         //=================================================
                         var orderInfoCell = orderRow.insertCell(0);
                         orderInfoCell.innerHTML = order.date;
 
-                        var productNameCell = orderRow.insertCell(1);
+                        var productHistoryPictureCell = orderRow.insertCell(1);
+                        var productPicture = document.createElement('img');
+                        productHistoryPictureCell.appendChild(productPicture);
+                        productPicture.src = order.product_image_url;
+                        productPicture.style = "width: 80px";
+                        var productNameCell = orderRow.insertCell(2);
                         productNameCell.innerHTML = order.product_name;
 
-                        var sizeNumberCell = orderRow.insertCell(2);
+                        var sizeNumberCell = orderRow.insertCell(3);
                         sizeNumberCell.innerHTML = order.quantity +'x<h5>'+ order.size_number + '</h5>size';
+
+                        var giveRatingCell = orderRow.insertCell(4);
+                       giveRatingCell.id="rating-cell-" + order.product_id;
+
+
+                        loadProductRateFromUser(order.product_id);
+
                     }
+                    var closeDiv = document.createElement("div");
+                    var closeLink = document.createElement('h5');
+                    closeDiv.appendChild(closeLink);
+                    closeLink.innerHTML = "close";
+                    closeLink.setAttribute('onclick' , 'closeOrderInfo('+ id +')');
+                    closeLink.style = "text-align: right; color: red";
                     infoDiv.appendChild(orderInfoTable);
+                    infoDiv.appendChild(closeDiv);
 
                 }
             }
@@ -99,6 +127,11 @@
     }
 
 
+function closeOrderInfo(id) {
+    var infoDiv = document.getElementById(id);
+    infoDiv.innerHTML = "";
+
+}
 
 
 
@@ -120,6 +153,84 @@
            }
        };
        request.send();
+    }
+
+    function loadProductRateFromUser(product_id){
+
+        var request = new XMLHttpRequest();
+        request.open("get", "handle_requests.php?target=rating&action=getRatingFromUser&product_id=" + product_id);
+        request.onreadystatechange = function (ev) {
+            if(this.readyState == 4){
+                if(this.status == 200){
+                    var ratingOfProduct = JSON.parse(this.responseText);
+                    console.log(ratingOfProduct);
+                    var RatingCell = document.getElementById("rating-cell-" + product_id);
+
+                    var minRate = 1;
+                    var maxRate = 10;
+
+                    var ratingText = document.createElement('h6');
+                    RatingCell.appendChild(ratingText);
+
+                    var selectRating = document.createElement("select");
+                    selectRating.id= "selected-rating-" + product_id;
+                    RatingCell.appendChild(selectRating);
+
+                    for (var j = minRate; j <= maxRate; j++) {
+                        var rate = j;
+                        selectRating.options[selectRating.options.length] = new Option(rate, rate);
+                    }
+
+                    var giveARatingButton = document.createElement('button');
+                    giveARatingButton.innerHTML = "Rate";
+                    var changeRatingButton = document.createElement('button');
+                    changeRatingButton.innerHTML = "Change rate";
+
+
+                    if (ratingOfProduct.rating_value === 0){
+                        ratingText.innerHTML = "Please rate!";
+                        RatingCell.appendChild(giveARatingButton);
+                        giveARatingButton.setAttribute('onclick' , 'giveRating('+ product_id + ')')
+
+                    }
+                    else{
+                        ratingText.innerHTML = "You rated with: " + ratingOfProduct.rating_value;
+                        RatingCell.appendChild(changeRatingButton);
+                        changeRatingButton.setAttribute('onclick' , 'changeRating('+ product_id +')')
+
+                    }
+
+
+
+
+
+                }
+            }
+        };
+        request.send();
+    }
+
+    function giveRating(product_id) {
+        var request = new XMLHttpRequest();
+        var selectedRating = document.getElementById("selected-rating-" + product_id);
+        var rating_value = selectedRating.options[selectedRating.selectedIndex].value;
+
+        request.open("get", "handle_requests.php?target=rating&action=giveRating&pId="+product_id+ "&rate="+rating_value);
+
+        request.send();
+    }
+
+    function changeRating(product_id) {
+        var selectedRating = document.getElementById("selected-rating-" + product_id);
+        var rating_value = selectedRating.options[selectedRating.selectedIndex].value;
+
+        var request = new XMLHttpRequest();
+        request.open("get", "handle_requests.php?target=rating&action=changeRating&pId="+product_id+ "&rate="+rating_value);
+
+        request.send();
+    }
+    function giveSelectedRate() {
+        
     }
 
 

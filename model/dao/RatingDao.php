@@ -16,7 +16,7 @@ class RatingDao extends AbstractDao
         parent::init();
     }
 
-    public function addRating(Rating $rating){
+    public static function giveRating(Rating $rating){
 
         $stmt = self::$pdo->prepare(
             "INSERT INTO final_project_pantofka.ratings (product_id, user_id, rating_value) 
@@ -29,7 +29,19 @@ class RatingDao extends AbstractDao
         ));
     }
 
-    public function getRatings($product_id){
+    public static function changeRating(Rating $rating){
+        $stmt = self::$pdo->prepare(
+            "UPDATE final_project_pantofka.ratings SET rating_value = ? 
+                      WHERE product_id =? AND  user_id = ?");
+        $stmt->execute(array(
+            $rating->getRatingValue(),
+               $rating->getProductId(),
+            $rating->getUserId()
+
+        ));
+    }
+
+        public function getRatings($product_id){
 
         $stmt = self::$pdo->prepare(
             "SELECT  user_id, rating_value FROM final_project_pantofka.ratings
@@ -43,7 +55,20 @@ class RatingDao extends AbstractDao
         return $ratings;
     }
 
+    public static function getRatingOfUser($user_id, $product_id){
+        $stmt = self::$pdo->prepare(
+            "SELECT user_id, product_id, rating_value FROM final_project_pantofka.ratings
+                      WHERE user_id = ? AND product_id = ? ");
+        $stmt->execute(array($user_id, $product_id));
 
-
-
+        $query_result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $has_rate = boolval($query_result);
+        if ($has_rate) {
+            $rating = new Rating(json_encode($query_result));
+            return $rating;
+        }
+        else {
+            return false;
+        }
+    }
 }

@@ -82,8 +82,8 @@ class CustomerDao extends UserDao implements ICustomerDao {
 
     public static function getOrderData($order_id){
 
-        $stmt = self::$pdo->prepare("SELECT  o.total_price , o.date , p.product_name , 
-                                              s.size_number , ohp.quantity , ohp.size_id, ohp.product_id
+        $stmt = self::$pdo->prepare("SELECT  o.total_price , o.date , p.product_name , p.product_image_url, 
+                                              p.product_id, s.size_number , ohp.quantity , ohp.size_id, ohp.product_id
                                               FROM final_project_pantofka.orders as o
                                               LEFT JOIN final_project_pantofka.orders_has_products as ohp USING (order_id)
                                               JOIN final_project_pantofka.sizes as s USING (size_id)

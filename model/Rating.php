@@ -12,7 +12,6 @@ use model\AbstractModel;
 class Rating extends AbstractModel
 {
 
-    protected $id;
     protected $rating_value;
     protected $user_id;
     protected $product_id;
