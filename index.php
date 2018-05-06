@@ -44,7 +44,6 @@ if (isset($_SESSION['user'])){
     $user_in_session = &$_SESSION['user'];
     var_dump($user_in_session->getFavorites());
 }
-
 ?>
 
 <!DOCTYPE html>

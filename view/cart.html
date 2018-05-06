@@ -1,14 +1,16 @@
 <section class="min-height-600">
-    <h3>Cart</h3>
+    <h3 class="centered-section">Cart</h3>
 
     <div id="show-cart-div">
     <div id="display-cart-items"></div>
 
     <div id="buy-cart-items"></div>
-        <button id="clear-cart-button"> Clear cart </button>
+        <div class="centered-section" id="cart-buttons">
+            <h6 id="clear-cart-button-heading"> </h6>
 
+            <button id="clear-cart-button"> Clear cart </button>
+        </div>
     </div>
-    <h6 id="clear-cart-button-heading"> </h6>
 
 
 </section>
@@ -46,8 +48,7 @@
            if(this.readyState == 4){
                if(this.status == 200){
                    var cartItems = JSON.parse(this.response);
-                   console.log(cartItems);
-                   var clearCartButton = document.getElementById("clear-cart-button");
+                    var clearCartButton = document.getElementById("clear-cart-button");
                    if (cartItems.length == 0){
                        document.getElementById('clear-cart-button-heading').innerHTML = 'Nothing in here';
                        clearCartButton.style.visibility = 'hidden';
@@ -168,7 +169,7 @@
                     var orderButton = document.createElement('button');
                     orderButton.innerHTML = 'Order';
                     orderButton.setAttribute('onclick' , 'orderCart()');
-                    wrapper.appendChild(orderButton);
+                   document.getElementById('cart-buttons').appendChild(orderButton);
                }else {
                    alert('something went wrong when loading order div');
                }

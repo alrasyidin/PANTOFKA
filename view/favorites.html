@@ -1,13 +1,14 @@
 <section class="min-height-600">
-    <h3>Favorites</h3>
+    <h3 class="center top-30">Favorites</h3>
 
     <div id="display-favorite-items"> </div>
 
     <div id="clear-favorites-button-wrapper">    <h6 id="clear-favorites-button-heading"> </h6>
-    <button id="clear-favorites-button"> Clear favorites </button>
+        <div class="centered-section">
+            <button id="clear-favorites-button"> Clear favorites </button>
+        </div>
+
     </div>
-
-
 </section>
 
 <script>
@@ -85,24 +86,37 @@
                        productColorCell.id = 'favorites-table-item-color-'+item.color_id;
                        productMaterialCell.innerHTML = item.color;
 
-                       var sizeSelectCell = itemRow.insertCell(6);
-                       var sizeSelect = document.createElement('select');
                        var available_sizes = item.sizes;
+                        if (available_sizes.length  > 0){
+                            var sizeSelectCell = itemRow.insertCell(6);
+                            var sizeSelect = document.createElement('select');
 
-                       for (var j = 0 ; j < available_sizes.length ; j++){
-                           sizeSelect.options[sizeSelect.options.length] = new Option(available_sizes[j], available_sizes[j]);
-                       }
-                       sizeSelect.id = 'favorites-pick-size-for-product' + item.product_id;
-                       sizeSelectCell.appendChild(sizeSelect);
+                            for (var j = 0 ; j < available_sizes.length ; j++){
+                                sizeSelect.options[sizeSelect.options.length] = new Option(available_sizes[j], available_sizes[j]);
+                            }
+                            sizeSelect.id = 'favorites-pick-size-for-product' + item.product_id;
+                            sizeSelectCell.appendChild(sizeSelect);
+
+
+
+                        }else{
+                            var sizeCell = itemRow.insertCell(6);
+                            sizeCell.innerHTML = 'Out of stock!';
+
+                        }
 
 
                        var addToCartButtonCell = itemRow.insertCell(7);
                        var addToCartButton = document.createElement("button");
                        addToCartButton.innerHTML = 'Add to cart';
                        addToCartButton.id = 'add-to-cart-from-favs-button';
-                       addToCartButton.setAttribute('onclick' , 'addToCart('+ item.product_id.toString() + ')');
-                       addToCartButtonCell.value = (addToCartButton.valueOf().innerHTML);
+                       if (available_sizes.length  > 0) {
+                           addToCartButton.setAttribute('onclick', 'addToCart(' + item.product_id.toString() + ')');
+                       }else {
+                           addToCartButton.disabled = true;
+                       }
                        addToCartButtonCell.appendChild(addToCartButton);
+
 
                        var removeFromFavoritesButtonCell = itemRow.insertCell(8);
                        var removeFromFavoritesButton = document.createElement("button");
