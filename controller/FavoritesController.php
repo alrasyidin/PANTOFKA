@@ -55,7 +55,7 @@ class FavoritesController extends AbstractController{
                 $favorites = $user_in_session->getFavorites();
                 if (count($favorites) > 0){
                     /* @var $favorite_item Product*/
-                    foreach ($favorites as $index=>$favorite_item) {
+                    foreach ($favorites as $index=>&$favorite_item) {
                         if ($favorite_item->getProductId() == $product_id){
                             die('Product is already added to favorites!');
                         }
@@ -69,7 +69,7 @@ class FavoritesController extends AbstractController{
                 /* @var $favorite_item Product */
                 $favorite_item = FavoritesDao::addToFavorites($product_id , $user_id);
                 $user_in_session->addToFav($favorite_item);
-                die('Success!!! Product was added to favs. Check your DB, session and fav page');
+                die('Success!!! Product was added to favorites!');
             }catch (\RuntimeException $e){
                 die($e->getTraceAsString() . '\n' . $e->getMessage());
             }

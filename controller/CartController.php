@@ -93,8 +93,12 @@ class CartController extends AbstractController{
         if (!isset($_SESSION['cart'])){
             return false;
         }
+
         /* @var $cart Cart*/
         $cart = &$_SESSION['cart'];
+        if (empty($_SESSION['cart'])){
+            return false;
+        }
         $cart_items = $cart->getCartItems();
         if (empty($_SESSION['cart'])){
             return false;
@@ -155,10 +159,9 @@ class CartController extends AbstractController{
                             $item->setSizes($sizes);
                             if (count($sizes) === 0){
                                 unset($items[$item_index]);
-                                if (count($items) == 0){
+                                if (count($items) === 0){
                                     Cart::init();
                                     die('Last item was removed!');
-
                                 }
                                 try{
                                     $cart->setCartItems($items);
@@ -191,6 +194,10 @@ class CartController extends AbstractController{
             foreach ($items as $index=>&$cart_item) {
                 if ($cart_item->getProductId() == $product_id){
                     unset($items[$index]);
+                    if (count($items) === 0){
+                        $cart = Cart::init();
+                        die('Last item in cart was removed!');
+                    }
                     try{
                         $cart->setCartItems($items);
                         die('Product named "'.$cart_item->getProductName().'" was removed successfully from the cart! "');
