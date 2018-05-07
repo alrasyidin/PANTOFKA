@@ -57,9 +57,7 @@ if (isset($_SESSION['user'])){
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <!-- JS
-   –––––––––––––––––––––––––––––––––––––––––––––––––– -->
-    <script src="./view/assets/js/app.js" type="text/javascript"></script>
+
 
     <!-- Mobile Specific Metas
     –––––––––––––––––––––––––––––––––––––––––––––––––– -->
@@ -89,7 +87,6 @@ if (isset($_SESSION['user'])){
     <script src="./view/assets/js/register.js" type="text/javascript"></script>
     <script src="./view/assets/js/login.js" type="text/javascript"></script>
     <script src="./view/assets/js/validation.js" type="text/javascript"></script>
-    <script src="./view/assets/js/admin.js" type="text/javascript"></script>
     <script src="./view/assets/js/editProduct.js" type="text/javascript"></script>
     <script src="./view/assets/js/history.js" type="text/javascript"></script>
     <script src="./view/assets/js/editProfile.js" type="text/javascript"></script>

@@ -8,6 +8,7 @@
 
 namespace controller;
 
+use model\dao\ProductsDao;
 
 
 class CategoryController extends AbstractController{
@@ -28,7 +29,70 @@ class CategoryController extends AbstractController{
         return self::$instance;
     }
 
+    public function getStylesByParentCategory()
+    {
+        if ($_SERVER["REQUEST_METHOD"] == "GET") {
+            if ($_GET["pc"] === "none") {
+                echo json_encode(array());
+            }
+            else {
+                try {
+                    $dao = new ProductsDao();
+                    $styles = $dao->getStylesByParentCategory($_GET["pc"]);
+                    echo json_encode($styles);
+                } catch (\PDOException $e) {
+                    echo "error in getStylesByParentCategory";
+                }
+            }
+        }
 
+    }
+
+    public static function getCategories()
+    {
+        if ($_SERVER["REQUEST_METHOD"] == "GET") {
+            try {
+
+                $dao = new ProductsDao();
+                $categories = $dao->getCategories();
+                echo json_encode($categories);
+            } catch (\PDOException $e) {
+                echo "error in Get categories";
+            }
+        }
+
+    }
+
+    public static function getColors()
+    {
+        if ($_SERVER["REQUEST_METHOD"] == "GET") {
+            try {
+
+                $dao = new ProductsDao();
+                $colors = $dao->getColors();
+                echo json_encode($colors);
+            } catch (\PDOException $e) {
+                echo "error in Get colors";
+            }
+        }
+
+    }
+
+
+    public static function getMaterials()
+    {
+        if ($_SERVER["REQUEST_METHOD"] == "GET") {
+            try {
+
+                $dao = new ProductsDao();
+                $materials = $dao->getMaterials();
+                echo json_encode($materials);
+            } catch (\PDOException $e) {
+                echo "error in Get materials";
+            }
+        }
+
+    }
 
 
 }

@@ -119,7 +119,7 @@ class CustomerDao extends UserDao implements ICustomerDao {
                                               JOIN final_project_pantofka.products as p USING (product_id)
                                               WHERE o.order_id = ? ORDER BY product_name ASC ");
         $stmt->execute(array($order_id));
-        $orders = array();
+        $order_items = array();
         /* @var $order_item Order*/
         while ($order_item = $stmt->fetch(\PDO::FETCH_OBJ)){
                 $order_items[] = $order_item;

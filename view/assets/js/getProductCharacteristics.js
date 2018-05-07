@@ -1,6 +1,6 @@
 function loadCategories() {
     var request = new XMLHttpRequest();
-    request.open("get", "handle_requests.php?target=product&action=getCategories");
+    request.open("get", "handle_requests.php?target=category&action=getCategories");
     request.onreadystatechange = function (ev) {
         if (this.readyState == 4 && this.status == 200) {
             var allCategories = JSON.parse(this.responseText);
@@ -17,7 +17,7 @@ function loadCategories() {
 
 function loadCategoriesForEdit() {
     var request = new XMLHttpRequest();
-    request.open("get", "handle_requests.php?target=product&action=getCategories");
+    request.open("get", "handle_requests.php?target=category&action=getCategories");
     request.onreadystatechange = function (ev) {
         if (this.readyState == 4 && this.status == 200) {
             var allCategories = JSON.parse(this.responseText);
@@ -34,7 +34,7 @@ function loadCategoriesForEdit() {
 
 function loadParentCategories() {
     var request = new XMLHttpRequest();
-    request.open("get", "handle_requests.php?target=product&action=getCategories");
+    request.open("get", "handle_requests.php?target=category&action=getCategories");
     request.onreadystatechange = function (ev) {
         if (this.readyState == 4 && this.status == 200) {
             var allCategories = JSON.parse(this.responseText);
@@ -50,7 +50,7 @@ function loadParentCategories() {
 
 function loadColors() {
     var request = new XMLHttpRequest();
-    request.open("get", "handle_requests.php?target=product&action=getColors");
+    request.open("get", "handle_requests.php?target=category&action=getColors");
     request.onreadystatechange = function (ev) {
         if (this.readyState == 4 && this.status == 200) {
             var allColors = JSON.parse(this.responseText);
@@ -83,7 +83,7 @@ function loadMaterials() {
 
 function getStyles(parentCategory) {
     var request = new XMLHttpRequest();
-    request.open("get", "handle_requests.php?target=product&action=getStylesByParentCategory&pc=" + parentCategory);
+    request.open("get", "handle_requests.php?target=category&action=getStylesByParentCategory&pc=" + parentCategory);
     request.onreadystatechange = function (ev) {
         if (this.readyState == 4 && this.status == 200) {
             var styles = JSON.parse(this.responseText);
@@ -103,7 +103,7 @@ function getStyles(parentCategory) {
 
 function getStylesForEdit(parentCategory) {
     var request = new XMLHttpRequest();
-    request.open("get", "handle_requests.php?target=product&action=getStylesByParentCategory&pc=" + parentCategory);
+    request.open("get", "handle_requests.php?target=category&action=getStylesByParentCategory&pc=" + parentCategory);
     request.onreadystatechange = function (ev) {
         if (this.readyState == 4 && this.status == 200) {
             var styles = JSON.parse(this.responseText);

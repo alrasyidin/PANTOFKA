@@ -18,6 +18,16 @@ use model\User;
 
 class AdminController extends AbstractController
 {
+    const MIN_SIZE_NUMBER_KIDS = 25;
+    const MAX_SIZE_NUMBER_KIDS = 34;
+    const MIN_SIZE_NUMBER_WOMEN = 35;
+    const MAX_SIZE_NUMBER_WOMEN = 42;
+    const MIN_SIZE_NUMBER_MEN = 40;
+    const MAX_SIZE_NUMBER_MEN = 48;
+
+    const MIN_QUANTITY = 0;
+
+
 
     private static $instance;
 
@@ -57,22 +67,23 @@ class AdminController extends AbstractController
                     $info = htmlentities($_POST["info"]);
 
                     $sizes = [];
-                    $min_size = 0;
-                    $max_size = 0;
+                    $min_size = self:: MIN_SIZE_NUMBER_KIDS;
+                    $max_size = self::MAX_SIZE_NUMBER_MEN;
                     if ($category === "girls" || $category === "boys") {
-                        $min_size = 25;
-                        $max_size = 34;
+                        $min_size = self::MIN_SIZE_NUMBER_KIDS;
+                        $max_size = self::MAX_SIZE_NUMBER_KIDS;
                     } elseif ($category === "women") {
-                        $min_size = 35;
-                        $max_size = 42;
+                        $min_size = self::MIN_SIZE_NUMBER_WOMEN;
+                        $max_size = self::MAX_SIZE_NUMBER_WOMEN;
                     } elseif ($category === "men") {
-                        $min_size = 40;
-                        $max_size = 48;
+                        $min_size = self::MIN_SIZE_NUMBER_MEN;
+                        $max_size = self::MAX_SIZE_NUMBER_MEN;
                     }
                     for ($i = $min_size; $i <= $max_size; $i++) {
                         $quantity = htmlentities($_POST["$i"]);
                         $size_num = $i;
-                        if ($quantity < 0 || $size_num < 25 || $size_num > 48) {
+                        if ($quantity < self::MIN_QUANTITY || $size_num < self:: MIN_SIZE_NUMBER_KIDS ||
+                            $size_num > self::MAX_SIZE_NUMBER_MEN) {
                             $error .= "wrong sizes ot quantity";
 
                         }
@@ -114,6 +125,7 @@ class AdminController extends AbstractController
                     if ($error === "") {
                         try {
                             $dao = new ProductsDao();
+                            $adminDao = new AdminDao();
                             if (!($dao->productExists($product_name, $material, $category, $color))) {
 
                                 $product = [];
@@ -137,15 +149,15 @@ class AdminController extends AbstractController
                                 }
                                 $new_product->setSizes($sizes_and_numbers);
 
-                                $dao->saveNewProduct($new_product);
+                                $adminDao->saveNewProduct($new_product);
 //Product is saved
-                                header("location: index.php?page=main");
+                                header("location: index.php?page=display_products");
                             } else {
                                 //Product is not saved
                                 header("location: index.php?page=add_product");
                             }
                         } catch (\PDOException $e) {
-                            var_dump($e);
+                            header("location: index.php?page=add_product");
                         }
                     }
                 }
@@ -180,22 +192,24 @@ class AdminController extends AbstractController
                     $info = htmlentities($_POST["product_info"]);
 
                     $sizes = [];
-                    $min_size = 0;
-                    $max_size = 0;
+                    $sizes = [];
+                    $min_size = self:: MIN_SIZE_NUMBER_KIDS;
+                    $max_size = self::MAX_SIZE_NUMBER_MEN;
                     if ($category === "girls" || $category === "boys") {
-                        $min_size = 25;
-                        $max_size = 34;
+                        $min_size = self::MIN_SIZE_NUMBER_KIDS;
+                        $max_size = self::MAX_SIZE_NUMBER_KIDS;
                     } elseif ($category === "women") {
-                        $min_size = 35;
-                        $max_size = 42;
+                        $min_size = self::MIN_SIZE_NUMBER_WOMEN;
+                        $max_size = self::MAX_SIZE_NUMBER_WOMEN;
                     } elseif ($category === "men") {
-                        $min_size = 40;
-                        $max_size = 48;
+                        $min_size = self::MIN_SIZE_NUMBER_MEN;
+                        $max_size = self::MAX_SIZE_NUMBER_MEN;
                     }
                     for ($i = $min_size; $i <= $max_size; $i++) {
                         $quantity = htmlentities($_POST["$i"]);
                         $size_num = $i;
-                        if ($quantity < 0 || $size_num < 25 || $size_num > 48) {
+                        if ($quantity < self::MIN_QUANTITY || $size_num < self:: MIN_SIZE_NUMBER_KIDS ||
+                            $size_num > self::MAX_SIZE_NUMBER_MEN) {
                             $error .= "wrong sizes ot quantity";
 
                         }
@@ -234,7 +248,7 @@ class AdminController extends AbstractController
 
                     if ($error === "") {
                         try {
-                            $dao = new ProductsDao();
+                            $adminDao = new AdminDao();
 
                             $product = [];
                             $product["product_id"] = $product_id;
@@ -258,12 +272,13 @@ class AdminController extends AbstractController
                                 $sizes_and_numbers[] = $new_size;
                             }
                             $new_product->setSizes($sizes_and_numbers);
-                            $dao->changeProduct($new_product);
+                            $adminDao->changeProduct($new_product);
 //Product is saved
-                            header("location: index.php?page=main");
+                            header("location: index.php?page=display_products");
 
                         } catch (\PDOException $e) {
-                            var_dump($e);
+                            header("location: index.php?page=add_product");
+
                         }
 
                     }
@@ -273,8 +288,7 @@ class AdminController extends AbstractController
     }
 
 
-        public
-        function unsetProduct()
+    public function unsetProduct()
         {
             if (isset($_SESSION['user'])) {
                 /* @var $user_in_session User */

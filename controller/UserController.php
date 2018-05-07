@@ -66,7 +66,7 @@ class UserController extends AbstractController {
             $user_dao = new UserDao();
             if($user_dao->login($email , $password) instanceof User){
                 $logged_user = $user_dao->login($email , $password);
-                $logged_user->__unset($user->getPassword());
+                $logged_user->__unset($logged_user->getPassword());
                 $_SESSION["user"] = $logged_user;
                 header('HTTP/1.1 200 OK');
                 header("location: index.php?page=edit_profile");
