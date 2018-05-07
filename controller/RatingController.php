@@ -18,8 +18,16 @@ use model\dao\CustomerDao;
 use model\Rating;
 use model\User;
 
-class RatingController{
+class RatingController extends AbstractController
+{
+
+    const MIN_PRODUCT_ID = 1;
+    const MIN_USER_ID = 1;
+    const DEFAULT_RATING_VALUE = 0;
+
+
     private static $instance;
+
 
     /**
      * RatingController constructor.
@@ -37,17 +45,19 @@ class RatingController{
         return self::$instance;
     }
 
+
     public static function giveRating()
     {
         if (isset($_SESSION['user'])) {
             /* @var $user_in_session User */
             $user_in_session = $_SESSION['user'];
+            // Get the user_id
             $user_id = $user_in_session->getUserId();
             try {
                 if (isset($_GET['pId']) && isset($_GET["rate"])) {
                     $product_id = htmlentities($_GET['pId']);
                     $value = htmlentities($_GET["rate"]);
-                    if ($product_id < 1 || !is_numeric($product_id) || $user_id < 1 || !is_numeric($user_id)) {
+                    if ($product_id < self::MIN_PRODUCT_ID || !is_numeric($product_id) || $user_id < self::MIN_USER_ID || !is_numeric($user_id)) {
                         echo json_encode('Bad data was passed in controller - ' . var_dump($product_id) .
                             ' or ' . var_dump($user_id));
                     }
@@ -76,6 +86,7 @@ class RatingController{
         }
     }
 
+
     public static function changeRating()
     {
         if (isset($_SESSION['user'])) {
@@ -86,7 +97,7 @@ class RatingController{
                 if (isset($_GET['pId']) && isset($_GET["rate"])) {
                     $product_id = htmlentities($_GET['pId']);
                     $value = htmlentities($_GET["rate"]);
-                    if ($product_id < 1 || !is_numeric($product_id) || $user_id < 1 || !is_numeric($user_id)) {
+                    if ($product_id < self::MIN_PRODUCT_ID || !is_numeric($product_id) || $user_id < self::MIN_USER_ID || !is_numeric($user_id)) {
                         echo json_encode('Bad data was passed in controller - ' . var_dump($product_id) .
                             ' or ' . var_dump($user_id));
                     }
@@ -130,6 +141,7 @@ class RatingController{
         }
     }
 
+
     public static function getRatingFromUser()
     {
         if (isset($_SESSION['user'])) {
@@ -145,7 +157,7 @@ class RatingController{
                             $rating = [];
                             $rating["product_id"] = $product_id;
                             $rating["user_id"] = $user_in_session->getUserId();
-                            $rating["rating_value"] = 0;
+                            $rating["rating_value"] = self::DEFAULT_RATING_VALUE;
                             $rating = new Rating(json_encode($rating));
                         }
                         echo (json_encode($rating));

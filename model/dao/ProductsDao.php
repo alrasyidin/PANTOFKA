@@ -19,142 +19,13 @@ class ProductsDao extends AbstractDao implements IProductsDao
         parent::init();
     }
 
-
-    public function saveNewProduct(Product $product)
-    {
-
-        // Getting ids for details of the product
-        $color_id = $this->getColorId($product->getColor());
-
-        $material_id = $this->getMaterialId($product->getMaterial());
-
-
-//            self::$pdo->beginTransaction();
-
-        $category_id = $this->getCategoryAndStyleId($product->getStyle(), $product->getCategory());
-try{
-    self::$pdo->beginTransaction();
-
-    $stmt = self::$pdo->prepare(
-            "INSERT INTO final_project_pantofka.products (product_name, price, info, promo_percentage,
-                        product_image_url, color_id, material_id, category_id) 
-                       VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-        $stmt->execute(array(
-            $product->getProductName(),
-            $product->getPrice(),
-            $product->getInfo(),
-            $product->getPromoPercentage(),
-            $product->getProductImageUrl(),
-            $color_id,
-            $material_id,
-            $category_id,
-        ));
-
-
-        // We have to get the last insert product_id because we need to save sizes for the product
-        $product_id = self::$pdo->lastInsertId("product_id");
-
-        $sizes = $product->getSizes();
-
-        //foreach size of the new product we need to make insert into DB
-        /* @var $size Size */
-        foreach ($sizes as $size) {
-            // getting the size_id from DB
-            $stmt = self::$pdo->prepare(
-                "SELECT size_id
-                               FROM final_project_pantofka.sizes
-                               WHERE  size_number = ? ");
-            $stmt->execute(array($size->getSizeNumber()));
-            $size_id = $stmt->fetch(\PDO::FETCH_ASSOC);
-            $size_id = $size_id["size_id"];
-
-            //getting the quantity of this size
-            $quantity = $size->getSizeQuantity();
-
-
-            //insert into tabel - products_has_sizes product_id, size_id and the quantity
-            $stmt = self::$pdo->prepare(
-                "INSERT INTO final_project_pantofka.products_has_sizes (product_id, size_id, quantity) 
-                               VALUES (?, ?, ?)");
-            $stmt->execute(array($product_id, $size_id, $quantity));
-        }
-
-        self::$pdo->commit();
-    }catch (\PDOException$e)
-{
-self::$pdo->rollback();
-throw $e;
-        }
-
-    }
-
-
-    public function changeProduct(Product $product)
-    {
-
-        // Getting ids for details of the product
-        $color_id = $this->getColorId($product->getColor());
-
-        $material_id = $this->getMaterialId($product->getMaterial());
-
-        $product_id = $product->getProductId();
-
-try{
-            self::$pdo->beginTransaction();
-        $stmt = self::$pdo->prepare(
-            "UPDATE final_project_pantofka.products 
-                  SET product_name = ?, price = ?, info = ?, promo_percentage = ?,
-                  product_image_url = ?, color_id = ?, material_id = ? 
-                  WHERE product_id = ?");
-        $stmt->execute(array(
-            $product->getProductName(),
-            $product->getPrice(),
-            $product->getInfo(),
-            $product->getPromoPercentage(),
-            $product->getProductImageUrl(),
-            $color_id,
-            $material_id,
-            $product_id));
-
-
-    $sizes = $product->getSizes();
-    var_dump($sizes);
-
-        //foreach size of the new product we need to make insert into DB
-        /* @var $size Size */
-    foreach ($sizes as $size) {
-        // getting the size_id from DB
-        $number = $size->getSizeNumber();
-        $stmt = self::$pdo->prepare(
-            "SELECT size_id
-                               FROM final_project_pantofka.sizes
-                               WHERE  size_number = ? ");
-        $stmt->execute(array($number));
-        $size_id = $stmt->fetch(\PDO::FETCH_ASSOC);
-        $size_id = $size_id["size_id"];
-
-        //getting the quantity of this size
-        $quantity = $size->getSizeQuantity();
-
-
-        //update table - products_has_sizes - quantity for each size of the product
-        $stmt = self::$pdo->prepare(
-            "UPDATE final_project_pantofka.products_has_sizes
-                        SET quantity = ?
-                        WHERE product_id = ?
-                        AND size_id = ?");
-        $stmt->execute(array($quantity, $product_id, $size_id));
-    }
-    self::$pdo->commit();
-}catch (\PDOException$e)
-{
-    self::$pdo->rollback();
-    throw $e;
-}
-
-    }
-
-    public function productExistsId($id)
+    /**
+     *This method receive id of product and checks if this exists in DB.
+     *
+     * @param $id
+     * @return bool
+     */
+    public static function productExistsId($id)
     {
         $query = self::$pdo->prepare(
             "SELECT count(*) as product_exists FROM final_project_pantofka.products
@@ -164,15 +35,25 @@ try{
         return boolval($count["product_exists"]);
     }
 
-    public function productExists($product_name, $material, $category, $color)
+    /**
+     * This method receives details which makes one product unique and checks in DB if product with this details is
+     *already saved.
+     *
+     * @param $product_name
+     * @param $material
+     * @param $category
+     * @param $color
+     * @return bool
+     */
+    public static function productExists($product_name, $material, $category, $color)
     {
 
         // Getting ids for details of the product
-        $color_id = $this->getColorId($color);
+        $color_id = ProductsDao::getColorId($color);
 
-        $material_id = $this->getMaterialId($material);
+        $material_id = ProductsDao::getMaterialId($material);
 
-        $category_id = $this->getCategoryId($category);
+        $category_id = ProductsDao::getCategoryId($category);
 
 
         //  Checking if product with this name and details already exists
@@ -188,9 +69,17 @@ try{
         return boolval($count["product_exists"]);
     }
 
-    public function getCategoryAndStyleId($style, $category)
+    /**
+     * This method receives am style and category of the product and returns the id for the style of the chosen
+     * category. Some styles can exists in more than one category!
+     *
+     * @param $style
+     * @param $category
+     * @return mixed
+     */
+    public static function getCategoryAndStyleId($style, $category)
     {
-        $parent_id = $this->getCategoryId($category);
+        $parent_id = ProductsDao::getCategoryId($category);
         $stmt = self::$pdo->prepare(
             "SELECT category_id
                        FROM final_project_pantofka.categories
@@ -201,7 +90,12 @@ try{
 
     }
 
-    public function getColorId($color)
+    /**
+     * This method receives a color and return its id in the DB.
+     * @param $color
+     * @return mixed
+     */
+    public static function getColorId($color)
     {
 
         $stmt = self::$pdo->prepare(
@@ -215,8 +109,13 @@ try{
 
     }
 
-    public
-    function getMaterialId($material)
+
+    /**
+     *This method receives a material and return its id in the DB.
+     * @param $material
+     * @return mixed
+     */
+    public static function getMaterialId($material)
     {
 
         $stmt = self::$pdo->prepare(
@@ -230,8 +129,11 @@ try{
 
     }
 
-    public
-    function getCategories()
+    /**
+     * This method returns all parent categories from DB.
+     * @return array
+     */
+    public static  function getCategories()
     {
         $stmt = self::$pdo->prepare("SELECT DISTINCT cat.name as category 
                                   FROM final_project_pantofka.categories as cat
@@ -244,9 +146,12 @@ try{
         return $category;
     }
 
-
-    public
-    function getCategoryId($category)
+    /**
+     * This method receive category and returns its id from DB.
+     * @param $category
+     * @return mixed
+     */
+    public static  function getCategoryId($category)
     {
 
         $stmt = self::$pdo->prepare(
@@ -260,8 +165,15 @@ try{
 
     }
 
-    public
-    function getProducts($pages, $entries, $category)
+    /**
+     *This method returns an array of product objects with  products details depends of the entered quantity as entries
+     * from the page entered using LIMIT and OFFSET
+     * @param $pages
+     * @param $entries
+     * @param $category
+     * @return array
+     */
+    public static function getProducts($pages, $entries, $category)
     {
         try {
             $offset = intval(($pages - 1) * $entries);
@@ -306,9 +218,12 @@ try{
         }
     }
 
-
-    public
-    function getProductsCount($category)
+    /**
+     * This method receives a category and returns the number of the products for this category.
+     * @param $category
+     * @return mixed
+     */
+    public static function getProductsCount($category)
     {
 
         $params = array();
@@ -329,15 +244,18 @@ try{
 
     }
 
-
-    public
-    function getProductById($product_id)
+    /**
+     * This method receives product id and returns a Products object with this id from DB.
+     * @param $product_id
+     * @return mixed|Product
+     */
+    public static function getProductById($product_id)
     {
 
 
         $stmt = self::$pdo->prepare(
             "SELECT p.product_id, p.product_name, p.price, p.info, p.product_image_url, p.promo_percentage,
-                      c.color,  m.material, parent.name as category
+                      c.color,  m.material, cat.name as category
                       FROM final_project_pantofka.products as p
                       JOIN colors as c ON p.color_id = c.color_id
                       JOIN materials as m ON p.material_id = m.material_id
@@ -353,31 +271,15 @@ try{
 
     }
 
-
-    public
-    function getAllProductsByCategory($category)
-    {
-        $stmt = self::$pdo->prepare(
-            "SELECT p.product_id, p.product_name, p.price, p.info, p.product_image_url, p.promo_percentage,
-                      c.color,  m.material 
-                      FROM final_project_pantofka.products as p
-                      JOIN colors as c ON p.color_id = c.color_id
-                      JOIN materials as m ON p.material_id = m.material_id
-                      JOIN categories as cat ON p.category_id = cat.category_id 
-                      WHERE cat.name = ?");
-        $stmt->execute(array($category));
-        $products = [];
-        while ($product = $stmt->fetch(\PDO::FETCH_ASSOC)) {
-            $products[] = new Product(json_encode($product));
-        }
-        return $products;
-    }
-
-    public
-    function getStylesByParentCategory($parent_category)
+    /**
+     * This method receives parent category and returns in array all the styles for this category from DB
+     * @param $parent_category
+     * @return array
+     */
+    public  static function getStylesByParentCategory($parent_category)
     {
 
-        $parent_id = $this->getCategoryId($parent_category);
+        $parent_id = ProductsDao::getCategoryId($parent_category);
         $styles = [];
 
         $stmt = self::$pdo->prepare(
@@ -392,8 +294,11 @@ try{
         return $styles;
     }
 
-    public
-    function getColors()
+    /**
+     * This method returns an array of all different colors from DB.
+     * @return array
+     */
+    public static function getColors()
     {
 
         $stmt = self::$pdo->prepare(
@@ -407,8 +312,11 @@ try{
         return $colors;
     }
 
-    public
-    function getMaterials()
+    /**
+     * This method returns an array of all different materials from the DB.
+     * @return array
+     */
+    public static function getMaterials()
     {
 
         $stmt = self::$pdo->prepare(
@@ -422,6 +330,11 @@ try{
         return $materials;
     }
 
+    /**
+     * This method receives product_id and reurns if the product has sizes.
+     * @param $product_id
+     * @return bool
+     */
     public static function productIsAvailable($product_id){
         $stmt = self::$pdo->prepare("SELECT count(*) as is_available FROM final_project_pantofka.products_has_sizes 
                                             WHERE (product_id = ? AND quantity > 0)");

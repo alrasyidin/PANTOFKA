@@ -13,23 +13,21 @@ use model\Product;
 
 interface IProductsDao
 {
-    public function saveNewProduct(Product $product);
+    public static function getProducts($page, $entries, $category);
 
-    public function getProducts($page, $entries, $category);
+    public static function getColorId($color);
 
-    public function getColorId($color);
+    public static function getMaterialId($material);
 
-    public function getMaterialId($material);
+    public static function getCategoryId($category);
 
-    public function getCategoryId($category);
+    public static function productExists($product_name, $material, $category, $color);
 
-    public function productExists($product_name, $material, $category, $color);
+    public static function getProductsCount($category);
 
-    public function getProductsCount($category);
+    public static function getProductById($product_id);
 
-    public function getProductById($product_id);
-
-    public function getCategories();
+    public static function getCategories();
 
 
 

@@ -18,6 +18,11 @@ class SizeDao extends AbstractDao implements ISizeDao
         parent::init();
     }
 
+    /**
+     * The method receives a size number and returns the size_id of the size.
+     * @param $size
+     * @return mixed
+     */
     public function getSizeId($size){
         $stmt = self::$pdo->prepare(
             "SELECT size_id
@@ -28,6 +33,11 @@ class SizeDao extends AbstractDao implements ISizeDao
         return $size_id['size_id'];
     }
 
+    /**
+     * The method receives product id and Size object an saves the size for this product in DB.
+     * @param $product_id
+     * @param Size $size
+     */
     public function saveSize($product_id, Size $size){
             $size_id = $this->getSizeId($size->getSizeNumber());
 
@@ -42,6 +52,12 @@ class SizeDao extends AbstractDao implements ISizeDao
 
     }
 
+
+    /**
+     * This method receives product id and returns an array of Size objects of the product with this id.
+     * @param $product_id
+     * @return array
+     */
     public  function getSizesAndQuantities($product_id)
     {
        $stmt = self::$pdo->prepare(
@@ -58,6 +74,12 @@ class SizeDao extends AbstractDao implements ISizeDao
         return $sizes;
     }
 
+    /**
+     * This method receives product id and returns an array of Size objects of the product with this id
+     * which quantity is more than 0.
+     * @param $product_id
+     * @return array
+     */
     public static function getAvailableSizes($product_id){
         $stmt = self::$pdo->prepare(
             "SELECT size_number FROM final_project_pantofka.sizes as s

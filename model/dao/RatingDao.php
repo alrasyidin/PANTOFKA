@@ -16,6 +16,11 @@ class RatingDao extends AbstractDao
         parent::init();
     }
 
+
+    /**
+     * This method receives a Rating object and saves it into DB.
+     * @param Rating $rating
+     */
     public static function giveRating(Rating $rating){
 
         $stmt = self::$pdo->prepare(
@@ -29,6 +34,10 @@ class RatingDao extends AbstractDao
         ));
     }
 
+    /**
+     * This method receives a Rating object and changes the rating value for this rating record into DB.
+     * @param Rating $rating
+     */
     public static function changeRating(Rating $rating){
         $stmt = self::$pdo->prepare(
             "UPDATE final_project_pantofka.ratings SET rating_value = ? 
@@ -41,6 +50,11 @@ class RatingDao extends AbstractDao
         ));
     }
 
+    /**
+     * This method receives a product id and returns an array of all Ratings as objects for this product.
+     * @param $product_id
+     * @return array
+     */
         public function getRatings($product_id){
 
         $stmt = self::$pdo->prepare(
@@ -55,6 +69,13 @@ class RatingDao extends AbstractDao
         return $ratings;
     }
 
+    /**
+     * This method receives  product and user ids and check if this user already rated a product and if itd true
+     * returns the rating as Object or if user never rated the product returns false;
+     * @param $user_id
+     * @param $product_id
+     * @return bool|Rating
+     */
     public static function getRatingOfUser($user_id, $product_id){
         $stmt = self::$pdo->prepare(
             "SELECT user_id, product_id, rating_value FROM final_project_pantofka.ratings

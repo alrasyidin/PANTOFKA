@@ -88,6 +88,7 @@
                        productMaterialCell.innerHTML = item.color;
 
                        var available_sizes = item.sizes;
+
                         if (available_sizes.length  > 0){
                             var sizeSelectCell = itemRow.insertCell(6);
                             var sizeSelect = document.createElement('select');
@@ -105,16 +106,17 @@
                             sizeCell.innerHTML = 'Out of stock!';
 
                         }
-
-
                        var addToCartButtonCell = itemRow.insertCell(7);
                        var addToCartButton = document.createElement("button");
                        addToCartButton.innerHTML = 'Add to cart';
                        addToCartButton.id = 'add-to-cart-from-favs-button';
+
+
                        if (available_sizes.length  > 0) {
                            addToCartButton.setAttribute('onclick', 'addToCart(' + item.product_id.toString() + ')');
                        }else {
                            addToCartButton.disabled = true;
+                           addToCartButton.style.visibility = 'hidden';
                        }
                        addToCartButtonCell.appendChild(addToCartButton);
 

@@ -19,6 +19,12 @@ use model\User;
 
 class ProductController extends AbstractController
 {
+    const MIN_SIZE_NUMBER_KIDS = 25;
+    const MAX_SIZE_NUMBER_KIDS = 34;
+    const MIN_SIZE_NUMBER_WOMEN = 35;
+    const MAX_SIZE_NUMBER_WOMEN = 42;
+    const MIN_SIZE_NUMBER_MEN = 40;
+    const MAX_SIZE_NUMBER_MEN = 48;
     private static $instance;
 
     /**
@@ -29,6 +35,7 @@ class ProductController extends AbstractController
 
     }
 
+
     public static function getInstance()
     {
         if (self::$instance === null) {
@@ -36,6 +43,7 @@ class ProductController extends AbstractController
         }
         return self::$instance;
     }
+
 
     public static function getProductById()
     {
@@ -67,6 +75,7 @@ class ProductController extends AbstractController
             }
         }
     }
+
 
     public static function getProducts()
     {
@@ -108,21 +117,22 @@ class ProductController extends AbstractController
 
     }
 
+
     public static function getSizesByParentCategory(){
         $category=$_GET["pc"];
 
         $sizes = [];
-        $min_size = 0;
-        $max_size = 0;
+        $min_size = self:: MIN_SIZE_NUMBER_KIDS;
+        $max_size = self::MAX_SIZE_NUMBER_MEN;
         if ($category === "girls" || $category === "boys") {
-            $min_size = 25;
-            $max_size = 34;
+            $min_size = self::MIN_SIZE_NUMBER_KIDS;
+            $max_size = self::MAX_SIZE_NUMBER_KIDS;
         } elseif ($category === "women") {
-            $min_size = 35;
-            $max_size = 42;
+            $min_size = self::MIN_SIZE_NUMBER_WOMEN;
+            $max_size = self::MAX_SIZE_NUMBER_WOMEN;
         } elseif ($category === "men") {
-            $min_size = 40;
-            $max_size = 48;
+            $min_size = self::MIN_SIZE_NUMBER_MEN;
+            $max_size = self::MAX_SIZE_NUMBER_MEN;
         }
         for ($i = $min_size; $i <= $max_size; $i++) {
             $sizes[] = $i;
@@ -133,6 +143,7 @@ class ProductController extends AbstractController
 
     }
 
+
     public static function numberOfProducts()
     {
         if ($_SERVER["REQUEST_METHOD"] == "GET") {
@@ -141,121 +152,4 @@ class ProductController extends AbstractController
         }
     }
 
-    public function getStylesByParentCategory()
-    {
-        if ($_SERVER["REQUEST_METHOD"] == "GET") {
-            if ($_GET["pc"] === "none") {
-                echo json_encode(array());
-            }
-            else {
-                try {
-                    $dao = new ProductsDao();
-                    $styles = $dao->getStylesByParentCategory($_GET["pc"]);
-                    echo json_encode($styles);
-                } catch (\PDOException $e) {
-                    echo "error in getStylesByParentCategory";
-                }
-            }
-        }
-
-    }
-
-    public static function getCategories()
-    {
-        if ($_SERVER["REQUEST_METHOD"] == "GET") {
-            try {
-
-                $dao = new ProductsDao();
-                $categories = $dao->getCategories();
-                echo json_encode($categories);
-            } catch (\PDOException $e) {
-                echo "error in Get categories";
-            }
-        }
-
-    }
-
-    public static function getColors()
-    {
-        if ($_SERVER["REQUEST_METHOD"] == "GET") {
-            try {
-
-                $dao = new ProductsDao();
-                $colors = $dao->getColors();
-                echo json_encode($colors);
-            } catch (\PDOException $e) {
-                echo "error in Get colors";
-            }
-        }
-
-    }
-
-    public static function getMaterials()
-    {
-        if ($_SERVER["REQUEST_METHOD"] == "GET") {
-            try {
-
-                $dao = new ProductsDao();
-                $materials = $dao->getMaterials();
-                echo json_encode($materials);
-            } catch (\PDOException $e) {
-                echo "error in Get materials";
-            }
-        }
-
-    }
-
-    public function getAllProducts()
-    {
-        if ($_SERVER["REQUEST_METHOD"] == "GET") {
-            try {
-
-                $dao = new ProductsDao();
-                $products = $dao->getAllProducts();
-
-                $daoSize = new SizeDao();
-
-                $allProducts = [];
-                /* @var $product Product */
-                foreach ($products as $product) {
-                    $sizes = $daoSize->getSizesAndQuantities($product->getProductId());
-                    $product->setSizes($sizes);
-                    $allProducts[] = $product;
-                }
-
-                echo json_encode($allProducts);
-            } catch (\PDOException $e) {
-                echo "error in getAllProducts";
-            }
-        }
-    }
-
-    public function show()
-    {
-
-        $category = htmlentities($_GET["tab"]);
-        self::showCategory($category);
-
-    }
-
-    private static function showCategory($category)
-    {
-        try {
-            $dao = new ProductsDao();
-            $products = $dao->getAllProductsByCategory($category);
-
-            $daoSize = new SizeDao();
-
-            $allProducts = [];
-            /* @var $product Product */
-            foreach ($products as $product) {
-                $sizes = $daoSize->getSizesAndQuantities($product->getProductId());
-                $product->setSizes($sizes);
-                $allProducts[] = $product;
-            }
-            echo json_encode($products);
-        } catch (\PDOException $e) {
-            echo "error in getAllProductsByCategory";
-        }
-    }
 }
