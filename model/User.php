@@ -9,7 +9,6 @@
 namespace model;
 
 
-use model\dao\UserDao;
 
 class User extends AbstractModel {
     protected $user_id;
@@ -18,6 +17,8 @@ class User extends AbstractModel {
     protected $first_name;
     protected $last_name;
     protected $gender;
+    protected $is_admin;
+    protected $favorites;
 
     /**
      * @param mixed $is_admin
@@ -26,34 +27,23 @@ class User extends AbstractModel {
     {
         $this->is_admin = $is_admin;
     }
-    protected $is_admin;
-    protected $favorites;
-    protected $is_customer;
 
     public function __construct($json = null)
     {
         parent::__construct($json);
         if (isset($this->password)){
-            $this->setPassword($this->password);
+            $this->password = sha1($this->password);
         }
         if (!isset($this->favorites)){
             $this->favorites = array();
         }
-        if (!isset($this->cart)){
-            $this->cart = array();
-        }
         if ($this->first_name === 'guest'){
             $this->setUserId(0);
         }
-       $this->is_customer = false;
     }
 
     public function addToFav(Product $p){
         $this->favorites[] = $p;
-    }
-
-    public function addToCart(Product $p){
-        $this->cart[] = $p;
     }
 
     /**
@@ -63,24 +53,6 @@ class User extends AbstractModel {
     {
         $this->favorites = $favorites;
     }
-
-    /**
-     * @return bool
-     */
-    public function isCustomer()
-    {
-        return $this->is_customer;
-    }
-
-    /**
-     * @param bool $is_customer
-     */
-    public function setIsCustomer($is_customer)
-    {
-        $this->is_customer = $is_customer; // Validate with db check ??
-    }
-
-
 
 
     public function removeFavoriteItem($item_no)
@@ -106,7 +78,6 @@ class User extends AbstractModel {
     }
 
     public function unsetFavorites(){
-        $favorites = $this->getFavorites();
         $favorites = array();
         $this->setFavorites($favorites);
 
@@ -184,22 +155,20 @@ class User extends AbstractModel {
      */
     public function setPassword($password){
         if(strlen($password) < 5 || is_numeric($password) ){
-            throw new \RuntimeException("USER CLASS: Bad data for password: lenght" .strlen($password) . " and is numeric is " . var_dump(is_numeric($password)));
+            throw new \RuntimeException("USER CLASS: Bad data for password: length" .strlen($password) . " and is numeric is " . var_dump(is_numeric($password)));
         }
-        $this->password = sha1($password); // !!!!!!!!!!!
+        $this->password = sha1($password);
     }
 
     public function __unset($password){
         if($password !== null){
-            // Double sha1 :D.....
-            if(sha1($password) === $this->password){
+            if($password == $this->password){
                 unset($this->password);
             }else{
                 throw new \RuntimeException('Bad data is passed when un-setting password.
                                              Passed value of '.$password.' do not match real object property value of ' . $this->password);
             }
         }
-
     }
 
     /**

@@ -15,7 +15,7 @@ use model\dao\ProductsDao;
 use model\Order;
 use model\User;
 use controller\CartController;
-class OrderController extends AbstractController {
+class OrderController{
 
     private static $instance;
 
@@ -41,9 +41,11 @@ class OrderController extends AbstractController {
                 $user_id = $user_in_session->getUserId();
                 /* @var $cart Cart*/
                 $cart = &$_SESSION['cart'];
+                if (empty($cart->getCartItems())){
+                    header('HTTP/1.1 400 Bad Request');
+                    die('You are trying to order an empty cart!');
+                }
                 $simplified_cart_data = CartController::simplifyCart(); // A light format of cart data
-                $data = array();
-                $data['user_id'] = $user_id;
                 try{
                     $order = new Order();
                     $products = $cart->getCartItems();
@@ -86,12 +88,12 @@ class OrderController extends AbstractController {
                     $order_data = CustomerDao::getOrderData($order_id);
                     echo json_encode($order_data);
                 }catch (\PDOException $e){
+                    header('HTTP/1.1 500');
                     echo $e->getMessage();
                 }
             }
 
         }
-
 
     public function getOrders(){
         if (isset($_SESSION['user'])){
@@ -105,8 +107,10 @@ class OrderController extends AbstractController {
                 die('Nothing to display');
             }
             }catch (\PDOException $e){
+                header('HTTP/1.1 500');
                 echo $e->getMessage();
             }catch (\RuntimeException $e){
+                header('HTTP/1.1 400');
                 echo $e->getMessage();
             }
 

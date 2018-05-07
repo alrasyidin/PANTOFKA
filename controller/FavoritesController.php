@@ -10,13 +10,11 @@ namespace controller;
 
 
 use model\dao\FavoritesDao;
-use model\dao\ProductsDao;
 use model\dao\SizeDao;
-use model\dao\UserDao;
 use model\Product;
 use model\User;
 
-class FavoritesController extends AbstractController{
+class FavoritesController{
 
     private static $instance;
 

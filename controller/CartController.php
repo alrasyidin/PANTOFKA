@@ -13,9 +13,8 @@ use model\Cart;
 use model\dao\FavoritesDao;
 use model\dao\SizeDao;
 use model\Product;
-use model\User;
 
-class CartController extends AbstractController{
+class CartController{
 
     const MIN_SIZE_NUMBER = 25;
     const MAX_SIZE_NUMBER = 48;
@@ -35,7 +34,6 @@ class CartController extends AbstractController{
         }
         return self::$instance;
     }
-
 
     public function addToCart(){
 
