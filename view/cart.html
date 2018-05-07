@@ -1,16 +1,16 @@
-<section class="min-height-600">
+<section class="min-height-600" id="cart-section">
     <h3 class="centered-section">Cart</h3>
 
     <div id="show-cart-div">
     <div id="display-cart-items"></div>
-
-    <div id="buy-cart-items"></div>
-        <div class="centered-section" id="cart-buttons">
-            <h6 id="clear-cart-button-heading"> </h6>
-
-            <button id="clear-cart-button"> Clear cart </button>
-        </div>
     </div>
+    <div id="buy-cart-items" class="centered-section"></div>
+    <h6 id="clear-cart-button-heading"> </h6>
+    <div class="centered-section" id="cart-buttons">
+        <button id="clear-cart-button"> Clear cart </button>
+
+    </div>
+
 
 
 </section>
@@ -33,7 +33,7 @@
        };
        request.send();
 
-   }
+   };
 
    loadCart();
 
@@ -53,6 +53,7 @@
                        document.getElementById('clear-cart-button-heading').innerHTML = 'Nothing in here';
                        clearCartButton.style.visibility = 'hidden';
                    }else{
+
                        document.getElementById('clear-cart-button-heading').innerHTML = '';
                        clearCartButton.style.visibility = 'visible';
                    }
@@ -148,6 +149,8 @@
                    if (cartItems.length > 0){
                        return loadBuyCartDiv();
                    }
+
+
                }
            }
        };
@@ -157,7 +160,7 @@
 
    function loadBuyCartDiv() {
        var wrapper = document.getElementById('buy-cart-items');
-
+       wrapper.innerHTML = '';
        var request = new XMLHttpRequest();
        request.open("get", "handle_requests.php?target=cart&action=getCartTotalPrice");
        request.onreadystatechange = function (ev) {
@@ -167,10 +170,14 @@
                     total.innerHTML = 'Total price: ' + this.responseText;
                     wrapper.appendChild(total);
 
-                    var orderButton = document.createElement('button');
-                    orderButton.innerHTML = 'Order';
-                    orderButton.setAttribute('onclick' , 'orderCart()');
-                   document.getElementById('cart-buttons').appendChild(orderButton);
+                   var orderButton = document.getElementById('order-cart-button');
+                   if (orderButton == undefined){
+                       var orderButton = document.createElement('button');
+                       orderButton.innerHTML = 'Order';
+                       orderButton.setAttribute('onclick' , 'orderCart()');
+                       wrapper.appendChild(orderButton);
+                   }
+
                }else {
                    alert('something went wrong when loading order div');
                }
@@ -191,9 +198,9 @@
                alert(this.responseText);
 
                if (this.status == 200){
-                   var wrapper = document.getElementById('show-cart-div');
-                   //wrapper.innerHTML = '<h3>Thank you for your order!<h3>'
-                   wrapper.innerHTML = this.responseText;
+                   var wrapper = document.getElementById('cart-section');
+                   wrapper.innerHTML = '';
+                   wrapper.innerHTML = '<h3>Thank you for your order!<h3>'
                }else {
                    console.log(this.responseText);
                }
