@@ -60,20 +60,12 @@ class UserController extends AbstractController {
             header("location: index.php?page=main");
             die();
         }
-        $logging_user_data = array();
-        $logging_user_data['email'] = htmlentities($_POST['email']);
-        $logging_user_data['password'] = htmlentities($_POST['password']);
-        try {
-            $user = new User(json_encode($logging_user_data));
-        } catch (\RuntimeException $e) {
-            //header("location: index.php?page=failed_login");
-            die($e);
-        }
-
+        $email = htmlentities($_POST['email']);
+        $password = htmlentities($_POST['password']);
         try{
             $user_dao = new UserDao();
-            if($user_dao->login($user) instanceof User){
-                $logged_user = $user_dao->login($user);
+            if($user_dao->login($email , $password) instanceof User){
+                $logged_user = $user_dao->login($email , $password);
                 $logged_user->__unset($user->getPassword());
                 $_SESSION["user"] = $logged_user;
                 header('HTTP/1.1 200 OK');
@@ -124,10 +116,9 @@ class UserController extends AbstractController {
             die();
         }
         try {
-            $user_dao = new UserDao();
-            if (!($user_dao->userExists($email))) {
+            if (!(UserDao::userExists($email))) {
 
-                if ($user_dao->register($new_user) instanceof User){
+                if (UserDao::register($new_user) instanceof User){
                     header('HTTP/1.1 200 OK');
                     header("location: index.php?page=login");
                     die();
@@ -196,6 +187,8 @@ class UserController extends AbstractController {
 
     private static function editSecurity(){
 
+
+        /* @var $user_in_session User */
         $user_in_session = $_SESSION['user'];
         $email = $user_in_session->getEmail();
         $id = $user_in_session->getUserId();

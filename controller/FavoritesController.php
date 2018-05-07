@@ -40,7 +40,7 @@ class FavoritesController extends AbstractController{
             $product_id = htmlentities($_GET['product_id']);
 
             if ($product_id < 1 || !is_numeric($product_id)){
-                json_encode('Bad data was passed to the controller - ' . var_dump($product_id));
+                die('Bad data was passed to the controller');
             }
 
             if (empty($_SESSION['user'])){
@@ -55,7 +55,7 @@ class FavoritesController extends AbstractController{
                 $favorites = $user_in_session->getFavorites();
                 if (count($favorites) > 0){
                     /* @var $favorite_item Product*/
-                    foreach ($favorites as $index=>&$favorite_item) {
+                    foreach ($favorites as $index=>$favorite_item) {
                         if ($favorite_item->getProductId() == $product_id){
                             die('Product is already added to favorites!');
                         }
@@ -63,7 +63,7 @@ class FavoritesController extends AbstractController{
                 }
 
                 if (FavoritesDao::productIsAlreadyInFavorites($product_id , $user_id)){
-                    die('Product is already in favorites 2');
+                    die('Product is already added in favorites at DB');
                 }
 
                 /* @var $favorite_item Product */
@@ -92,7 +92,7 @@ class FavoritesController extends AbstractController{
                 die($e->getTraceAsString() . ';' . $e->getMessage());
             }
         }else{
-            die('401');
+           die('There is no logged user');
         }
     }
 
@@ -102,7 +102,7 @@ class FavoritesController extends AbstractController{
             $user_in_session = &$_SESSION['user'];
             try{
                 if (empty($user_in_session->getFavorites())){
-                     die('Nothing to remove.');
+                    die('Nothing to remove.');
                 }
                 if (empty(FavoritesDao::getFavorites($user_in_session->getUserId()))){ // 2nd level of security
                     die('Nothing to remove. 2; check row 100');
@@ -110,13 +110,12 @@ class FavoritesController extends AbstractController{
 
                 FavoritesDao::deleteFavorites($user_in_session->getUserId());
                 $user_in_session->unsetFavorites();
-
                 echo 'you no longer have any favorite item in our DB.';
             }catch (\PDOException $e){
                 die($e->getTraceAsString() . ';' . $e->getMessage());
             }
         }else{
-            die('401');
+            die('There is no logged user');
         }
     }
 
@@ -130,8 +129,7 @@ class FavoritesController extends AbstractController{
                 try {
                     $favorites = $user_in_session->getFavorites();
                     if (empty($favorites)){
-                        echo 'nothing to remove ';
-                        die();
+                        die( 'Nothing to remove ');
                     }
                     $item_to_be_removed = null;
                     /* @var $single_item Product */
@@ -140,7 +138,7 @@ class FavoritesController extends AbstractController{
                         if ($single_item->getProductId() == $product_id) {
                             $user_id = $user_in_session->getUserId();
                             FavoritesDao::removeFromFavorites($product_id, $user_id);
-                            unset($single_item);
+                            unset($favorites[$index]);
                             $user_in_session->removeFavoriteItem($index);
                             die('Item was successfully removed from favorites ');
                         }
@@ -151,7 +149,7 @@ class FavoritesController extends AbstractController{
                     echo $e->getTraceAsString() . '<hr>' . $e->getMessage();
                 }
             } else {
-                echo '401';
+                die('There is no logged user');
             }
         }
     }

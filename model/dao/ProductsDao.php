@@ -422,5 +422,13 @@ try{
         return $materials;
     }
 
+    public static function productIsAvailable($product_id){
+        $stmt = self::$pdo->prepare("SELECT count(*) as is_available FROM final_project_pantofka.products_has_sizes 
+                                            WHERE (product_id = ? AND quantity > 0)");
+        $stmt->execute(array($product_id));
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return boolval($result["is_available"]);
+    }
+
 
 }

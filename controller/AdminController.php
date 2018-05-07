@@ -286,7 +286,7 @@ class AdminController extends AbstractController
                             die('Bad data passed to the controller');
                         }
                         try {
-                            if (AdminDao::productIsAvailable($product_id)) {
+                            if (ProductsDao::productIsAvailable($product_id)) {
                                 AdminDao::unsetProduct($product_id);
                                 echo 'The product size quantities were set to zero';
                             } else {

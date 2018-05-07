@@ -70,12 +70,12 @@ class CartController extends AbstractController{
                         header('HTTP/1.1 200 OK');
                         die('Another size was added in cart');
                     } else {
+                        /* @var $cart_item Product*/
                         $cart_item = FavoritesDao::productIsAvailable($product_id, $size_id);
-                        $new_cart_item = new Product(json_encode($cart_item));
-                        $new_cart_item->setSizes(array($size_no));
+                        $cart_item->setSizes(array($size_no));
                         /* @var $cart Cart */
                         $cart = &$_SESSION['cart'];
-                        $cart->addItemToCart($new_cart_item);
+                        $cart->addItemToCart($cart_item);
                         header('HTTP/1.1 200 OK');
                         die('Product was added in cart');
                     }

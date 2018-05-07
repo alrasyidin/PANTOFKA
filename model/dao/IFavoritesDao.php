@@ -12,14 +12,16 @@ namespace model\dao;
 
 interface IFavoritesDao{
 
-    /**Returns product object or false
-     * @param $product_id
-     * @return mixed
-     */
-    public static  function productIsAvailable($product_id , $size_id);
+    public static function addToFavorites($product_id , $user_id);
 
-    public static function addToFavorites($product_id , $size_id);
+    public static function productIsAlreadyInFavorites($product_id , $user_id);
 
     public static function removeFromFavorites($product_id , $user_id);
+
+    public static function productIsAvailable($product_id , $size_id);
+
+    public static function getFavorites($user_id);
+
+    public static function deleteFavorites($user_id);
 
 }

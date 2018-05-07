@@ -56,7 +56,7 @@ class RatingController extends AbstractController
                     $daoUser = new UserDao();
                     $daoProduct = new ProductsDao();
                     $daoRating = new RatingDao();
-                    if ($daoUser->userExistsId($user_id) && $daoProduct->productExistsId($product_id)) {
+                    if ($daoUser::userExistsId($user_id) && $daoProduct->productExistsId($product_id)) {
 
                         $rating = [];
                         $rating["user_id"] = $user_id;
@@ -96,7 +96,7 @@ class RatingController extends AbstractController
                     $daoUser = new UserDao();
                     $daoProduct = new ProductsDao();
                     $daoRating = new RatingDao();
-                    if ($daoUser->userExistsId($user_id) && $daoProduct->productExistsId($product_id)) {
+                    if ($daoUser::userExistsId($user_id) && $daoProduct->productExistsId($product_id)) {
 
                         $rating = [];
                         $rating["user_id"] = $user_id;

@@ -83,7 +83,7 @@ class OrderController extends AbstractController {
         if (isset($_GET['order_id'])){
             $order_id = htmlentities($_GET['order_id']);
                 try{
-                     $order_data = CustomerDao::getOrderData($order_id);
+                    $order_data = CustomerDao::getOrderData($order_id);
                     echo json_encode($order_data);
                 }catch (\PDOException $e){
                     echo $e->getMessage();

@@ -15,21 +15,28 @@ use model\PasswordData;
 
 interface IUserDao{
 
+    public static function register(User $new_user);
+
+    public static function login($email , $password);
 
     public static function getUserId($email);
 
-    public static function getUserData($email);
+    public static function getUser($email);
 
-    public function register(User $new_user);
+    public static function editUser(User $info , $user_id);
 
-    public static function editUser(User $user , $id);
+    public static function editUserSecurity(PasswordData $passwords);
 
     public static function emailExists($email);
 
-    public function userExists($email);
+    public static function userExists($email);
 
-    public static function userIsValid($email, $password);
+    public static function userExistsId($id);
 
-    public static function editUserSecurity(PasswordData $info);
+    public static function userIsValid($email , $password);
+
+    public static function getGenderId($gender);
+
+    public static function emailIsTakenByAnotherUser($email_wanted , $user_id);
 
 }
