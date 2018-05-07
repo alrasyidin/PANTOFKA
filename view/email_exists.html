@@ -1,7 +1,9 @@
 <section class="centered-section min-height-600" style="display:block">
-<div class="form">
+    <div class="form">
 
         <div class="message" id="register-form-message-div"></div>
+        <h5>Email is already taken</h5>
+
         <form onsubmit="return validateRegisterFormOnSubmit(this);" action="./handle_requests.php?target=user&action=register" method="post" id="register-form">
 
             <input type="text" id="first_name" name="first_name" placeholder="First name" required> <br>
@@ -21,10 +23,10 @@
 
                 <option value="f">Female</option>
 
-                </select> </p> <br>
+            </select> </p> <br>
 
             <!--<input class="button" type="submit" name="register_button" value="Register"-->
-                   <!--onclick="validate( this.form.email.value , this.form.password.value)">-->
+            <!--onclick="validate( this.form.email.value , this.form.password.value)">-->
 
             <input type="submit" name="register_button" value="Register">
 

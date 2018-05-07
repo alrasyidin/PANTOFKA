@@ -16,8 +16,7 @@ use model\dao\SizeDao;
 use model\Size;
 use model\User;
 
-class AdminController extends AbstractController
-{
+class AdminController{
 
     private static $instance;
 
@@ -154,7 +153,6 @@ class AdminController extends AbstractController
 
     }
 
-
     public static function changeProduct()
     {
         if (isset($_POST["change_product"])) {
@@ -272,9 +270,7 @@ class AdminController extends AbstractController
         }
     }
 
-
-        public
-        function unsetProduct()
+    public function unsetProduct()
         {
             if (isset($_SESSION['user'])) {
                 /* @var $user_in_session User */
@@ -305,4 +301,4 @@ class AdminController extends AbstractController
             }
         }
 
-    }
+}

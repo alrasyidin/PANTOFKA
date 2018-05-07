@@ -94,11 +94,10 @@ function saveInfoChanges(){
     request.onreadystatechange = function (ev) {
         if(this.readyState == 4 ){
             if(this.status == 200){
-
                 resultDiv.innerHTML = this.responseText;
                 return true;
             }else{
-                alert( "'" + this.status + " :\n" + this.statusText +  "'");
+                alert( this.responseText );
             }
         }
     };

@@ -8,51 +8,37 @@
 
 namespace controller;
 
-abstract class AbstractController
-{
-
+abstract class AbstractController{
 
     public static function createController($controller_name)
     {
         $controller_name = ucfirst($controller_name);
+        // An Factory added just for fun :) Practice Makes Perfect!
 
-        if ($controller_name === 'AdminController') {
-            return AdminController::getInstance();
+        switch ($controller_name) {
+            case 'AdminController':
+                return AdminController::getInstance();
 
-        } elseif ($controller_name === 'CartController') {
-            return CartController::getInstance();
+            case 'CartController':
+                return CartController::getInstance();
 
-        } elseif ($controller_name === 'CategoryController') {
-            return CategoryController::getInstance();
+            case 'FavoritesController':
+                return FavoritesController::getInstance();
 
-        } elseif ($controller_name === 'CustomerController') {
-            return ProductController::getInstance();
+            case 'OrderController':
+                return OrderController::getInstance();
 
-        } elseif ($controller_name === 'FavoritesController') {
-            return FavoritesController::getInstance();
+            case 'ProductController':
+                return ProductController::getInstance();
 
-        } elseif ($controller_name === 'FilterController') {
-            return FilterController::getInstance();
+            case 'UserController':
+                return UserController::getInstance();
 
-        } elseif ($controller_name === 'OrderController') {
-            return OrderController::getInstance();
-
-        } elseif ($controller_name === 'ProductController') {
-            return ProductController::getInstance();
-
-        } elseif ($controller_name === 'SearchController') {
-            return SearchController::getInstance();
-
-        } elseif ($controller_name === 'UserController') {
-            return UserController::getInstance();
-
-        } elseif ($controller_name === 'RatingController') {
-            return RatingController::getInstance();
-
-        } else {
-            echo "No such controller";
+            case 'RatingController':
+                return RatingController::getInstance();
+            default:
+                header('location: index.php?page=404.html');
+                die();
         }
-
     }
-
 }

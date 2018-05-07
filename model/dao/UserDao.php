@@ -49,7 +49,7 @@ class UserDao extends AbstractDao implements IUserDao {
      */
     public static function login($email , $password){
         $stmt = self::$pdo->prepare(
-            "SELECT count(*) as user_is_valid FROM users WHERE (email = ? AND password = ?)");
+            "SELECT count(*) as user_is_valid FROM users WHERE (email = ? AND password = ?); ");
         $stmt->execute(array($email , sha1($password)));
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
         if($result['user_is_valid'] != 0){
@@ -188,7 +188,7 @@ class UserDao extends AbstractDao implements IUserDao {
                                                 WHERE email = ? && password = ? ");
         $query->execute(array($email , $password));
         $count = $query->fetch(\PDO::FETCH_ASSOC);
-        return $count["user_is_valid"];
+        return boolval($count["user_is_valid"]);
     }
 
     /**

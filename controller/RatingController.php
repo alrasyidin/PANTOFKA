@@ -18,8 +18,7 @@ use model\dao\CustomerDao;
 use model\Rating;
 use model\User;
 
-class RatingController extends AbstractController
-{
+class RatingController{
     private static $instance;
 
     /**
@@ -37,7 +36,6 @@ class RatingController extends AbstractController
         }
         return self::$instance;
     }
-
 
     public static function giveRating()
     {
@@ -77,7 +75,6 @@ class RatingController extends AbstractController
             }
         }
     }
-
 
     public static function changeRating()
     {
@@ -132,7 +129,6 @@ class RatingController extends AbstractController
             echo $e->getMessage();
         }
     }
-
 
     public static function getRatingFromUser()
     {

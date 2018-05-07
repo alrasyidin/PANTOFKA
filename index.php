@@ -36,14 +36,22 @@ const FAVORITES_PAGE_NAME = 'favorites';
 const MAIN_PAGE_NAME = 'main';
 const ADD_PRODUCT_PAGE_NAME = 'add_product';
 const EDIT_PRODUCT_PAGE_NAME = 'edit_product';
+const EMAIL_EXISTS_PAGE_NAME = 'email_exists';
 
 session_start();
 
 if (isset($_SESSION['user'])){
     /* @var $user_in_session \model\User*/
     $user_in_session = &$_SESSION['user'];
-    var_dump($user_in_session->getFavorites());
+    var_dump($user_in_session);
 }
+echo '<hr>';
+if (isset($_SESSION['cart'])){
+    /* @var $user_in_session \model\User*/
+    $cart = &$_SESSION['cart'];
+    var_dump($cart);
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -145,7 +153,7 @@ if (isset($_SESSION['user'])){
         if ($page_name !== LOGIN_PAGE_NAME && $page_name !== REGISTER_PAGE_NAME &&
             $page_name !== CART_PAGE_NAME && $page_name !== FAILED_LOGIN_PAGE_NAME &&
             $page_name !== MAIN_PAGE_NAME && $page_name !== EDIT_PRODUCT_PAGE_NAME &&
-            $page_name !== ADD_PRODUCT_PAGE_NAME && $page_name !== null) {
+            $page_name !== EMAIL_EXISTS_PAGE_NAME && $page_name !== ADD_PRODUCT_PAGE_NAME && $page_name !== null) {
             if (!isset($user_in_session)) {
                 $page_name = UNAUTHORIZED_PAGE_NAME;
 

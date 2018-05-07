@@ -29,7 +29,6 @@ class ProductController extends AbstractController
 
     }
 
-
     public static function getInstance()
     {
         if (self::$instance === null) {
@@ -37,7 +36,6 @@ class ProductController extends AbstractController
         }
         return self::$instance;
     }
-
 
     public static function getProductById()
     {
@@ -69,7 +67,6 @@ class ProductController extends AbstractController
             }
         }
     }
-
 
     public static function getProducts()
     {
@@ -111,7 +108,6 @@ class ProductController extends AbstractController
 
     }
 
-
     public static function getSizesByParentCategory(){
         $category=$_GET["pc"];
 
@@ -136,7 +132,6 @@ class ProductController extends AbstractController
         echo json_encode($sizes);
 
     }
-
 
     public static function numberOfProducts()
     {
@@ -194,7 +189,6 @@ class ProductController extends AbstractController
         }
 
     }
-
 
     public static function getMaterials()
     {
