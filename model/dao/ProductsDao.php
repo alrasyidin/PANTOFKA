@@ -173,7 +173,7 @@ class ProductsDao extends AbstractDao implements IProductsDao
      * @param $category
      * @return array
      */
-    public static function getProducts($pages, $entries, $category)
+    public static function getProducts($pages, $entries, $category, $style, $color, $material)
     {
         try {
             $offset = intval(($pages - 1) * $entries);
@@ -186,19 +186,43 @@ class ProductsDao extends AbstractDao implements IProductsDao
                       JOIN colors as c ON p.color_id = c.color_id
                       JOIN materials as m ON p.material_id = m.material_id
                       JOIN categories as st ON p.category_id = st.category_id
-                      JOIN categories as cat ON st.parent_id = cat.category_id";
+                      JOIN categories as cat ON st.parent_id = cat.category_id
+                      WHERE p.product_id > 0 ";
 
             if ($category == "new") {
-                $sql .= "  WHERE p.promo_percentage = 0 ORDER BY p.product_id DESC LIMIT 10 ";
+                $sql .= "  AND p.promo_percentage = 0 ORDER BY p.product_id DESC LIMIT 10 ";
 
             } elseif($category != "new") {
 
                 if ($category != "sale" && $category != "all") { // 0 because only products which are not on sale can be shown as new
                     $params[] = $category;
-                    $sql .= " WHERE cat.name = ?";
+                    $sql .= " AND cat.name = ?";
+                    if($style != "all"){
+                        $params[] = $style;
+                        $sql .= " AND st.name = ?";
+                    }
+                    if($color != "all"){
+                        $params[] = $color;
+                        $sql .= " AND c.color = ?";
+                    }
+                    if($material != "all"){
+                        $params[] = $material;
+                        $sql .= " AND m.material = ?";
+                    }
                 } elseif ($category == "sale") {
-                    $sql .= " WHERE p.promo_percentage > 0 "; // 0 because every product which promo percentage is more then 0 is on SALE
-
+                    $sql .= " AND p.promo_percentage > 0 "; // 0 because every product which promo percentage is more then 0 is on SALE
+                    if($style != "all"){
+                        $params[] = $style;
+                        $sql .= " AND st.name = ?";
+                    }
+                    if($color != "all"){
+                        $params[] = $color;
+                        $sql .= " AND c.color = ?";
+                    }
+                    if($material != "all"){
+                        $params[] = $material;
+                        $sql .= " AND m.material = ?";
+                    }
                 }
                 $sql .= " LIMIT $limit OFFSET $offset";
             }
@@ -218,23 +242,55 @@ class ProductsDao extends AbstractDao implements IProductsDao
         }
     }
 
+
     /**
      * This method receives a category and returns the number of the products for this category.
      * @param $category
      * @return mixed
      */
-    public static function getProductsCount($category)
+    public static  function getProductsCount($category, $style, $color, $material)
     {
 
         $params = array();
-        $sql = "SELECT count(*) as number_of_products FROM products as p
-                JOIN categories as cat 
-                ON p.category_id = cat.category_id
-                JOIN categories as c 
-                ON cat.parent_id = c.category_id";
-        if ($category != "all") {
+        $sql = "SELECT count(*) as number_of_products 
+                FROM final_project_pantofka.products as p
+                      JOIN colors as c ON p.color_id = c.color_id
+                      JOIN materials as m ON p.material_id = m.material_id
+                      JOIN categories as st ON p.category_id = st.category_id
+                      JOIN categories as cat ON st.parent_id = cat.category_id
+                      WHERE p.product_id > 0";
+        if ($category != "all" && $category != "new" && $category != "sale") {
             $params[] = $category;
-            $sql .= "  WHERE c.name = ?";
+            $sql .= "  AND cat.name = ?";
+
+            if($style != "all"){
+                $params[] = $style;
+                $sql .= " AND st.name = ?";
+            }
+            if($color != "all"){
+                $params[] = $color;
+                $sql .= " AND c.color = ?";
+            }
+            if($material != "all"){
+                $params[] = $material;
+                $sql .= " AND m.material = ?";
+            }
+        }
+        elseif ($category == "sale"){
+            $sql .= " AND p.promo_percentage > 0";
+
+            if($style != "all"){
+                $params[] = $style;
+                $sql .= " AND st.name = ?";
+            }
+            if($color != "all"){
+                $params[] = $color;
+                $sql .= " AND c.color = ?";
+            }
+            if($material != "all"){
+                $params[] = $material;
+                $sql .= " AND m.material = ?";
+            }
         }
 
         $stmt = self::$pdo->prepare($sql);
@@ -243,6 +299,7 @@ class ProductsDao extends AbstractDao implements IProductsDao
         return $row["number_of_products"];
 
     }
+
 
     /**
      * This method receives product id and returns a Products object with this id from DB.

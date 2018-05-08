@@ -20,10 +20,15 @@
      if (isset($_GET["id"]) || isset($_SESSION["product_to_edit_id"])) {
          if (isset($_GET["id"])) {
              $product_id = htmlentities($_GET["id"]);
-         } elseif (isset($_SESSION["product_to_edit_id"])) {
+         }
+         elseif (isset($_SESSION["product_to_edit_id"])) {
              $product_id = $_SESSION["product_to_edit_id"];
              unset($_SESSION["product_to_edit_id"]);
 
+         }
+         else{
+             header("location: index.php?page=unauthorized");
+             die();
          }
          $product = $productDao->getProductById($product_id);
          $colors = $productDao->getColors();
@@ -36,8 +41,7 @@
              <div class="centered-section">
                  <div class="form">
                      Category: <h3><?= $product->getCategory() ?></h3>
-                     <form action="handle_requests.php?target=admin&action=changeProduct" method="post"
-                           enctype="multipart/form-data">
+                     <form action="handle_requests.php?target=admin&action=changeProduct" method="post" enctype="multipart/form-data">
                          Product name: <input type="text" name="product_name"
                                               value="<?= $product->getProductName() ?>" required> <br>
                          <div>

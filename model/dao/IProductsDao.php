@@ -13,7 +13,7 @@ use model\Product;
 
 interface IProductsDao
 {
-    public static function getProducts($page, $entries, $category);
+    public static function getProducts($pages, $entries, $category, $style, $color, $material);
 
     public static function getColorId($color);
 
@@ -23,7 +23,7 @@ interface IProductsDao
 
     public static function productExists($product_name, $material, $category, $color);
 
-    public static function getProductsCount($category);
+    public static function getProductsCount($category, $style, $color, $material);
 
     public static function getProductById($product_id);
 

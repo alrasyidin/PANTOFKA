@@ -24,7 +24,7 @@ class Order {
     public function __construct()
     {
         if (!isset($this->date)){
-            $this->date = date('Y-m-d', time());
+            $this->date = date('Y-m-d-h-i-s-a', time());
         }
         if (!isset($this->total_price)){
             $this->total_price = self::calculateTotalPrice($this->products);

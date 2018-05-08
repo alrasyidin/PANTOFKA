@@ -52,7 +52,7 @@ class AdminController extends AbstractController
         if (isset($_POST["add_product"])) {
             if (isset($_SESSION['user'])) {
                 /* @var $user_in_session User */
-                $user_in_session = $_SESSION['user'];
+                $user_in_session = &$_SESSION['user'];
                 if ($user_in_session->getisAdmin()) {
                     $error = "";
 
@@ -151,7 +151,7 @@ class AdminController extends AbstractController
 
                                 $adminDao->saveNewProduct($new_product);
 //Product is saved
-                                header("location: index.php?page=add_product");
+                                header("location: index.php?page=main#products=$category");
                             } else {
                                 //Product is not saved
                                 header("location: index.php?page=add_product");

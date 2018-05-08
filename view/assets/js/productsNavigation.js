@@ -1,15 +1,21 @@
+
 function showProductsPage(category) {
+    loadFilterStyles(category);
+    loadFilterColors(category);
+    loadFilterMaterials(category);
+
     var main = document.getElementById("main");
 
     var showProducts = document.getElementById("products-page");
 
-
     main.style.display = "none";
 
     showProducts.style.display = "block";
-    filterProducts(1, 20, category);
+
+    filterProducts(1, 20, category, "all", "all", "all");
 
 }
+
 
 function showMain() {
     var showProducts = document.getElementById("products-page");
@@ -22,17 +28,3 @@ function showMain() {
     }
 }
 
-window.onscroll = function () {
-    myFunction()
-};
-
-var navbar = document.getElementById("navbar");
-var sticky = navbar.offsetTop;
-
-function myFunction() {
-    if (window.pageYOffset >= sticky) {
-        navbar.classList.add("sticky")
-    } else {
-        navbar.classList.remove("sticky");
-    }
-}

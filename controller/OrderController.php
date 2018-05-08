@@ -41,14 +41,19 @@ class OrderController{
                 $user_id = $user_in_session->getUserId();
                 /* @var $cart Cart*/
                 $cart = &$_SESSION['cart'];
-                if (empty($cart->getCartItems())){
+                $products = $cart->getCartItems();
+
+                if (!isset($products)){
+                    $cart = Cart::init();
+                }
+
+                if (empty($products)){
                     header('HTTP/1.1 400 Bad Request');
                     die('You are trying to order an empty cart!');
                 }
                 $simplified_cart_data = CartController::simplifyCart(); // A light format of cart data
                 try{
                     $order = new Order();
-                    $products = $cart->getCartItems();
                     $order->setUserId($user_id); // Setters can throw Runtime exception while validating
                     $order->setProducts($products);
                     $order->setTotalPrice();

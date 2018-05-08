@@ -84,7 +84,8 @@ class ProductController extends AbstractController
         if ($_SERVER["REQUEST_METHOD"] == "GET") {
             try {
                 $dao = new ProductsDao();
-                $products = $dao->getProducts($_GET["pages"], $_GET["entries"], $_GET["category"]);
+                $products = $dao->getProducts($_GET["pages"], $_GET["entries"], $_GET["category"],
+                    $_GET["style"], $_GET["color"], $_GET["material"]);
                 $daoSize = new SizeDao();
                 $daoRating = new RatingDao();
 
@@ -147,8 +148,10 @@ class ProductController extends AbstractController
     public static function numberOfProducts()
     {
         if ($_SERVER["REQUEST_METHOD"] == "GET") {
-            $dao = new ProductsDao();
-            echo $dao->getProductsCount($_GET["category"]);
+            if ($_SERVER["REQUEST_METHOD"] == "GET") {
+                $dao = new ProductsDao();
+                echo $dao->getProductsCount($_GET["category"], $_GET["style"], $_GET["color"], $_GET["material"]);
+            }
         }
     }
 

@@ -40,16 +40,13 @@ const EMAIL_EXISTS_PAGE_NAME = 'email_exists';
 
 session_start();
 
-if (isset($_SESSION['user'])){
-    /* @var $user_in_session \model\User*/
+if (isset($_SESSION['user'])) {
+    /* @var $user_in_session \model\User */
     $user_in_session = &$_SESSION['user'];
-    var_dump($user_in_session);
 }
-echo '<hr>';
-if (isset($_SESSION['cart'])){
-    /* @var $user_in_session \model\User*/
+if (isset($_SESSION['cart'])) {
+    /* @var $user_in_session \model\User */
     $cart = &$_SESSION['cart'];
-    var_dump($cart);
 }
 
 ?>
@@ -64,7 +61,6 @@ if (isset($_SESSION['cart'])){
     <title> PANTOFKA </title>
     <meta name="description" content="">
     <meta name="author" content="">
-
 
 
     <!-- Mobile Specific Metas
@@ -99,6 +95,7 @@ if (isset($_SESSION['cart'])){
     <script src="./view/assets/js/history.js" type="text/javascript"></script>
     <script src="./view/assets/js/editProfile.js" type="text/javascript"></script>
     <script src="./view/assets/js/favoritesAndCartFunctions.js" type="text/javascript"></script>
+    <script src="./view/assets/js/filter.js" type="text/javascript"></script>
 
 
 
@@ -125,8 +122,7 @@ if (isset($_SESSION['cart'])){
         } else {
             require_once "./view/user_navigation.html";
         }
-    }
-    else{
+    } else {
         require_once "./view/guest_navigation.html";
     }
     require_once "./view/header.html";
@@ -136,49 +132,56 @@ if (isset($_SESSION['cart'])){
     ?>
     <div id="main" style="display:block">
 
-    <?php
+        <?php
 
-    if(isset($_GET['page'])) {
-        $page_name = $_GET['page'];
+        if (isset($_GET['page'])) {
+            $page_name = $_GET['page'];
 
-        if ($page_name === LOGIN_PAGE_NAME || $page_name === REGISTER_PAGE_NAME) {
-            if (isset($_SESSION['user'])) {
-                $page_name = UNAUTHORIZED_PAGE_NAME;
-            }
-        }
-
-        if ($page_name !== LOGIN_PAGE_NAME && $page_name !== REGISTER_PAGE_NAME &&
-            $page_name !== CART_PAGE_NAME && $page_name !== FAILED_LOGIN_PAGE_NAME &&
-            $page_name !== MAIN_PAGE_NAME && $page_name !== EDIT_PRODUCT_PAGE_NAME &&
-            $page_name !== EMAIL_EXISTS_PAGE_NAME && $page_name !== ADD_PRODUCT_PAGE_NAME && $page_name !== null) {
-            if (!isset($user_in_session)) {
-                $page_name = UNAUTHORIZED_PAGE_NAME;
-
-            }else{
-                if (($page_name === ADD_PRODUCT_PAGE_NAME || $page_name === EDIT_PRODUCT_PAGE_NAME)
-                    && $user_in_session->getisAdmin() !== 1){
+            if ($page_name === ADD_PRODUCT_PAGE_NAME || $page_name === EDIT_PRODUCT_PAGE_NAME) {
+                if (isset($_SESSION['user'])) {
+                    if ($user_in_session->getisAdmin() != 1) {
+                        $page_name = UNAUTHORIZED_PAGE_NAME;
+                    }
+                }
+                else {
                     $page_name = UNAUTHORIZED_PAGE_NAME;
                 }
             }
 
+            if ($page_name === LOGIN_PAGE_NAME || $page_name === REGISTER_PAGE_NAME) {
+                if (isset($_SESSION['user'])) {
+                    $page_name = UNAUTHORIZED_PAGE_NAME;
+                }
+            }
+
+            if ($page_name !== LOGIN_PAGE_NAME && $page_name !== REGISTER_PAGE_NAME &&
+                $page_name !== CART_PAGE_NAME && $page_name !== FAILED_LOGIN_PAGE_NAME &&
+                $page_name !== MAIN_PAGE_NAME && $page_name !== EDIT_PRODUCT_PAGE_NAME &&
+                $page_name !== EMAIL_EXISTS_PAGE_NAME && $page_name !== ADD_PRODUCT_PAGE_NAME && $page_name !== null) {
+                if (!isset($user_in_session)) {
+                    $page_name = UNAUTHORIZED_PAGE_NAME;
+
+                }
+            }
+
+
+        } else {
+            $page_name = MAIN_PAGE_NAME;
         }
-    }else{
-        $page_name = MAIN_PAGE_NAME;
-    }
-    $page_path = __DIR__ . "\\view\\" . $page_name . ".html";
-    if ($page_name === EDIT_PRODUCT_PAGE_NAME){
-        $page_path = __DIR__ . "\\view\\" . $page_name . ".php";
-    }
+        $page_path = __DIR__ . "\\view\\" . $page_name . ".html";
+        if ($page_name === EDIT_PRODUCT_PAGE_NAME) {
+            $page_path = __DIR__ . "\\view\\" . $page_name . ".php";
+        }
 
-    if (file_exists($page_path)) {
-        require_once $page_path;
-    } else {
-        require_once __DIR__ . "\\view\\" . NOT_FOUND_PAGE_NAME . ".html";
-    }
+        if (file_exists($page_path)) {
+            require_once $page_path;
+        } else {
+            require_once __DIR__ . "\\view\\" . NOT_FOUND_PAGE_NAME . ".html";
+        }
 
 
-    // =========================================================================================================
-    ?>
+        // =========================================================================================================
+        ?>
     </div>
     <?php
 

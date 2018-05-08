@@ -134,18 +134,19 @@ function loadInputSizes(parentCategory) {
     request.onreadystatechange = function (ev) {
         if (this.readyState == 4 && this.status == 200) {
             var sizes = JSON.parse(this.responseText);
-            var div = document.getElementById("input-sizes");
-            div.innerHTML = "";
+            var divSizesInput = document.getElementById("input-sizes");
+            divSizesInput.innerHTML = "";
 
             for (var i = 0; i < sizes.length; i++) {
                 var size = sizes[i];
                 var sizeNumber = document.createElement('h6');
-                div.appendChild(sizeNumber);
+                divSizesInput.appendChild(sizeNumber);
                 sizeNumber.style.display = "inline-block";
                 sizeNumber.innerHTML = "Size: " + size + "  -  Insert quantity: ";
+
                 var inputQuantity = document.createElement("input");
                 inputQuantity.placeholder = "Quantity for size: " + size;
-                div.appendChild(inputQuantity);
+                divSizesInput.appendChild(inputQuantity);
                 inputQuantity.type = "number";
                 inputQuantity.name = size;
             }

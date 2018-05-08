@@ -1,6 +1,7 @@
-function filterProducts(pages, entries, category) {
+function filterProducts(pages, entries, category, style, color, material) {
     var request = new XMLHttpRequest();
-    request.open("get", "handle_requests.php?target=product&action=getProducts&pages=" + pages + "&entries=" + entries + "&category=" + category);
+    request.open("get", "handle_requests.php?target=product&action=getProducts&pages=" + pages + "&entries=" + entries
+        + "&category=" + category + "&style=" + style + "&color=" + color + "&material=" + material);
     request.onreadystatechange = function (ev) {
         if (this.readyState == 4 && this.status == 200) {
             var response = this.responseText;
@@ -13,7 +14,7 @@ function filterProducts(pages, entries, category) {
             visualiseProducts(products);
 
         }
-        loadPageLinks(entries, category);
+        loadPageLinks(entries, category, style, color, material);
     }
 
     request.send();
@@ -208,15 +209,6 @@ function visualiseProducts(products) {
     }
 }
 
-
-function filter() {
-    var categorySelect = document.getElementById("categories");
-    var category = categorySelect.options[categorySelect.selectedIndex].value;
-
-    filterProducts(1, 20, category);
-}
-
-
 function filterCategories() {
     var categorySelect = document.getElementById("parent-categories");
     var category = categorySelect.options[categorySelect.selectedIndex].value;
@@ -232,7 +224,6 @@ function filterCategoriesForEdit() {
     loadInputSizesForEdit(category);
 
 }
-
 
 function fillModal(product_id) {
     var modal = document.getElementById('product-modal');
