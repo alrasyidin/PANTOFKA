@@ -9,9 +9,11 @@
 namespace controller;
 
 use model\dao\ProductsDao;
+use model\Product;
 
 
-class CategoryController extends AbstractController{
+class CategoryController extends AbstractController
+{
 
     private static $instance;
 
@@ -77,7 +79,6 @@ class CategoryController extends AbstractController{
         }
 
     }
-
 
     public static function getMaterials()
     {

@@ -36,13 +36,15 @@
                         var orderRow = ordersHistoryTable.insertRow(0);
                         //=================================================
                         var orderDateCell = orderRow.insertCell(0);
-                        orderDateCell.innerHTML = order.date;
+                        orderDateCell.innerHTML = "Date: " + order.date;
                         //=================================================
                         var orderTotalPriceCell = orderRow.insertCell(1);
                         console.log(order);
-                        orderTotalPriceCell.innerHTML = order.total_price;
+                        orderTotalPriceCell.innerHTML = "Total price: " + order.total_price + " BGN ";
+                        orderTotalPriceCell.style.color = "red";
                         //=================================================
                         var orderInfoButtonCell = orderRow.insertCell(2);
+                        orderInfoButtonCell.style.width = "35%";
                         var orderInfoButtonCellButton = document.createElement("button");
                         orderInfoButtonCellButton.innerHTML = 'Order info';
                         orderInfoButtonCellButton.id = 'add-to-favorites-from-cart-button';

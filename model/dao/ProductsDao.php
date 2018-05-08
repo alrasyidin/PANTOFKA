@@ -255,7 +255,7 @@ class ProductsDao extends AbstractDao implements IProductsDao
 
         $stmt = self::$pdo->prepare(
             "SELECT p.product_id, p.product_name, p.price, p.info, p.product_image_url, p.promo_percentage,
-                      c.color,  m.material, cat.name as category
+                      c.color,  m.material, cat.name as style, parent.name as category
                       FROM final_project_pantofka.products as p
                       JOIN colors as c ON p.color_id = c.color_id
                       JOIN materials as m ON p.material_id = m.material_id

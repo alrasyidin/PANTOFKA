@@ -19,6 +19,9 @@ abstract class AbstractController{
             case 'AdminController':
                 return AdminController::getInstance();
 
+            case 'CategoryController':
+                return CategoryController::getInstance();
+
             case 'CartController':
                 return CartController::getInstance();
 

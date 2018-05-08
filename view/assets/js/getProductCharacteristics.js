@@ -53,6 +53,8 @@ function loadColors() {
     request.open("get", "handle_requests.php?target=category&action=getColors");
     request.onreadystatechange = function (ev) {
         if (this.readyState == 4 && this.status == 200) {
+            console.log(this.responseText);
+
             var allColors = JSON.parse(this.responseText);
             var select = document.getElementById("select-color");
             for (var i = 0; i < allColors.length; i++) {
@@ -66,10 +68,11 @@ function loadColors() {
 
 function loadMaterials() {
     var request = new XMLHttpRequest();
-    request.open("get", "handle_requests.php?target=product&action=getMaterials");
+    request.open("get", "handle_requests.php?target=category&action=getMaterials");
     request.onreadystatechange = function (ev) {
         if (this.readyState == 4 && this.status == 200) {
             var allMaterials = JSON.parse(this.responseText);
+            console.log(this.responseText);
             var select = document.getElementById("select-material");
             for (var i = 0; i < allMaterials.length; i++) {
                 var material = allMaterials[i];
@@ -86,6 +89,8 @@ function getStyles(parentCategory) {
     request.open("get", "handle_requests.php?target=category&action=getStylesByParentCategory&pc=" + parentCategory);
     request.onreadystatechange = function (ev) {
         if (this.readyState == 4 && this.status == 200) {
+            console.log(this.responseText);
+
             var styles = JSON.parse(this.responseText);
             var select = document.getElementById("select-style");
             while (select.options.length) {
@@ -137,8 +142,9 @@ function loadInputSizes(parentCategory) {
                 var sizeNumber = document.createElement('h6');
                 div.appendChild(sizeNumber);
                 sizeNumber.style.display = "inline-block";
-                sizeNumber.innerHTML = size + ": ";
+                sizeNumber.innerHTML = "Size: " + size + "  -  Insert quantity: ";
                 var inputQuantity = document.createElement("input");
+                inputQuantity.placeholder = "Quantity for size: " + size;
                 div.appendChild(inputQuantity);
                 inputQuantity.type = "number";
                 inputQuantity.name = size;

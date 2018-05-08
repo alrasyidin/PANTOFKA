@@ -1,58 +1,57 @@
 <section class="centered-section">
     <div id="add_product">
         <form action="handle_requests.php?target=admin&action=addProduct" method="post" enctype="multipart/form-data">
-        <br>
-        Select product category:
-        <select onchange="filterCategories()" id="parent-categories" name="category">
-            <option value="none">Choose category</option>
-
-        </select>
-        <br>
-
-        Select product style:
-        <select id="select-style" name="style" >
-
-        </select>
-        <br>
-
-        Product name:
-        <input type="text" name="product_name" placeholder="product name" required> <br>
-
-        Select product color:
-        <select id="select-color" name="product_color" required>
             <br>
 
-        </select>
-        <br>
-        Select product material:
-        <select id="select-material" name="material" name="product_material">
+            Product image: <input type="file" name="product_img_name" accept="image/*"><br>
 
-        </select>
+            Product price: <input type="number" name="product_price" placeholder="price" step="0.01" required> <br>
 
+            Promo percentage:
+            <input type="text" name="promo_percentage"><br>
 
-        <br>
-           Info:  <input type="text" name="info">
+            Select product category:
+            <select onchange="filterCategories()" id="parent-categories" name="category">
+                <option value="none">Choose category</option>
+
+            </select><br>
+
+            Select product style:
+            <select id="select-style" name="style">
+
+            </select><br>
+
+            Product name:
+            <input type="text" name="product_name" placeholder="product name" required> <br>
+
+            Select product color:
+            <select id="select-color" name="product_color" required>
+
+            </select><br>
+
+            Select product material:
+            <select id="select-material" name="material" name="product_material">
+
+            </select> <br>
+
+            Info: <input type="text" name="info"><br>
+
+            Insert quantities for the sizes:
             <br>
-        Promo percentage:
-        <input type="text" name="promo_percentage">
-        <br>
-            Input sizes:
             <div id="input-sizes">
 
-
             </div>
+            <br>
 
 
-        Product price: <input type="number" name="product_price" placeholder="price" step="0.01" required> <br>
-        Product image: <input type="file" name="product_img_name" accept="image/*"><br>
             <input type="submit" name="add_product" value="Add product">
         </form>
     </div>
 </section>
 
 <script>
-   loadParentCategories();
-   loadColors();
-   loadMaterials();
+    loadParentCategories();
+    loadColors();
+    loadMaterials();
 
 </script>

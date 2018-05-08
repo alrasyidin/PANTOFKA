@@ -87,6 +87,8 @@
                        productColorCell.id = 'favorites-table-item-color-'+item.color_id;
                        productMaterialCell.innerHTML = item.color;
 
+
+
                        var available_sizes = item.sizes;
 
                         if (available_sizes.length  > 0){
@@ -96,30 +98,25 @@
                             for (var j = 0 ; j < available_sizes.length ; j++){
                                 sizeSelect.options[sizeSelect.options.length] = new Option(available_sizes[j], available_sizes[j]);
                             }
+                            var addToCartButtonCell = itemRow.insertCell(7);
+                            var addToCartButton = document.createElement("button");
+                            addToCartButton.innerHTML = 'Add to cart';
+                            addToCartButton.id = 'add-to-cart-from-favs-button';
+                            addToCartButton.setAttribute('onclick', 'addToCart(' + item.product_id.toString() + ')');
                             sizeSelect.id = 'favorites-pick-size-for-product' + item.product_id;
                             sizeSelectCell.appendChild(sizeSelect);
-
+                            addToCartButton.setAttribute('onclick', 'addToCart(' + item.product_id.toString() + ')');
+                            addToCartButtonCell.appendChild(addToCartButton);
 
 
                         }else{
                             var sizeCell = itemRow.insertCell(6);
                             sizeCell.innerHTML = 'Out of stock!';
+                            sizeCell.style.color = "red";
+                            var comingSoonCell = itemRow.insertCell(7);
+                            comingSoonCell.innerHTML = 'Coming back soon!';
 
                         }
-                       var addToCartButtonCell = itemRow.insertCell(7);
-                       var addToCartButton = document.createElement("button");
-                       addToCartButton.innerHTML = 'Add to cart';
-                       addToCartButton.id = 'add-to-cart-from-favs-button';
-
-
-                       if (available_sizes.length  > 0) {
-                           addToCartButton.setAttribute('onclick', 'addToCart(' + item.product_id.toString() + ')');
-                       }else {
-                           addToCartButton.disabled = true;
-                           addToCartButton.style.visibility = 'hidden';
-                       }
-                       addToCartButtonCell.appendChild(addToCartButton);
-
 
                        var removeFromFavoritesButtonCell = itemRow.insertCell(8);
                        var removeFromFavoritesButton = document.createElement("button");

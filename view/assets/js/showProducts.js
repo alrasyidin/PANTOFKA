@@ -274,7 +274,7 @@ function fillModal(product_id) {
             img.src = product.product_image_url;
 
             var productStyle = document.getElementById("product_style");
-            productStyle.innerHTML = product.category;
+            productStyle.innerHTML = product.style ;
 
             var productColor = document.getElementById("product_color");
             productColor.innerHTML = product.color;

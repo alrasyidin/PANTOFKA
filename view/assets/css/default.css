@@ -487,3 +487,9 @@ text-align: center;
     cursor: pointer;
     outline: inherit;
 }
+
+.input_inline_block{
+    display: inline-block;
+    float: right;
+    width: 50%;
+}

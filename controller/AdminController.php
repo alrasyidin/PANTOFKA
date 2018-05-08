@@ -151,7 +151,7 @@ class AdminController extends AbstractController
 
                                 $adminDao->saveNewProduct($new_product);
 //Product is saved
-                                header("location: index.php?page=display_products");
+                                header("location: index.php?page=add_product");
                             } else {
                                 //Product is not saved
                                 header("location: index.php?page=add_product");
@@ -180,7 +180,6 @@ class AdminController extends AbstractController
                     $product_id = htmlentities($_POST["product_id"]);
                     /* @var $product_to_edit Product */
                     $product_to_edit = $dao->getProductById($product_id);
-
                     $category = $product_to_edit->getCategory();
                     $style = htmlentities($_POST["product_style"]);
                     $product_name = htmlentities($_POST["product_name"]);
@@ -191,7 +190,6 @@ class AdminController extends AbstractController
                     $product_price = htmlentities($_POST["product_price"]);
                     $info = htmlentities($_POST["product_info"]);
 
-                    $sizes = [];
                     $sizes = [];
                     $min_size = self:: MIN_SIZE_NUMBER_KIDS;
                     $max_size = self::MAX_SIZE_NUMBER_MEN;
@@ -267,20 +265,31 @@ class AdminController extends AbstractController
                             $new_product = new Product($product);
                             $sizes_and_numbers = [];
                             foreach ($sizes as $size) {
-                                $size= json_encode($size);
+                                $size = json_encode($size);
                                 $new_size = new Size($size);
                                 $sizes_and_numbers[] = $new_size;
                             }
                             $new_product->setSizes($sizes_and_numbers);
                             $adminDao->changeProduct($new_product);
 //Product is saved
-                            header("location: index.php?page=display_products");
+                            $_SESSION["product_to_edit_id"] = $product_id;
+                            $_SESSION["edit_product_result"] = "Product changed successfully!";
+                            header("location: index.php?page=edit_product");
+
 
                         } catch (\PDOException $e) {
-                            header("location: index.php?page=add_product");
+                            $_SESSION["product_to_edit_id"] = $product_id;
+                            $_SESSION["edit_product_result"] = "Something went wrong! please try again!";
+                            header("location: index.php?page=edit_product");
 
                         }
 
+
+                    }
+                    else{
+                        $_SESSION["product_to_edit_id"] = $product_id;
+                        $_SESSION["edit_product_result"] = $error;
+                        header("location: index.php?page=edit_product");
                     }
                 }
             }
