@@ -71,7 +71,7 @@ class ProductController extends AbstractController
                 echo json_encode($product);
 
             } catch (\PDOException $e) {
-                echo "error in Get product by ID - $e";
+                header("location: index.php?page=error");
             }
         }
     }
@@ -112,7 +112,7 @@ class ProductController extends AbstractController
 
                 echo json_encode($products);
             } catch (\PDOException $e) {
-                echo "error in Get products";
+                header("location: index.php?page=error");
             }
         }
 
@@ -148,10 +148,8 @@ class ProductController extends AbstractController
     public static function numberOfProducts()
     {
         if ($_SERVER["REQUEST_METHOD"] == "GET") {
-            if ($_SERVER["REQUEST_METHOD"] == "GET") {
-                $dao = new ProductsDao();
-                echo $dao->getProductsCount($_GET["category"], $_GET["style"], $_GET["color"], $_GET["material"]);
-            }
+            $dao = new ProductsDao();
+            echo $dao->getProductsCount($_GET["category"], $_GET["style"], $_GET["color"], $_GET["material"]);
         }
     }
 

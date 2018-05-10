@@ -3,6 +3,13 @@
     width: 100%;
 
 }
+
+.sticky {
+    position: fixed;
+    top: 0;
+    width: 86.5% !important;
+}
+
 #navbar {
     overflow: hidden;
     background-color: #d8d8d8;
@@ -32,11 +39,6 @@
 
 .content {
     padding: 16px;
-}
-
-.sticky {
-    position: fixed;
-    top: 0;
 }
 
 .sticky + .content {

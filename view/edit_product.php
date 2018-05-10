@@ -1,5 +1,5 @@
 <div id="centered-section min-height-400">
-    <div class="info_from_controller">
+    <div class="info_from_controller; centered-section">
         <?php
         if(isset($_SESSION["edit_product_result"])){
             ?>
@@ -102,7 +102,7 @@
 
                          Product information:
                          <input type="text" name="product_info" maxlength="150"
-                                value="<?= $product->getInfo() ?>" required> <br>
+                                value="<?= $product->getInfo() ?>" > <br>
 
                          <br>
 

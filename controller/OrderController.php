@@ -12,7 +12,10 @@ namespace controller;
 use model\Cart;
 use model\dao\CustomerDao;
 use model\dao\ProductsDao;
+use model\dao\SizeDao;
 use model\Order;
+use model\Product;
+use model\Size;
 use model\User;
 use controller\CartController;
 class OrderController{
@@ -51,20 +54,24 @@ class OrderController{
                     header('HTTP/1.1 400 Bad Request');
                     die('You are trying to order an empty cart!');
                 }
-                $simplified_cart_data = CartController::simplifyCart(); // A light format of cart data
                 try{
                     $order = new Order();
                     $order->setUserId($user_id); // Setters can throw Runtime exception while validating
                     $order->setProducts($products);
                     $order->setTotalPrice();
                     CustomerDao::makeOrder($order); // Can throw PDO exc also
-                    foreach ($simplified_cart_data as $item_id => $size_info ) {
-                        foreach ($size_info as $size_id => $size_quantity) {
-                            CustomerDao::decreaseQuantities($item_id, $size_id , $size_quantity);
-                        }
+
+                    /* @var $cart_item Product*/
+                    foreach ($products as $cart_item ) {
+                            $size_quantity = $cart_item->getSizeQuantity();
+                            $size_no = array_keys($size_quantity)[0];
+                            $size_id = Order::getSizeId($size_no); // This should not come from order but from Size
+                            $quantity = $size_quantity[$size_no];
+                            CustomerDao::decreaseQuantities($cart_item->getProductId(),
+                                                            $size_id ,
+                                                            $quantity);
+
                     }
-                    /* @var $cart Cart*/
-                    $cart = &$_SESSION['cart'];
                     $cart = Cart::init();
                     header('HTTP/1.1 200');
                     die('Successful order. For more info check out History page. Cart is now empty.');

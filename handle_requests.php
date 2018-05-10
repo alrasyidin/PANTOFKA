@@ -52,10 +52,13 @@ if (class_exists($controller_class_name)) {
 }
 
 if ($file_not_found) {
-    //return header 404
-    echo 'target or action invalid: target = ' . $controller_name . ' and action = ' .$method_name;
+header("location: index.php?page=error");
+die();
+//echo 'target or action invalid: target = ' . $controller_name . ' and action = ' .$method_name;
 }
 }else{
     header('location: index.php?page=main');
+    die();
+
 }
 

@@ -79,9 +79,9 @@ class RatingController extends AbstractController
                 }
             } catch
             (\PDOException $e) {
-                echo $e->getMessage();
+                header("location: index.php?page=error");
             } catch (\RuntimeException $e) {
-                echo $e->getMessage();
+                header("location: index.php?page=error");
             }
         }
     }
@@ -119,9 +119,9 @@ class RatingController extends AbstractController
                 }
             } catch
             (\PDOException $e) {
-                echo $e->getMessage();
+                header("location: index.php?page=error");
             } catch (\RuntimeException $e) {
-                echo $e->getMessage();
+                header("location: index.php?page=error");
             }
         }
     }
@@ -137,7 +137,7 @@ class RatingController extends AbstractController
             }
             return $ratings;
         } catch (\PDOException $e) {
-            echo $e->getMessage();
+            header("location: index.php?page=error");
         }
     }
 
@@ -167,9 +167,12 @@ class RatingController extends AbstractController
                     }
                 }
             } catch (\PDOException $e) {
-                echo $e->getMessage();
+                header("location: index.php?page=error");
+                die();
+
             } catch (\RuntimeException $e) {
-                echo $e->getMessage();
+                header("location: index.php?page=error");
+                die();
             }
         }
     }

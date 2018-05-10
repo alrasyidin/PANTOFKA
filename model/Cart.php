@@ -32,7 +32,6 @@ class Cart{
         $this->cart_items[] = $product;
     }
 
-
     public function setCartItems($cart_items)
     {
         $this->cart_items = array();

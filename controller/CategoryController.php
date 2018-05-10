@@ -40,10 +40,11 @@ class CategoryController extends AbstractController
             else {
                 try {
                     $dao = new ProductsDao();
-                    $styles = $dao->getStylesByParentCategory($_GET["pc"]);
+                    $styles = $dao->getStylesByParentCategory(htmlentities($_GET["pc"]));
                     echo json_encode($styles);
                 } catch (\PDOException $e) {
-                    echo "error in getStylesByParentCategory";
+                    header("location: index.php?page=error");
+                    die();
                 }
             }
         }
@@ -59,7 +60,9 @@ class CategoryController extends AbstractController
                 $categories = $dao->getCategories();
                 echo json_encode($categories);
             } catch (\PDOException $e) {
-                echo "error in Get categories";
+                header("location: index.php?page=error");
+                die();
+
             }
         }
 
@@ -74,7 +77,9 @@ class CategoryController extends AbstractController
                 $colors = $dao->getColors();
                 echo json_encode($colors);
             } catch (\PDOException $e) {
-                echo "error in Get colors";
+                header("location: index.php?page=error");
+                die();
+
             }
         }
 

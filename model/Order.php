@@ -51,8 +51,8 @@ class Order {
     }
 
     public function getProductSizeQuantity(Product $product , $size){
-       $sizes = array_count_values($product->getSizes());
-       return $sizes[$size];
+        $sizes = array_count_values($product->getSizes());
+        return $sizes[$size];
     }
 
     public static function getSizeId($size_no){
@@ -65,14 +65,15 @@ class Order {
         }
     }
 
-
     public static function calculateTotalPrice($items)
     {
         $total = 0;
         /* @var $item Product*/
-        foreach ($items as $item){
+        foreach ($items as $index=>$item){
             $price = $item->getPriceOnPromotion();
-            $quantity = count($item->getSizes());
+            $size_quantity = $item->getSizeQuantity();
+            $size = array_keys($size_quantity)[0];
+            $quantity = $size_quantity[$size];
             $total += $price*$quantity;
         }
         return $total;
@@ -109,7 +110,6 @@ class Order {
         }
     }
 
-
     /**
      * @param mixed $customer_id
      */
@@ -128,7 +128,6 @@ class Order {
     {
         return $this->products_has_sizes;
     }
-
 
     /**
      * This method takes two arrays with the same length,
@@ -152,7 +151,6 @@ class Order {
         }
 
     }
-
 
     /**
      * @return mixed
@@ -196,7 +194,5 @@ class Order {
         }
         $this->order_id = $order_id;
     }
-
-
 
 }

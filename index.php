@@ -30,6 +30,7 @@ const UNAUTHORIZED_PAGE_NAME = 'unauthorized';
 const NOT_FOUND_PAGE_NAME = 'not_found';
 const FAILED_LOGIN_PAGE_NAME = 'failed_login';
 const LOGIN_PAGE_NAME = 'login';
+const ERROR_PAGE_NAME = 'error';
 const REGISTER_PAGE_NAME = 'register';
 const CART_PAGE_NAME = 'cart';
 const FAVORITES_PAGE_NAME = 'favorites';
@@ -157,7 +158,8 @@ if (isset($_SESSION['cart'])) {
             if ($page_name !== LOGIN_PAGE_NAME && $page_name !== REGISTER_PAGE_NAME &&
                 $page_name !== CART_PAGE_NAME && $page_name !== FAILED_LOGIN_PAGE_NAME &&
                 $page_name !== MAIN_PAGE_NAME && $page_name !== EDIT_PRODUCT_PAGE_NAME &&
-                $page_name !== EMAIL_EXISTS_PAGE_NAME && $page_name !== ADD_PRODUCT_PAGE_NAME && $page_name !== null) {
+                $page_name !== EMAIL_EXISTS_PAGE_NAME && $page_name !== ADD_PRODUCT_PAGE_NAME
+                && $page_name!== ERROR_PAGE_NAME && $page_name !== null) {
                 if (!isset($user_in_session)) {
                     $page_name = UNAUTHORIZED_PAGE_NAME;
 

@@ -137,7 +137,7 @@ class UserController{
         }
         try {
             if (!(UserDao::userExists($email))) {
-                if (UserDao::register($new_user) instanceof User){
+                if (UserDao::register($new_user) instanceof User){// LOSHO
                     header('HTTP/1.1 200 OK');
                     header(self::SUCCESSFUL_REGISTER_LOCATION);
                     die();

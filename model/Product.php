@@ -10,7 +10,9 @@ namespace model;
 
 
 
+use controller\ProductController;
 use model\dao\ProductsDao;
+use model\dao\SizeDao;
 
 class Product extends AbstractModel
 {
@@ -30,6 +32,7 @@ class Product extends AbstractModel
 
     protected $sizes = []; // Array of sizes
     protected $ratings = [];
+    protected $size_quantities;
 
     /**
      * @return mixed
@@ -79,8 +82,8 @@ class Product extends AbstractModel
         return get_object_vars($this);
     }
 
-    public function addToSizes(Size $s){
-        $this->sizes[] = $s;
+    public function addToSizes($size_no){ // This should take a Size object
+        $this->sizes[] = $size_no;
     }
 
 
@@ -129,6 +132,9 @@ class Product extends AbstractModel
             $this->setPrice($this->price);
 
         }
+
+        // =========================================
+        $this->size_quantities = array();
 
     }
 
@@ -315,6 +321,55 @@ class Product extends AbstractModel
         }
 
         $this->category = $category;
+    }
+
+
+    public function getSizeQuantity($size_no = null){
+        if ($size_no == null){
+            // when calling the method with no parameter
+            // we need size quantities,
+            // despite its value and indexes
+            return $this->size_quantities;
+        }
+
+        //Otherwise we need data for a specific size, passed by
+        if (!is_numeric($size_no) ||
+            $size_no < ProductController::MIN_SIZE_NUMBER_KIDS ||
+            $size_no > ProductController::MAX_SIZE_NUMBER_MEN ){
+            throw new \RuntimeException("Invalid data for size in the getSizeQuantity getter");
+        }
+        $sizes_and_quantities = $this->size_quantities;
+
+        if (array_key_exists($size_no , $sizes_and_quantities)){
+           return $sizes_and_quantities[$size_no];
+        }
+        return -1;
+    }
+
+    public function unsetSizeQuantity()
+    {
+        $this->size_quantities = array();
+    }
+
+    public function setSizeQuantity($size_no)
+    {
+        if (!is_numeric($size_no) ||
+            $size_no < ProductController::MIN_SIZE_NUMBER_KIDS ||
+            $size_no > ProductController::MAX_SIZE_NUMBER_MEN){
+            throw new \RuntimeException("Invalid data for size/quantity");
+
+        }
+        $sizes_and_quantities = $this->size_quantities;
+        if (empty($sizes_and_quantities)){
+
+            $sizes_and_quantities = array();
+            $sizes_and_quantities[$size_no] = 1;
+        }else{
+          if (array_key_exists($size_no , $sizes_and_quantities)){
+              $sizes_and_quantities[$size_no]++;
+          }
+        }
+        $this->size_quantities = $sizes_and_quantities;
     }
 
 

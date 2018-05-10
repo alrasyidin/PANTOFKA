@@ -13,7 +13,8 @@ use model\Size;
 
 class ProductsDao extends AbstractDao implements IProductsDao
 {
-
+    const NUMBER_NEW_PRODUCTS = 20;
+    const MIN_PROMO_PERCENTAGE = 0;
     public function __construct()
     {
         parent::init();
@@ -169,6 +170,9 @@ class ProductsDao extends AbstractDao implements IProductsDao
      *This method returns an array of product objects with  products details depends of the entered quantity as entries
      * from the page entered using LIMIT and OFFSET
      * @param $pages
+     * @param $material
+     * @param $color
+     * @param $style
      * @param $entries
      * @param $category
      * @return array
@@ -190,11 +194,26 @@ class ProductsDao extends AbstractDao implements IProductsDao
                       WHERE p.product_id > 0 ";
 
             if ($category == "new") {
-                $sql .= "  AND p.promo_percentage = 0 ORDER BY p.product_id DESC LIMIT 10 ";
+                $min_promo_percentage = self::MIN_PROMO_PERCENTAGE;
+                $sql .= "  AND p.promo_percentage = $min_promo_percentage ";
+                if($style != "all"){
+                    $params[] = $style;
+                    $sql .= " AND st.name = ?";
+                }
+                if($color != "all"){
+                    $params[] = $color;
+                    $sql .= " AND c.color = ?";
+                }
+                if($material != "all"){
+                    $params[] = $material;
+                    $sql .= " AND m.material = ?";
+                }
+                $number_new_products = self::NUMBER_NEW_PRODUCTS;
+                $sql .= " ORDER BY p.product_id DESC LIMIT $number_new_products ";
 
             } elseif($category != "new") {
 
-                if ($category != "sale" && $category != "all") { // 0 because only products which are not on sale can be shown as new
+                if ($category != "sale" && $category != "all") {
                     $params[] = $category;
                     $sql .= " AND cat.name = ?";
                     if($style != "all"){
@@ -224,7 +243,7 @@ class ProductsDao extends AbstractDao implements IProductsDao
                         $sql .= " AND m.material = ?";
                     }
                 }
-                $sql .= " LIMIT $limit OFFSET $offset";
+                $sql .= " ORDER BY p.product_id DESC LIMIT $limit OFFSET $offset";
             }
 
             $stmt = self::$pdo->prepare($sql);
@@ -242,10 +261,13 @@ class ProductsDao extends AbstractDao implements IProductsDao
         }
     }
 
-
     /**
-     * This method receives a category and returns the number of the products for this category.
+     *       This method receives a category, style, color and material and returns the number of the products
+     * for this characteristics.
      * @param $category
+     * @param $style
+     * @param $color
+     * @param $material
      * @return mixed
      */
     public static  function getProductsCount($category, $style, $color, $material)
@@ -292,6 +314,12 @@ class ProductsDao extends AbstractDao implements IProductsDao
                 $sql .= " AND m.material = ?";
             }
         }
+        elseif ($category == "new"){
+
+            return self::NUMBER_NEW_PRODUCTS;
+
+        }
+
 
         $stmt = self::$pdo->prepare($sql);
         $stmt->execute($params);

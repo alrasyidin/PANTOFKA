@@ -52,9 +52,7 @@ class CustomerDao extends UserDao implements ICustomerDao {
                 $stmt->execute(array(
                     $product_to_buy->getProductId(),
                     $order->getOrderId(),
-                    // Since order object contains all the information needed for calculating the size quantity,
-                    // we use a method that use that logic
-                    $order->getProductSizeQuantity($product_to_buy, $size),
+                    $product_to_buy->getSizeQuantity($size),
                     $size_id));
             }
         }

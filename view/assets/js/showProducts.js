@@ -7,6 +7,7 @@ function filterProducts(pages, entries, category, style, color, material) {
             var response = this.responseText;
             var products = JSON.parse(response);
             var title = document.getElementById('page-title');
+            var filterStyleDiv = document.getElementById('filter-style-div');
 
             document.getElementById('visualisation').innerHTML = "";
             title.innerHTML = "";
@@ -14,7 +15,15 @@ function filterProducts(pages, entries, category, style, color, material) {
             visualiseProducts(products);
 
         }
-        loadPageLinks(entries, category, style, color, material);
+        if (category === "new" || category === "sale") {
+            filterStyleDiv.style.visibility = "hidden";
+        }
+        else{
+            filterStyleDiv.style.visibility = "visible";
+        }
+
+            loadPageLinks(entries, category, style, color, material);
+
     }
 
     request.send();
@@ -22,15 +31,22 @@ function filterProducts(pages, entries, category, style, color, material) {
 
 function visualiseProducts(products) {
     var modal = document.getElementById('product-modal');
+    var visualisation = document.getElementById("visualisation");
 
+    if (products.length === 0){
+        var noProductsToShow = document.createElement('h6');
+        noProductsToShow.innerHTML = "No Results!";
+        noProductsToShow.style.textAlign = "center";
+        visualisation.appendChild(noProductsToShow);
+    }
 
     for (var i = 0; i < products.length; i++) {
 
         var product = products[i];
-        var visualisation = document.getElementById("visualisation");
         var showProduct = document.createElement('div');
         showProduct.className = "shown_products";
         visualisation.appendChild(showProduct);
+        showProduct.style.minHeight = "420px";
         var productName = document.createElement("div");
         productName.className = "product_name";
         var productImg = document.createElement("div");
@@ -93,12 +109,12 @@ function visualiseProducts(products) {
         ratingText.style = "text-align: center";
         var ratings = product.ratings;
         var maxRate = 10;
-        var minRate = 0;
+        var minRate = 1;
         var ratingSum = 0;
         var avgRating = 0;
 
         if (ratings.length === 0) {
-            ratingText.innerHTML = "Not rated";
+            ratingText.innerHTML = "Not rated!";
         }
         else {
             ratingSum = 0;
@@ -110,9 +126,12 @@ function visualiseProducts(products) {
             }
             avgRating = (ratingSum) / (ratings.length);
             avgRating =  Math.round( avgRating * 10) / 10;
-
-
-            ratingText.innerHTML = "Rating: " + avgRating + "/" + maxRate;
+            if (avgRating > maxRate){
+                ratingText.innerHTML = "Not rated!"
+            }
+            else {
+                ratingText.innerHTML = "Rating: " + avgRating + "/" + maxRate;
+            }
 
         }
 
@@ -205,6 +224,8 @@ function visualiseProducts(products) {
             deleteProductButton.setAttribute('onclick', 'deleteProduct(' + product.product_id + ')');
             divButtons.appendChild(deleteProductButton);
             deleteProductButton.innerHTML = "Unset product";
+
+            showProduct.style.minHeight = "500px";
         }
     }
 }
