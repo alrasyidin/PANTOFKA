@@ -48,6 +48,7 @@ if (isset($_SESSION['user'])) {
 if (isset($_SESSION['cart'])) {
     /* @var $user_in_session \model\User */
     $cart = &$_SESSION['cart'];
+    var_dump($cart);
 }
 
 ?>

@@ -12,6 +12,7 @@ namespace controller;
 use model\Cart;
 use model\dao\CustomerDao;
 use model\dao\FavoritesDao;
+use model\dao\ProductsDao;
 use model\dao\SizeDao;
 use model\Product;
 use model\Size;
@@ -77,7 +78,7 @@ class CartController{
                             /* @var $new_product Product*/
                             $new_product = clone self::productAlreadyInCart($product_id);
                             $new_product->unsetSizeQuantity();
-                            $new_product->setSizeQuantity($size_no);
+                            $new_product->setSizeQuantity($size_no , "asc");
                             $new_product->setSizes(array());
                             $new_product->addToSizes($size_no);
 
@@ -87,13 +88,13 @@ class CartController{
                             die('Another product size was added to cart');
                         }
                         $product_to_increase_sizes_to->addToSizes($size_no);
-                        $product_to_increase_sizes_to->setSizeQuantity($size_no); // The method separates sizes and quantities
+                        $product_to_increase_sizes_to->setSizeQuantity($size_no , 'asc'); // The method separates sizes and quantities
                         header('HTTP/1.1 200 OK');
                         die('Another size quantity was added to cart');
                     }
                         /* @var $cart_item Product */
                         $cart_item = FavoritesDao::productIsAvailable($product_id, $size_id);
-                        $cart_item->setSizeQuantity($size_no);
+                        $cart_item->setSizeQuantity($size_no , 'asc');
                         $cart_item->addToSizes($size_no);
                         $cart->addItemToCart($cart_item);
                         header('HTTP/1.1 200 OK');
@@ -181,7 +182,6 @@ class CartController{
             /* @var $cart Cart*/
             $cart = &$_SESSION['cart'];
             $items = $cart->getCartItems();
-            /* @var $cart_item Product */
 
             if (self::productSizeAlreadyInCart($product_id , $size_no)) {
                 /* @var $product_to_remove Product */
@@ -229,4 +229,88 @@ class CartController{
         }
     }
 
+    private function changeItemQuantityFromCart($quantity_change_type){
+        if (isset($_GET['product_id']) && isset($_GET['size_no'])){
+            $product_id = htmlentities($_GET['product_id']);
+            $size_no = htmlentities($_GET['size_no']);
+
+            if ($product_id < 0 || !is_numeric($product_id) || $size_no < self::MIN_SIZE_NUMBER || $size_no > self::MAX_SIZE_NUMBER){
+                die('Bad data was passed to the controller!!');
+            }
+            /* @var $product Product */
+            $product = self::getCartItem($product_id , $size_no);
+            if ($product === null){
+                try{
+                    $this->removeCartItem($product_id , $size_no);
+                }catch (\PDOException $e){
+                    echo $e->getMessage();
+                }
+                die("Nothing else left to remove from the product");
+            }
+            $size_quantity = $product->getSizeQuantity($size_no);
+            if ($size_quantity == 1 && $quantity_change_type == 'desc'){
+                die($this->removeCartItem($product_id , $size_no));
+            }
+
+            // TODO
+            //A way to optimize this is to have an attribute in product class
+            // holding the number of available size and only when an order is made or the admin make changes on product
+            // we will change that Product attribute
+
+            $available_quantity = ProductsDao::getAvailableSizeQuantity($product_id , $size_no);
+            if ($size_quantity >= $available_quantity){
+                die("There aren't any more sizes to buy. Sorry-motori " . $available_quantity);
+            }
+            $product->setSizeQuantity($size_no , $quantity_change_type);
+        }
+    }
+
+    public function decreaseItemQuantityFromCart(){
+         $this->changeItemQuantityFromCart("desc");
+         die("Size quantity was decreased");
+    }
+
+    public function increaseItemQuantityFromCart(){
+         $this->changeItemQuantityFromCart("asc");
+         die("Size quantity was increased");
+
+    }
+
+    public function getCartItem($product_id , $size_no){
+        /* @var $cart Cart*/
+        $cart = &$_SESSION['cart'];
+        $items = $cart->getCartItems();
+        /* @var $cart_item Product */
+        foreach ($items as $index=>&$cart_item) {
+            if ($cart_item->getProductId() === $product_id && $cart_item->getSizeQuantity($size_no) > 0){
+               return $cart_item;
+            }
+        }
+    }
+
+    private function removeCartItem($product_id , $size_no){
+        if (isset($_SESSION['cart'])){
+            /* @var $cart Cart */
+            $cart = &$_SESSION['cart'];
+            $items = $cart->getCartItems();
+        /* @var $cart_item Product */
+        foreach ($items as $index=>&$cart_item) {
+            $size = $cart_item->getSizes()[0]; // since product in cart is defined by size
+
+            if ($cart_item->getProductId() === $product_id && $size === $size_no){
+                unset($items[$index]);
+            }
+        }
+        if (count($items) === 0){
+            $cart = Cart::init();
+            echo 'Last item in cart was removed!';
+        }
+        try{
+            $cart->setCartItems($items);
+            echo  'Product No."'.$product_id.'" was removed successfully from the cart! "';
+        }catch (\RuntimeException $e){
+            die($e->getMessage());
+        }
+     }
+    }
 }

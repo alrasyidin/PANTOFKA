@@ -130,12 +130,30 @@
 
                        sizeQuantityCell.innerHTML = sizeQuantity + ' x ' + sizeNo;
 
-                        console.log();
                        //=======================================================
+
+                       var decreaseQuantityCell = itemRow.insertCell(7);
+                       var decreaseQuantityButton = document.createElement("button");
+                       decreaseQuantityButton.innerHTML = '<h2>-</h2>';
+                       decreaseQuantityButton.id = 'decrease-quantity-cart-button';
+                       decreaseQuantityButton.setAttribute('onclick' , 'decreaseItemQuantityFromCart('+ item.product_id.toString() + ',' + sizeNo.toString() +')');
+                       decreaseQuantityCell.value = (decreaseQuantityButton.valueOf().innerHTML);
+                       decreaseQuantityCell.appendChild(decreaseQuantityButton);
+
 
                        //=======================================================
 
-                       var removeItemButtonCell = itemRow.insertCell(7);
+
+                       var increaseQuantityCell = itemRow.insertCell(8);
+                       var increaseQuantityButton = document.createElement("button");
+                       increaseQuantityButton.innerHTML = '<h2>+</h2>';
+                       increaseQuantityButton.id = 'increase-quantity-cart-button';
+                       increaseQuantityButton.setAttribute('onclick' , 'increaseItemQuantityFromCart('+ item.product_id.toString() + ',' + sizeNo.toString() +')');
+                       increaseQuantityCell.value = (increaseQuantityButton.valueOf().innerHTML);
+                       increaseQuantityCell.appendChild(increaseQuantityButton);
+                       //=======================================================
+
+                       var removeItemButtonCell = itemRow.insertCell(9);
                        var removeItemButton = document.createElement("button");
                        removeItemButton.innerHTML = 'Remove ' + item.product_name + ' from cart';
                        removeItemButton.id = 'remove-from-cart-button';
@@ -144,7 +162,7 @@
                        removeItemButtonCell.appendChild(removeItemButton);
                        //=======================================================
 
-                       var addCartItemToFavoritesButtonCell = itemRow.insertCell(8);
+                       var addCartItemToFavoritesButtonCell = itemRow.insertCell(10);
                        var addCartItemToFavoritesButton = document.createElement("button");
                        addCartItemToFavoritesButton.innerHTML = 'Add to favorites';
                        addCartItemToFavoritesButton.id = 'add-to-favorites-from-cart-button';
@@ -226,6 +244,45 @@
        };
        request.send();
    }
+
+
+
+   function decreaseItemQuantityFromCart(product_id , size_no){
+       var request = new XMLHttpRequest();
+       request.open("get", "handle_requests.php?target=cart&action=decreaseItemQuantityFromCart&product_id=" + product_id
+           +"&size_no=" + size_no);       request.onreadystatechange = function (ev) {
+           if(this.readyState == 4){
+               if(this.status == 200){
+                   console.log(this.responseText);
+                   alert(this.responseText);
+                   document.getElementById('buy-cart-items').innerHTML = '';
+                   document.getElementById('display-cart-items').innerHTML = '';
+                   loadCart();
+               }
+           }
+       };
+       request.send();
+   }
+
+
+
+   function increaseItemQuantityFromCart(product_id , size_no){
+       var request = new XMLHttpRequest();
+       request.open("get", "handle_requests.php?target=cart&action=increaseItemQuantityFromCart&product_id=" + product_id
+           +"&size_no=" + size_no);       request.onreadystatechange = function (ev) {
+           if(this.readyState == 4){
+               if(this.status == 200){
+                   console.log(this.responseText);
+                   alert(this.responseText);
+                   document.getElementById('buy-cart-items').innerHTML = '';
+                   document.getElementById('display-cart-items').innerHTML = '';
+                   loadCart();
+               }
+           }
+       };
+       request.send();
+   }
+
 
 
 </script>

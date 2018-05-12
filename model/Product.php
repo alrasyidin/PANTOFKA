@@ -351,7 +351,7 @@ class Product extends AbstractModel
         $this->size_quantities = array();
     }
 
-    public function setSizeQuantity($size_no)
+    public function setSizeQuantity($size_no , $quantity_change_type)
     {
         if (!is_numeric($size_no) ||
             $size_no < ProductController::MIN_SIZE_NUMBER_KIDS ||
@@ -366,7 +366,16 @@ class Product extends AbstractModel
             $sizes_and_quantities[$size_no] = 1;
         }else{
           if (array_key_exists($size_no , $sizes_and_quantities)){
-              $sizes_and_quantities[$size_no]++;
+              if ($quantity_change_type === "asc"){
+                  $sizes_and_quantities[$size_no]++;
+              }elseif ($quantity_change_type === "desc"){
+                  $sizes_and_quantities[$size_no]--;
+                  if ($sizes_and_quantities[$size_no] === 0){
+                      unset($sizes_and_quantities[$size_no]);
+                  }
+              }else{
+                  throw new \RuntimeException('Bad parameter passed to setSizeQuantity');
+              }
           }
         }
         $this->size_quantities = $sizes_and_quantities;

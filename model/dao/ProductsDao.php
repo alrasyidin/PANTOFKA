@@ -428,5 +428,14 @@ class ProductsDao extends AbstractDao implements IProductsDao
         return boolval($result["is_available"]);
     }
 
+    public static function getAvailableSizeQuantity($product_id , $size_no){
+        $stmt = self::$pdo->prepare("SELECT quantity 
+                                            FROM final_project_pantofka.products_has_sizes as phs
+                                              JOIN final_project_pantofka.sizes as s USING (size_id)
+                                            WHERE phs.product_id = ? AND s.size_number = ? ");
+        $stmt->execute(array($product_id , $size_no));
+        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        return $result['quantity'];
+    }
 
 }
