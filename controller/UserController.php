@@ -85,9 +85,7 @@ class UserController{
             $user_dao = new UserDao();
             if($user_dao->login($email , $password) instanceof User){ // This means the dao found a match for that data and returns an user object
                 $logged_user = $user_dao->login($email , $password);
-
                 $logged_user->__unset($logged_user->getPassword());
-
                 $_SESSION["user"] = $logged_user;
                 header('HTTP/1.1 200 OK');
                 header(self::SUCCESSFUL_LOGIN_LOCATION);
@@ -95,7 +93,7 @@ class UserController{
             }else {
                 header('HTTP/1.1 401 Unauthorized');
                 header(self::FAILED_LOGIN_LOCATION);
-                die(json_encode(array($email , $password)));
+                die(json_encode(array($email, $password)));
             }
         } catch (\PDOException $e) {
 
@@ -117,8 +115,8 @@ class UserController{
         $email = htmlentities($_POST["email"]);
         $password = htmlentities($_POST["password"]);
         $password_repeat = htmlentities($_POST["password_repeat"]);
-        try{
-            if($password !== $password_repeat){
+        try {
+            if ($password !== $password_repeat) {
                 header('HTTP/1.1 400 Bad Request');
                 header(self::FAILED_LOGIN_LOCATION);
                 die("Passwords mismatched");
@@ -130,31 +128,27 @@ class UserController{
             $new_user->setGender($gender);
             $new_user->setEmail($email);
             $new_user->setPassword($password);
-        }catch (\RuntimeException $e){
+        } catch (\RuntimeException $e) {
             header('HTTP/1.1 400 Bad Request');
             header(self::FAILED_LOGIN_LOCATION);
             die("Bad data was passed");
         }
         try {
             if (!(UserDao::userExists($email))) {
-                if (UserDao::register($new_user) instanceof User){// LOSHO
                     header('HTTP/1.1 200 OK');
                     header(self::SUCCESSFUL_REGISTER_LOCATION);
                     die();
-                }
-            } else {
-                header(self::UNAUTHORIZED_REGISTER_LOCATION);
+            }
+        }catch
+            (\PDOException $e) {
+                header('HTTP/1.1 500');
+                header(self::FAILED_LOGIN_LOCATION);
+                die();
+            } catch (\RuntimeException $e){
+                header('HTTP/1.1 400');
+                header(self::FAILED_LOGIN_LOCATION);
                 die();
             }
-        } catch (\PDOException $e) {
-            header('HTTP/1.1 500');
-            header(self::FAILED_LOGIN_LOCATION);
-            die();
-        } catch (\RuntimeException $e){
-            header('HTTP/1.1 400');
-            header(self::FAILED_LOGIN_LOCATION);
-            die();
-        }
     }
 
 

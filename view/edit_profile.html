@@ -20,7 +20,7 @@
                 <input type="email" id="edit-form-email" name="email" placeholder="Email" required> <br>
 
                 <p class="message">
-                    Gender: <select id="edit-form-gender"  name="gender" required>
+                    Gender: <select id="edit-form-gender"  name="gender" id="gender_select_edit" required>
 
                     <option value="M">Male</option>
 
@@ -215,6 +215,8 @@
         reason += validatePassword(theForm.old_password);
         reason += validatePassword(theForm.new_password);
         reason += validatePassword(theForm.repeat_new_password);
+        reason += validateSelect(theForm.gender_select_edit);
+
 
         if (reason != "") {
             resultDiv.innerHTML = "";

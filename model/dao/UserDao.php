@@ -56,6 +56,7 @@ class UserDao extends AbstractDao implements IUserDao {
             $user = self::getUser($email);
             return $user;
         }
+        return false;
     }
 
     /**

@@ -5,6 +5,7 @@ function validateRegisterFormOnSubmit(theForm) {
     reason += validateName(theForm.first_name);
     reason += validateName(theForm.last_name);
     reason += validateEmail(theForm.email);
+    reason += validateSelect(theForm.gender_select);
 
     if (reason != "") {
         alert("Some fields need correction:\n" + reason);
@@ -167,3 +168,18 @@ function validateEmail(fld) {
     return error;
 }
 
+function validateGender(fld) {
+    var error="";
+
+
+    if (fld.value !== "m" || fld.value !== "f" || fld.value !== "M" || fld.value !== "F") {
+        error = "Gender in not valid";
+    }
+    return error;
+}
+
+function validateSelect(select) {
+    for (var option in select){
+      return  validateGender(option);
+    }
+}

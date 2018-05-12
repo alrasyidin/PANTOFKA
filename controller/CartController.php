@@ -10,10 +10,12 @@ namespace controller;
 
 
 use model\Cart;
+use model\dao\CustomerDao;
 use model\dao\FavoritesDao;
 use model\dao\SizeDao;
 use model\Product;
 use model\Size;
+use model\User;
 
 class CartController{
 
@@ -58,12 +60,14 @@ class CartController{
             try {
                 /* @var $cart Cart */
                 $cart = &$_SESSION['cart'];
+                /* @var $user User */
+                $user = &$_SESSION['user'];
+
 
                 $size_dao = new SizeDao();
                 $size_id = $size_dao->getSizeId($size_no);
 
-
-                if (FavoritesDao::productIsAvailable($product_id , $size_id)) {
+                if (FavoritesDao::productIsAvailable($product_id , $size_id)) { // Petra 06.05
                     if (self::productAlreadyInCart($product_id)) {
                         /* @var $product_to_increase_sizes_to Product */
                         $product_to_increase_sizes_to = self::productSizeAlreadyInCart($product_id , $size_no);
@@ -78,6 +82,7 @@ class CartController{
                             $new_product->addToSizes($size_no);
 
                             $cart->addItemToCart($new_product);
+
                             header('HTTP/1.1 200 OK');
                             die('Another product size was added to cart');
                         }
