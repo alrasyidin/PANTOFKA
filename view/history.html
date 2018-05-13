@@ -84,7 +84,7 @@
                     orderInfoTable.style = 'width : 100%';
                     orderInfoTable.style.border = '1px solid grey';
                     orderInfoTable.style.margin = '3px';
-
+                    var orderId = id;
                     for (var i = 0; i < orderInfo.length; i++) {
 
 
@@ -108,17 +108,17 @@
                         sizeNumberCell.innerHTML = order.quantity +'x<h5>'+ order.size_number + '</h5>size';
 
                         var giveRatingCell = orderRow.insertCell(4);
-                       giveRatingCell.id="rating-cell-" + order.product_id;
+                       giveRatingCell.id="rating-cell-" + order.product_id + order.size_number + orderId;
 
                         var minRate = 1;
                         var maxRate = 10;
 
                         var ratingText = document.createElement('h6');
-                        ratingText.id = 'rating-text-' + order.product_id;
+                        ratingText.id = 'rating-text-' + order.product_id + order.size_number + orderId;
                         giveRatingCell.appendChild(ratingText);
 
                         var selectRating = document.createElement("select");
-                        selectRating.id= "selected-rating-" + order.product_id;
+                        selectRating.id= "selected-rating-" + order.product_id + order.size_number + orderId;
                         giveRatingCell.appendChild(selectRating);
 
                         for (var j = minRate; j <= maxRate; j++) {
@@ -127,10 +127,10 @@
                         }
 
                         var giveARatingButton = document.createElement('button');
-                        giveARatingButton.id = 'give-rating-'+ order.product_id;
+                        giveARatingButton.id = 'give-rating-'+ order.product_id + order.size_number + orderId;
                         giveRatingCell.appendChild(giveARatingButton);
 
-                        loadProductRateFromUser(order.product_id);
+                        loadProductRateFromUser(order.product_id, order.size_number, orderId);
 
                     }
                     var closeDiv = document.createElement("div");
@@ -177,7 +177,7 @@ function closeOrderInfo(id) {
        request.send();
     }
 
-    function loadProductRateFromUser(product_id){
+    function loadProductRateFromUser(product_id, size_number, orderId){
 
         var request = new XMLHttpRequest();
         request.open("get", "handle_requests.php?target=rating&action=getRatingFromUser&product_id=" + product_id);
@@ -186,20 +186,20 @@ function closeOrderInfo(id) {
                 if(this.status == 200){
                     var ratingOfProduct = JSON.parse(this.responseText);
                     console.log(ratingOfProduct);
-                    var ratingCell = document.getElementById('rating-cell-' +product_id);
-                    var ratingText = document.getElementById('rating-text-' + product_id);
+                    var ratingCell = document.getElementById('rating-cell-' +product_id + size_number + orderId);
+                    var ratingText = document.getElementById('rating-text-' + product_id + size_number + orderId);
 
-                    var giveARatingButton = document.getElementById('give-rating-' + product_id);
+                    var giveARatingButton = document.getElementById('give-rating-' + product_id + size_number + orderId);
 
                     if (ratingOfProduct.rating_value === 0){
                         ratingText.innerHTML = "Please rate!";
-                        giveARatingButton.setAttribute('onclick' , 'giveRating('+ product_id + ')')
+                        giveARatingButton.setAttribute('onclick' , 'giveRating('+ product_id + ',' + size_number + ',' + orderId + ')')
                         giveARatingButton.innerHTML = "Rate!"
 
                     }
                     else{
                         ratingText.innerHTML = "You rated with: " + ratingOfProduct.rating_value;
-                        giveARatingButton.setAttribute('onclick' , 'changeRating('+ product_id + ')')
+                        giveARatingButton.setAttribute('onclick' , 'changeRating('+ product_id + ',' + size_number + ',' + orderId + ')')
                         giveARatingButton.innerHTML = "Change rate!"
                     }
 
@@ -210,26 +210,26 @@ function closeOrderInfo(id) {
         request.send();
     }
 
-    function giveRating(product_id) {
+    function giveRating(product_id, size_number, orderId) {
         var request = new XMLHttpRequest();
-        var selectedRating = document.getElementById("selected-rating-" + product_id);
+        var selectedRating = document.getElementById("selected-rating-" + product_id + size_number + orderId);
         var rating_value = selectedRating.options[selectedRating.selectedIndex].value;
 
         request.open("get", "handle_requests.php?target=rating&action=giveRating&pId="+product_id+ "&rate="+rating_value);
 
         request.send();
-        loadProductRateFromUser(product_id);
+        loadProductRateFromUser(product_id, size_number, orderId);
     }
 
-    function changeRating(product_id) {
-        var selectedRating = document.getElementById("selected-rating-" + product_id);
+    function changeRating(product_id, size_number, orderId) {
+        var selectedRating = document.getElementById("selected-rating-" + product_id + size_number + orderId);
         var rating_value = selectedRating.options[selectedRating.selectedIndex].value;
 
         var request = new XMLHttpRequest();
         request.open("get", "handle_requests.php?target=rating&action=changeRating&pId="+product_id+ "&rate="+rating_value);
 
         request.send();
-        loadProductRateFromUser(product_id);
+        loadProductRateFromUser(product_id, size_number, orderId);
     }
 
 

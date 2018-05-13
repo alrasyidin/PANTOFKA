@@ -222,8 +222,7 @@ class AdminController extends AbstractController
     }
 
 
-    public
-    static function changeProduct()
+    public static function changeProduct()
     {
         if (isset($_POST["change_product"])) {
 
@@ -232,7 +231,7 @@ class AdminController extends AbstractController
             $product_id = htmlentities($_POST["product_id"]);
             /* @var $product_to_edit Product */
             $product_to_edit = $dao->getProductById($product_id);
-            $category = $product_to_edit->getCategory();
+            $category = htmlentities($_POST["product_category"]);
             $style = htmlentities($_POST["product_style"]);
             $product_name = htmlentities($_POST["product_name"]);
             $color = htmlentities($_POST["product_color"]);
