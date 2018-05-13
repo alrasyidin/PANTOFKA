@@ -35,7 +35,7 @@ class UserController{
         // it is empty because we can not initialise the class static instance in here
     }
 
-    public static function getInstance(){
+     public static function getInstance(){
         if(self::$instance === null){
             self::$instance = new UserController();
         }
@@ -135,6 +135,7 @@ class UserController{
         }
         try {
             if (!(UserDao::userExists($email))) {
+                    UserDao::register($new_user);
                     header('HTTP/1.1 200 OK');
                     header(self::SUCCESSFUL_REGISTER_LOCATION);
                     die();
