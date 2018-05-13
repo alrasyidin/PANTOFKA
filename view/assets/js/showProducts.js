@@ -238,14 +238,6 @@ function filterCategories() {
 
 }
 
-function filterCategoriesForEdit() {
-    var categorySelect = document.getElementById("change-categories");
-    var category = categorySelect.options[categorySelect.selectedIndex].value;
-    getStylesForEdit(category);
-    loadInputSizesForEdit(category);
-
-}
-
 function fillModal(product_id) {
     var modal = document.getElementById('product-modal');
     var editModal = document.getElementById("edit-product-modal");

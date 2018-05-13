@@ -231,7 +231,7 @@ class AdminController extends AbstractController
             $product_id = htmlentities($_POST["product_id"]);
             /* @var $product_to_edit Product */
             $product_to_edit = $dao->getProductById($product_id);
-            $category = htmlentities($_POST["product_category"]);
+            $category = $product_to_edit->getCategory();
             $style = htmlentities($_POST["product_style"]);
             $product_name = htmlentities($_POST["product_name"]);
             $color = htmlentities($_POST["product_color"]);
